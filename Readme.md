@@ -1,7 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Илья Линич](https://up.htmlacademy.ru/ecmascript/14/user/1500115).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Шершнев](https://htmlacademy.ru/profile/shv_sergey).
 
 ---
 
