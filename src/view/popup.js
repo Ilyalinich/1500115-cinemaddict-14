@@ -1,28 +1,31 @@
-import dayjs from 'dayjs';
-
-const getFilmWriters = (writers) => writers.length === 1 ? writers : writers.join(', ');
-const getFilmActors = (actors) => actors.length === 1 ? actors : actors.join(', ');
-const getFilmDuration = (minutes) => {
-  const hoursDuration = Math.floor(minutes / 60);
-  const minutesDuration = Math.floor(minutes % 60);
-
-  return hoursDuration > 0 ? `${hoursDuration}h ${minutesDuration}m` : `${minutesDuration}m`;
-};
-const createGenresListTemplate = (genres) =>
-  genres.map((genreValue) => `<span class="film-details__genre">${genreValue}</span>`)
-    .join('\n');
+import {getAllArrayValuesList, humanizeDate, getFilmDuration} from '../util.js';
+import {createPopupGenresTemplate} from './popup-genres.js';
+import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
+// import {createCommentsListTemplate} from ''
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
+const createPopupCommentsListTemplate = () => {
+  return `<li class="film-details__comment">
+    <span class="film-details__comment-emoji">
+      <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
+    </span>
+    <div>
+      <p class="film-details__comment-text">sdfdsjhfdsj</p>
+      <p class="film-details__comment-info">
+        <span class="film-details__comment-author">Tim Macoveev</span>
+        <span class="film-details__comment-day">2019/12/31 23:59</span>
+        <button class="film-details__comment-delete">Delete</button>
+      </p>
+    </div>
+  </li>`;
+};
 
 export const createPopupTemplate = (film) => {
   const {comments} = film;
   const {title,  alternative_title, total_rating, poster, age_rating,
     director, writers, actors, release, runtime, genre, description} = film.film_info;
   const {watchlist, already_watched, favorite} = film.user_details;
-
-  /*eslint-disable*/
-  console.log(createGenresListTemplate(genre))
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -56,15 +59,15 @@ export const createPopupTemplate = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">${getFilmWriters(writers)}</td>
+                <td class="film-details__cell">${getAllArrayValuesList(writers)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">${getFilmActors(actors)}</td>
+                <td class="film-details__cell">${getAllArrayValuesList(actors)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${dayjs(release.date).format('D MMMM YYYY')}</td>
+                <td class="film-details__cell">${humanizeDate(release.date)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
@@ -75,8 +78,7 @@ export const createPopupTemplate = (film) => {
                 <td class="film-details__cell">${release.release_country}</td>
               </tr>
               <tr class="film-details__row">
-                <td class="film-details__term">${genre.length === 1 ? 'Genre' : 'Genres'}</td>
-                <td class="film-details__cell">${createGenresListTemplate(genre)}</td>
+                ${createPopupGenresTemplate(genre)}
               </tr>
             </table>
 
@@ -100,7 +102,9 @@ export const createPopupTemplate = (film) => {
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
-          <ul class="film-details__comments-list"></ul>
+          <ul class="film-details__comments-list">
+            ${createPopupCommentsListTemplate()}
+          </ul>
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label"></div>
@@ -110,25 +114,7 @@ export const createPopupTemplate = (film) => {
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-              <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-              <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-              </label>
-
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-              <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-              </label>
+              ${createPopupEmojiListTemplate()}
             </div>
           </div>
         </section>

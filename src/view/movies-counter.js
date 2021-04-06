@@ -1,5 +1,3 @@
-const MOVIES_COUNT = 130291;
-
-export const createMoviesCountTemplate = () => {
-  return `<p>${MOVIES_COUNT.toLocaleString()} movies inside</p>`;
+export const createMoviesCountTemplate = (films) => {
+  return `<p>${films.length.toLocaleString()} movies inside</p>`;
 };

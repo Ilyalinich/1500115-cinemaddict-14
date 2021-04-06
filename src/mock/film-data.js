@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean} from './util.js';
+import {getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean} from '../util.js';
 import {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RAITING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_REITING_PRECISION,
   CommentsCount, TotalReitingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount} from './constant.js';
 import dayjs from 'dayjs';
@@ -21,7 +21,7 @@ const generateTotalRating = () => getRandomFloat(TotalReitingCount.MIN, TotalRei
 const generateRunTime = () => getRandomInteger(RunTimeCount.MIN, RunTimeCount.MAX);
 
 
-const generateFilm = () => {
+export const generateFilm = () => {
   const title = getRandomValue(Object.keys(FILM_TITLES));
   const randomDate = getRandomInteger(DateInMillisecondsCount.MIN, DateInMillisecondsCount.MAX);
   return {
@@ -53,5 +53,3 @@ const generateFilm = () => {
     },
   };
 };
-
-export {generateFilm};
