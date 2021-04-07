@@ -1,5 +1,10 @@
 import {isNumberInRange} from '../util.js';
 
+const NoRankRange = {
+  MIN: 0,
+  MAX: 0,
+};
+
 const NoviceRange = {
   MIN: 1,
   MAX: 10,
@@ -16,9 +21,10 @@ const MovieBuffRange = {
 };
 
 const userRankMap = {
-  [NoviceRange]: 'novice',
-  [FanRange]: 'fan',
-  [MovieBuffRange]: 'movie buff',
+  'no rank': NoRankRange,
+  'novice': NoviceRange,
+  'fan': FanRange,
+  'movie buff': MovieBuffRange ,
 };
 
 export const createUserRankTemplate = (films) => {
@@ -27,14 +33,13 @@ export const createUserRankTemplate = (films) => {
       return accumulator + Number(user_details.already_watched);
     }, 0);
 
-  const userRank = Object.entries(userRankMap).forEach(([{MIN, MAX}, rankName]) =>
+  const userRank = Object.entries(userRankMap)
+    .find(([ ,{MIN, MAX}]) => isNumberInRange(watchedFilmsCount, MIN, MAX))[0];
 
-    isNumberInRange(watchedFilmsCount, MIN, MAX) ? rankName : false);
-    /*eslint-disable*/
-    console.log(watchedFilmsCount);
-    console.log(userRank);
-  return `<section class="header__profile profile">
-    <p class="profile__rating">Movie Buff</p>
-    <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-  </section>`;
+  return userRank !== 'no rank' ?
+    `<section class="header__profile profile">
+      <p class="profile__rating">${userRank}</p>
+      <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
+    </section>` :
+    '';
 };

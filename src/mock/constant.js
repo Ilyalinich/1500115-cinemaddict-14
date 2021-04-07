@@ -23,6 +23,7 @@ const DESCRIPTION_TEMPLATE = 'Lorem ipsum dolor sit amet, consectetur adipiscing
 const DESCRIPTION_SENTENCES = DESCRIPTION_TEMPLATE.split('. ');
 
 const AGE_RAITING_COUNTS = [0, 6, 12, 16, 18];
+const ID_VALUES = [1, 2, 3, 4, 5];
 
 const PERSONS = {
   directors: [
@@ -120,5 +121,5 @@ const DateInMillisecondsCount = {
 };
 
 
-export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RAITING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_REITING_PRECISION,
+export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RAITING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_REITING_PRECISION, ID_VALUES,
   CommentsCount, TotalReitingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount};

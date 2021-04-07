@@ -1,25 +1,10 @@
 import {getAllArrayValuesList, humanizeDate, getFilmDuration} from '../util.js';
-import {createPopupGenresTemplate} from './popup-genres.js';
+import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
-// import {createCommentsListTemplate} from ''
+
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
-const createPopupCommentsListTemplate = () => {
-  return `<li class="film-details__comment">
-    <span class="film-details__comment-emoji">
-      <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
-    </span>
-    <div>
-      <p class="film-details__comment-text">sdfdsjhfdsj</p>
-      <p class="film-details__comment-info">
-        <span class="film-details__comment-author">Tim Macoveev</span>
-        <span class="film-details__comment-day">2019/12/31 23:59</span>
-        <button class="film-details__comment-delete">Delete</button>
-      </p>
-    </div>
-  </li>`;
-};
 
 export const createPopupTemplate = (film) => {
   const {comments} = film;
@@ -103,7 +88,7 @@ export const createPopupTemplate = (film) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-            ${createPopupCommentsListTemplate()}
+
           </ul>
 
           <div class="film-details__new-comment">

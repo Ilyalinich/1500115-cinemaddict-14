@@ -9,20 +9,26 @@ import {createFilmCardTemplate} from './view/film-card.js';
 import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createMoviesCountTemplate} from './view/movies-counter.js';
 import {createPopupTemplate} from './view/popup.js';
+import {createPopupCommentsTemplate} from './view/popup-comments-list.js';
 import {generateFilm} from './mock/film-data.js';
 import {generateFilter} from './mock/filter-data.js';
+import {generateComment} from './mock/comment.js';
 
 
 const FILMS_RENDER_STEP = 5;
 const FILMS_COUNT = 20;
+const COMMENTS_COUNT = 5;
 
 const films = new Array(FILMS_COUNT)
   .fill()
   .map(generateFilm);
 
+const comments = new Array(COMMENTS_COUNT)
+  .fill()
+  .map(generateComment);
+
 const filters = generateFilter(films);
-/*eslint-disable*/
-console.log(films);
+
 
 const render = (container, template, place = 'beforeend') => {
   container.insertAdjacentHTML(place, template);
@@ -74,15 +80,24 @@ const siteFooterStatisticsElement = document.querySelector('.footer__statistics'
 render(siteFooterStatisticsElement, createMoviesCountTemplate(films));
 
 const pageBody = document.querySelector('body');
-pageBody.classList.add('.hide-overflow')
+pageBody.classList.add('.hide-overflow');
 render(pageBody, createPopupTemplate(films[0]));
 
 const popup = document.querySelector('.film-details');
+const popupCommentsContainer = popup.querySelector('.film-details__comments-list');
+const filteredComments = comments.filter(({id}) => films[0].comments.includes(id));
+render(popupCommentsContainer, createPopupCommentsTemplate(filteredComments));
+
 const popupCloseBotton = popup.querySelector('.film-details__close-btn');
 popupCloseBotton.addEventListener('click', () => {
-  popup.classList.toggle('visually-hidden')
+  popup.classList.toggle('visually-hidden');
 });
 const firstFilmPoster = document.querySelector('.film-card__poster');
 firstFilmPoster.addEventListener('click', () => {
-  popup.classList.toggle('visually-hidden')
+  popup.classList.toggle('visually-hidden');
 });
+
+/*eslint-disable*/
+console.log(films);
+console.log(comments);
+console.log(filteredComments);

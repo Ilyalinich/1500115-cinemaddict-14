@@ -1,6 +1,6 @@
 export const createPopupEmojiListTemplate = () => {
-  const emotions = ['smile', 'sleeping', 'puke', 'angry'];
-  return emotions.map((emotion) =>
+  const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
+  return EMOTIONS.map((emotion) =>
     `<input
       class="film-details__emoji-item visually-hidden"
       name="comment-emoji"

@@ -1,36 +1,21 @@
-import {getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean} from '../util.js';
-import {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RAITING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_REITING_PRECISION,
+import {getRandomInteger, getRandomFloat, getRandomBoolean, getRandomValue, getRandomValues} from '../util.js';
+import {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RAITING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_REITING_PRECISION, ID_VALUES,
   CommentsCount, TotalReitingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount} from './constant.js';
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 
 
-const getRandomValue = (values) => values[getRandomInteger(0, values.length - 1)];
-const getRandomValues = (values, valuesEnumeration) => {
-  const randomValuesCount = getRandomInteger(valuesEnumeration.MIN, valuesEnumeration.MAX);
-  const randomValues = getShuffleArray(values)
-    .slice(0, randomValuesCount);
-  return randomValues;
-};
-
-const generateCommentsId = () => new Array(getRandomInteger(CommentsCount.MIN, CommentsCount.MAX))
-  .fill()
-  .map(() => nanoid(ID_LENGTH));
-
-const generateTotalRating = () => getRandomFloat(TotalReitingCount.MIN, TotalReitingCount.MAX, TOTAL_REITING_PRECISION);
-const generateRunTime = () => getRandomInteger(RunTimeCount.MIN, RunTimeCount.MAX);
-
-
 export const generateFilm = () => {
   const title = getRandomValue(Object.keys(FILM_TITLES));
   const randomDate = getRandomInteger(DateInMillisecondsCount.MIN, DateInMillisecondsCount.MAX);
+
   return {
     id: nanoid(ID_LENGTH),
-    comments: generateCommentsId(),
+    comments: getRandomValues(ID_VALUES, CommentsCount),
     film_info: {
       title,
       alternative_title: FILM_TITLES[title],
-      total_rating: generateTotalRating(),
+      total_rating: getRandomFloat(TotalReitingCount.MIN, TotalReitingCount.MAX, TOTAL_REITING_PRECISION),
       poster: getRandomValue(POSTER_NAMES),
       age_rating: getRandomValue(AGE_RAITING_COUNTS) ,
       director: getRandomValue(PERSONS.directors),
@@ -40,7 +25,7 @@ export const generateFilm = () => {
         date: dayjs(randomDate).toISOString(),
         release_country: getRandomValue(COUNTRIES),
       },
-      runtime: generateRunTime(),
+      runtime: getRandomInteger(RunTimeCount.MIN, RunTimeCount.MAX),
       genre: getRandomValues(GENRES, GenresCount),
       description: `${getRandomValues(DESCRIPTION_SENTENCES, DescriptionSentencesCount)
         .join('. ')}.`,

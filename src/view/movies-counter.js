@@ -1,3 +1,1 @@
-export const createMoviesCountTemplate = (films) => {
-  return `<p>${films.length.toLocaleString()} movies inside</p>`;
-};
+export const createMoviesCountTemplate = (films) => `<p>${films.length.toLocaleString()} movies inside</p>`;

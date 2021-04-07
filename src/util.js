@@ -1,5 +1,13 @@
 import dayjs from 'dayjs';
 
+const getRandomValue = (values) => values[getRandomInteger(0, values.length - 1)];
+const getRandomValues = (values, valuesEnumeration) => {
+  const randomValuesCount = getRandomInteger(valuesEnumeration.MIN, valuesEnumeration.MAX);
+  const randomValues = getShuffleArray(values)
+    .slice(0, randomValuesCount);
+  return randomValues;
+};
+
 const getDateYearValue = (date) => dayjs(date).year();
 const humanizeDate = (date) => dayjs(date).format('DD MMMM YYYY');
 
@@ -38,4 +46,4 @@ const getShuffleArray = (array) => {
 const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
 
 export {getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, humanizeDate,
-  getFilmDuration, getAllArrayValuesList, isNumberInRange};
+  getFilmDuration, getAllArrayValuesList, isNumberInRange, getRandomValue, getRandomValues};
