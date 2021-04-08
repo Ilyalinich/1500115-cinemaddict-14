@@ -9,7 +9,8 @@ const getRandomValues = (values, valuesEnumeration) => {
 };
 
 const getDateYearValue = (date) => dayjs(date).year();
-const humanizeDate = (date) => dayjs(date).format('DD MMMM YYYY');
+const formatDateForPopupTemplate = (date) => dayjs(date).format('DD MMMM YYYY');
+const formatDateForCommentTemplate = (date) => dayjs(date).format('YYYY/MM/DD HH:mm');
 
 const getFilmDuration = (minutes) => {
   const hoursDuration = Math.floor(minutes / 60);
@@ -45,5 +46,5 @@ const getShuffleArray = (array) => {
 
 const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
 
-export {getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, humanizeDate,
-  getFilmDuration, getAllArrayValuesList, isNumberInRange, getRandomValue, getRandomValues};
+export {getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, formatDateForPopupTemplate,
+  formatDateForCommentTemplate, getFilmDuration, getAllArrayValuesList, isNumberInRange, getRandomValue, getRandomValues};

@@ -31,6 +31,3 @@ export const createFilmCardTemplate = (film) => {
     </div>
   </article>`;
 };
-
-// /*eslint-disable*/
-// console.log(poster)

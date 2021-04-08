@@ -1,3 +1,1 @@
-export const createContentContainerTemplate = () => {
-  return '<section class="films"></section>';
-};
+export const createContentContainerTemplate = () => '<section class="films"></section>';

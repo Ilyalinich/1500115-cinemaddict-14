@@ -1,4 +1,4 @@
-import {getAllArrayValuesList, humanizeDate, getFilmDuration} from '../util.js';
+import {getAllArrayValuesList, formatDateForPopupTemplate, getFilmDuration} from '../util.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 
@@ -52,7 +52,7 @@ export const createPopupTemplate = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${humanizeDate(release.date)}</td>
+                <td class="film-details__cell">${formatDateForPopupTemplate(release.date)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
