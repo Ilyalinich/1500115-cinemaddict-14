@@ -21,9 +21,9 @@ export const generateComment = () => {
 
   return {
     id: generateId(ID_VALUES),
-    author: `${getRandomValue(PERSONS.writers)}`,
-    comment: `${getRandomValue(DESCRIPTION_SENTENCES)}.`,
-    date: `${dayjs(randomDate).toISOString()}`,
-    emotion: `${getRandomValue(EMOTIONS)}`,
+    author: getRandomValue(PERSONS.writers),
+    comment: getRandomValue(DESCRIPTION_SENTENCES),
+    date: dayjs(randomDate).toISOString(),
+    emotion: getRandomValue(EMOTIONS),
   };
 };

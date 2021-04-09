@@ -19,10 +19,21 @@ const POSTER_NAMES = [
   'the-man-with-the-golden-arm.jpg',
 ];
 
-const DESCRIPTION_TEMPLATE = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus';
-const DESCRIPTION_SENTENCES = DESCRIPTION_TEMPLATE.split('. ');
+const DESCRIPTION_SENTENCES = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  'Cras aliquet varius magna, non porta ligula feugiat eget.',
+  'Fusce tristique felis at fermentum pharetra.',
+  'Aliquam id orci ut lectus varius viverra.',
+  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
+  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
+  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
+  'Sed sed nisi sed augue convallis suscipit in sed felis.',
+  'Aliquam erat volutpat.',
+  'Nunc fermentum tortor ac porta dapibus.',
+  'In rutrum ac purus sit amet tempus.',
+];
 
-const AGE_RAITING_COUNTS = [0, 6, 12, 16, 18];
+const AGE_RATING_COUNTS = [0, 6, 12, 16, 18];
 const ID_VALUES = [1, 2, 3, 4, 5];
 
 const PERSONS = {
@@ -78,14 +89,14 @@ const COUNTRIES = [
 ];
 
 const ID_LENGTH = 3;
-const TOTAL_REITING_PRECISION = 1;
+const TOTAL_RATING_PRECISION = 1;
 
 const CommentsCount = {
   MIN: 0,
   MAX: 5,
 };
 
-const TotalReitingCount = {
+const TotalRatingCount = {
   MIN: 0,
   MAX: 9,
 };
@@ -121,5 +132,5 @@ const DateInMillisecondsCount = {
 };
 
 
-export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RAITING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_REITING_PRECISION, ID_VALUES,
-  CommentsCount, TotalReitingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount};
+export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION, ID_VALUES,
+  CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount};

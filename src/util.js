@@ -3,14 +3,13 @@ import dayjs from 'dayjs';
 const getRandomValue = (values) => values[getRandomInteger(0, values.length - 1)];
 const getRandomValues = (values, valuesEnumeration) => {
   const randomValuesCount = getRandomInteger(valuesEnumeration.MIN, valuesEnumeration.MAX);
-  const randomValues = getShuffleArray(values)
-    .slice(0, randomValuesCount);
-  return randomValues;
+  return getShuffleArray(values).slice(0, randomValuesCount);
+
 };
 
 const getDateYearValue = (date) => dayjs(date).year();
-const formatDateForPopupTemplate = (date) => dayjs(date).format('DD MMMM YYYY');
-const formatDateForCommentTemplate = (date) => dayjs(date).format('YYYY/MM/DD HH:mm');
+const formatDateToDateOnly = (date) => dayjs(date).format('DD MMMM YYYY');
+const formatDateToDateAndTime = (date) => dayjs(date).format('YYYY/MM/DD HH:mm');
 
 const getFilmDuration = (minutes) => {
   const hoursDuration = Math.floor(minutes / 60);
@@ -46,5 +45,5 @@ const getShuffleArray = (array) => {
 
 const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
 
-export {getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, formatDateForPopupTemplate,
-  formatDateForCommentTemplate, getFilmDuration, getAllArrayValuesList, isNumberInRange, getRandomValue, getRandomValues};
+export {getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, formatDateToDateOnly,
+  formatDateToDateAndTime, getFilmDuration, getAllArrayValuesList, isNumberInRange, getRandomValue, getRandomValues};

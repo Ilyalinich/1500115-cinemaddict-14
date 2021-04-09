@@ -1,4 +1,4 @@
-import {getAllArrayValuesList, formatDateForPopupTemplate, getFilmDuration} from '../util.js';
+import {getAllArrayValuesList, formatDateToDateOnly, getFilmDuration} from '../util.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 
@@ -8,9 +8,9 @@ const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
 export const createPopupTemplate = (film) => {
   const {comments} = film;
-  const {title,  alternative_title, total_rating, poster, age_rating,
-    director, writers, actors, release, runtime, genre, description} = film.film_info;
-  const {watchlist, already_watched, favorite} = film.user_details;
+  const {title,  alternativeTitle, totalRating, poster, ageRating,
+    director, writers, actors, release, runtime, genre, description} = film.filmInfo;
+  const {watchlist, alreadyWatched, favorite} = film.userDetails;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -22,18 +22,18 @@ export const createPopupTemplate = (film) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
 
-            <p class="film-details__age">${age_rating}+</p>
+            <p class="film-details__age">${ageRating}+</p>
           </div>
 
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">Original: ${alternative_title}</p>
+                <p class="film-details__title-original">Original: ${alternativeTitle}</p>
               </div>
 
               <div class="film-details__rating">
-                <p class="film-details__total-rating">${total_rating}</p>
+                <p class="film-details__total-rating">${totalRating}</p>
               </div>
             </div>
 
@@ -52,7 +52,7 @@ export const createPopupTemplate = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${formatDateForPopupTemplate(release.date)}</td>
+                <td class="film-details__cell">${formatDateToDateOnly(release.date)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
@@ -60,7 +60,7 @@ export const createPopupTemplate = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
-                <td class="film-details__cell">${release.release_country}</td>
+                <td class="film-details__cell">${release.releaseCountry}</td>
               </tr>
               <tr class="film-details__row">
                 ${createPopupGenresTemplate(genre)}
@@ -75,7 +75,7 @@ export const createPopupTemplate = (film) => {
           <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${createControlStatus(watchlist)}>
           <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${createControlStatus(already_watched)}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${createControlStatus(alreadyWatched)}>
           <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
           <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${createControlStatus(favorite)}>

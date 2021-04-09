@@ -21,11 +21,11 @@ const COMMENTS_COUNT = 5;
 const EXTRA_LIST_FILMS_COUNT = 2;
 
 const films = new Array(FILMS_COUNT)
-  .fill()
+  .fill(null)
   .map(generateFilm);
 
 const comments = new Array(COMMENTS_COUNT)
-  .fill()
+  .fill(null)
   .map(generateComment);
 
 const filters = generateFilter(films);
@@ -76,9 +76,9 @@ for (let i = 0; i < Math.min(films.length, FILMS_RENDER_STEP); i++) {
 }
 
 
-const compareFilmsRaiting = (previosFilm, nextFilm) => nextFilm.film_info.total_rating - previosFilm.film_info.total_rating;
+const compareFilmsRaiting = (previosFilm, nextFilm) => nextFilm.filmInfo.totalRating - previosFilm.filmInfo.totalRating;
 const topRatedFilms = films.slice().sort(compareFilmsRaiting);
-if (topRatedFilms[0].film_info.total_rating !== 0) {
+if (topRatedFilms[0].filmInfo.totalRating !== 0) {
   render(contentContainer, createTopRatedFilmsListTemplate());
   const topRatedFilmsContainer = contentContainer.querySelector('#top-rated-films-container');
   for (let i = 0; i < Math.min(topRatedFilms.length, EXTRA_LIST_FILMS_COUNT); i++) {
@@ -107,8 +107,8 @@ const popupCommentsContainer = popup.querySelector('.film-details__comments-list
 const filteredComments = comments.filter(({id}) => films[0].comments.includes(id));
 render(popupCommentsContainer, createPopupCommentsTemplate(filteredComments));
 
-const popupCloseBotton = popup.querySelector('.film-details__close-btn');
-popupCloseBotton.addEventListener('click', () => {
+const popupCloseButton = popup.querySelector('.film-details__close-btn');
+popupCloseButton.addEventListener('click', () => {
   popup.classList.toggle('visually-hidden');
 });
 const firstFilmPoster = document.querySelector('.film-card__poster');

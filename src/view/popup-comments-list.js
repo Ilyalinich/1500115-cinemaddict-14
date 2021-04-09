@@ -1,4 +1,4 @@
-import {formatDateForCommentTemplate} from '../util.js';
+import {formatDateToDateAndTime} from '../util.js';
 
 const createPopupCommentTemplate = ({author, comment, date, emotion}) =>
   `<li class="film-details__comment">
@@ -9,7 +9,7 @@ const createPopupCommentTemplate = ({author, comment, date, emotion}) =>
       <p class="film-details__comment-text">${comment}</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">${author}</span>
-        <span class="film-details__comment-day">${formatDateForCommentTemplate(date)}</span>
+        <span class="film-details__comment-day">${formatDateToDateAndTime(date)}</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>
