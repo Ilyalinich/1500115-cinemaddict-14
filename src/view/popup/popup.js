@@ -1,7 +1,8 @@
-import {getAllArrayValuesList, formatDateToDateOnly, getFilmDuration} from '../util.js';
+import {getAllArrayValuesList, formatDate, getFilmDuration} from '../../util.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 
+const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
@@ -52,7 +53,7 @@ export const createPopupTemplate = (film) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${formatDateToDateOnly(release.date)}</td>
+                <td class="film-details__cell">${formatDate(release.date, FORMAT_TEMPLATE)}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>

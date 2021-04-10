@@ -1,17 +1,17 @@
 import {getRandomInteger, getRandomFloat, getRandomBoolean, getRandomValue, getRandomValues} from '../util.js';
-import {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION, ID_VALUES,
-  CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount} from './constant.js';
+import {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION,
+  TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount} from './constant.js';
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 
 
-export const generateFilm = () => {
+export const generateFilm = (commentsIds) => {
   const title = getRandomValue(Object.keys(FILM_TITLES));
   const randomDate = getRandomInteger(DateInMillisecondsCount.MIN, DateInMillisecondsCount.MAX);
 
   return {
     id: nanoid(ID_LENGTH),
-    comments: getRandomValues(ID_VALUES, CommentsCount),
+    comments: commentsIds,
     filmInfo: {
       title,
       alternativeTitle: FILM_TITLES[title],

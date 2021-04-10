@@ -1,3 +1,5 @@
+import {getRandomInteger} from './util.js';
+import {CommentsCount} from './mock/constant.js';
 import {createUserRankTemplate} from './view/user-rank.js';
 import {createFilterMenuTemplate} from './view/filter-menu.js';
 import {createSortMenuTemplate} from './view/sort-menu.js';
@@ -8,8 +10,8 @@ import {createMostCommentedFilmsListTemplate} from './view/most-commented-films-
 import {createFilmCardTemplate} from './view/film-card.js';
 import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createFilmsCounterTemplate} from './view/films-counter.js';
-import {createPopupTemplate} from './view/popup.js';
-import {createPopupCommentsTemplate} from './view/popup-comments-list.js';
+import {createPopupTemplate} from './view/popup/popup.js';
+import {createPopupCommentsTemplate} from './view/popup/popup-comments-list.js';
 import {generateFilm} from './mock/film-data.js';
 import {generateFilter} from './mock/filter-data.js';
 import {generateComment} from './mock/comment.js';
@@ -17,16 +19,28 @@ import {generateComment} from './mock/comment.js';
 
 const FILMS_COUNT = 20;
 const FILMS_RENDER_STEP = 5;
-const COMMENTS_COUNT = 5;
 const EXTRA_LIST_FILMS_COUNT = 2;
+
+const commentsList = [];
 
 const films = new Array(FILMS_COUNT)
   .fill(null)
-  .map(generateFilm);
+  .map(() => {
+    const commentsCount = getRandomInteger(CommentsCount.MIN, CommentsCount.MAX);
+    const comments = new Array(commentsCount)
+      .fill(null)
+      .map(generateComment);
 
-const comments = new Array(COMMENTS_COUNT)
-  .fill(null)
-  .map(generateComment);
+    const commentsIds = [];
+
+    comments.forEach((comment) => {
+      commentsIds.push(comment.id);
+      commentsList.push(comment);
+    });
+
+    return generateFilm(commentsIds);
+  });
+
 
 const filters = generateFilter(films);
 
@@ -76,8 +90,8 @@ for (let i = 0; i < Math.min(films.length, FILMS_RENDER_STEP); i++) {
 }
 
 
-const compareFilmsRaiting = (previosFilm, nextFilm) => nextFilm.filmInfo.totalRating - previosFilm.filmInfo.totalRating;
-const topRatedFilms = films.slice().sort(compareFilmsRaiting);
+const compareFilmsRating = (previousFilm, nextFilm) => nextFilm.filmInfo.totalRating - previousFilm.filmInfo.totalRating;
+const topRatedFilms = films.slice().sort(compareFilmsRating);
 if (topRatedFilms[0].filmInfo.totalRating !== 0) {
   render(contentContainer, createTopRatedFilmsListTemplate());
   const topRatedFilmsContainer = contentContainer.querySelector('#top-rated-films-container');
@@ -86,7 +100,7 @@ if (topRatedFilms[0].filmInfo.totalRating !== 0) {
   }
 }
 
-const compareFilmsCommentsLength = (previosFilm, nextFilm) => nextFilm.comments.length - previosFilm.comments.length;
+const compareFilmsCommentsLength = (previousFilm, nextFilm) => nextFilm.comments.length - previousFilm.comments.length;
 const mostCommentedFilms = films.slice().sort(compareFilmsCommentsLength);
 if (mostCommentedFilms[0].comments.length !== 0) {
   render(contentContainer, createMostCommentedFilmsListTemplate());
@@ -104,7 +118,7 @@ render(pageBody, createPopupTemplate(films[0]));
 
 const popup = document.querySelector('.film-details');
 const popupCommentsContainer = popup.querySelector('.film-details__comments-list');
-const filteredComments = comments.filter(({id}) => films[0].comments.includes(id));
+const filteredComments = commentsList.filter(({id}) => films[0].comments.includes(id));
 render(popupCommentsContainer, createPopupCommentsTemplate(filteredComments));
 
 const popupCloseButton = popup.querySelector('.film-details__close-btn');

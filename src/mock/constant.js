@@ -34,7 +34,6 @@ const DESCRIPTION_SENTENCES = [
 ];
 
 const AGE_RATING_COUNTS = [0, 6, 12, 16, 18];
-const ID_VALUES = [1, 2, 3, 4, 5];
 
 const PERSONS = {
   directors: [
@@ -132,5 +131,5 @@ const DateInMillisecondsCount = {
 };
 
 
-export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION, ID_VALUES,
+export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION,
   CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount};
