@@ -1,4 +1,4 @@
-import {getAllArrayValuesList, formatDate, getFilmDuration} from '../../util.js';
+import {getAllArrayValuesList, formatDate, getFilmDuration, createElement} from '../../util.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 
@@ -6,8 +6,7 @@ const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
-
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film) => {
   const {comments} = film;
   const {title,  alternativeTitle, totalRating, poster, ageRating,
     director, writers, actors, release, runtime, genre, description} = film.filmInfo;
@@ -108,3 +107,25 @@ export const createPopupTemplate = (film) => {
     </form>
   </section>`;
 };
+
+export default class Popup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this.element = null;
+  }
+}

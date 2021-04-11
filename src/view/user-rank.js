@@ -1,4 +1,4 @@
-import {isNumberInRange} from '../util.js';
+import {isNumberInRange, createElement} from '../util.js';
 
 const NoRankRange = {
   MIN: 0,
@@ -27,7 +27,7 @@ const userRankMap = {
   'movie buff': MovieBuffRange ,
 };
 
-export const createUserRankTemplate = (films) => {
+const createUserRankTemplate = (films) => {
   const watchedFilmsCount = films.reduce(
     (accumulator, {userDetails}) => {
       return accumulator + Number(userDetails.alreadyWatched);
@@ -43,3 +43,25 @@ export const createUserRankTemplate = (films) => {
       </section>`
     : '';
 };
+
+export default class UserRank {
+  constructor(films) {
+    this._films = films;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createUserRankTemplate(this._films);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this.element = null;
+  }
+}

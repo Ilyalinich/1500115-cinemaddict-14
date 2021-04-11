@@ -1,11 +1,10 @@
-import {getAllArrayValuesList, getDateYearValue, getFilmDuration} from '../util.js';
+import {getAllArrayValuesList, getDateYearValue, getFilmDuration, createElement} from '../util.js';
 
 const DESCRIPTION_SYMBOL_LIMIT = 140;
 
 const createControlClassName = (isActive) => isActive ? 'film-card__controls-item--active' : '';
 
-
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {comments} = film;
   const {title, totalRating, release, runtime, genre, poster, description} = film.filmInfo;
   const {watchlist, alreadyWatched, favorite} = film.userDetails;
@@ -32,3 +31,25 @@ export const createFilmCardTemplate = (film) => {
     </div>
   </article>`;
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this.element = null;
+  }
+}
