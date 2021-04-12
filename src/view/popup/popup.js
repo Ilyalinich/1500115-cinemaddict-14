@@ -1,12 +1,13 @@
 import {getAllArrayValuesList, formatDate, getFilmDuration, createElement} from '../../util.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
+import {createPopupCommentsTemplate} from './popup-comments-list.js';
 
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
-const createPopupTemplate = (film) => {
+const createPopupTemplate = (film, filmComments) => {
   const {comments} = film;
   const {title,  alternativeTitle, totalRating, poster, ageRating,
     director, writers, actors, release, runtime, genre, description} = film.filmInfo;
@@ -88,7 +89,7 @@ const createPopupTemplate = (film) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-
+            ${createPopupCommentsTemplate(filmComments)}
           </ul>
 
           <div class="film-details__new-comment">
@@ -109,13 +110,14 @@ const createPopupTemplate = (film) => {
 };
 
 export default class Popup {
-  constructor(film) {
+  constructor(film, filmComments) {
     this._film = film;
+    this._filmComments = filmComments;
     this._element = null;
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film);
+    return createPopupTemplate(this._film, this._filmComments);
   }
 
   getElement() {
