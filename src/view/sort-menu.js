@@ -1,7 +1,13 @@
+import {creteSortItemTemplate} from './sort-item.js';
+
+const SORT_ITEM_NAMES = ['Sort by default', 'Sort by date', 'Sort by rating'];
+
 export const createSortMenuTemplate = () => {
+  const sortItemsTemplate = SORT_ITEM_NAMES
+    .map((name, index) => creteSortItemTemplate(name, index === 0))
+    .join('');
+
   return `<ul class="sort">
-    <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-    <li><a href="#" class="sort__button">Sort by date</a></li>
-    <li><a href="#" class="sort__button">Sort by rating</a></li>
+    ${sortItemsTemplate}
   </ul>`;
 };
