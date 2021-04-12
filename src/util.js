@@ -7,11 +7,7 @@ const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-const renderTemplate = (container, template, place = 'beforeend') => {
-  container.insertAdjacentHTML(place, template);
-};
-
-const renderElement = (container, element, place = 'beforeend') => {
+const render = (container, element, place = 'beforeend') => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -74,5 +70,5 @@ const getShuffleArray = (array) => {
 
 const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
 
-export {renderTemplate, renderElement, createElement, getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, formatDate,
+export {render, createElement, getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, formatDate,
   getRelativeDate, getFilmDuration, getAllArrayValuesList, isNumberInRange, getRandomValue, getRandomValues};

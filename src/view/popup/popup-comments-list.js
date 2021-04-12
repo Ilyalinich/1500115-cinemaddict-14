@@ -1,4 +1,4 @@
-import {getRelativeDate} from '../../util.js';
+import {getRelativeDate, createElement} from '../../util.js';
 
 const createPopupCommentTemplate = ({author, comment, date, emotion}) =>
   `<li class="film-details__comment">
@@ -16,7 +16,30 @@ const createPopupCommentTemplate = ({author, comment, date, emotion}) =>
   </li>`;
 
 
-export const createPopupCommentsTemplate = (comments) =>
+const createPopupCommentsTemplate = (comments) =>
   comments
     .map((comment) => createPopupCommentTemplate(comment))
     .join('');
+
+
+export default class PopupComments {
+  constructor(comments) {
+    this._comments = comments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupCommentsTemplate(this._comments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this.element = null;
+  }
+}
