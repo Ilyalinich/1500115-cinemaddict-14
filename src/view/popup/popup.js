@@ -109,6 +109,7 @@ const createPopupTemplate = (film, filmComments) => {
   </section>`;
 };
 
+
 export default class Popup {
   constructor(film, filmComments) {
     this._film = film;
@@ -124,6 +125,7 @@ export default class Popup {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
     return this._element;
   }
 

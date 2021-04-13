@@ -3,6 +3,7 @@ import {createElement} from '../util.js';
 
 const createFilmsCounterTemplate = (films) => `<p>${films.length.toLocaleString()} movies inside</p>`;
 
+
 export default class FilmsCounter {
   constructor(films) {
     this._films = films;
@@ -17,6 +18,7 @@ export default class FilmsCounter {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
     return this._element;
   }
 

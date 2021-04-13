@@ -4,6 +4,7 @@ const DESCRIPTION_SYMBOL_LIMIT = 140;
 
 const createControlClassName = (isActive) => isActive ? 'film-card__controls-item--active' : '';
 
+
 const createFilmCardTemplate = (film) => {
   const {comments} = film;
   const {title, totalRating, release, runtime, genre, poster, description} = film.filmInfo;
@@ -32,6 +33,7 @@ const createFilmCardTemplate = (film) => {
   </article>`;
 };
 
+
 export default class FilmCard {
   constructor(film) {
     this._film = film;
@@ -46,6 +48,7 @@ export default class FilmCard {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
     return this._element;
   }
 

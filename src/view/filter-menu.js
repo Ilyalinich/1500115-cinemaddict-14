@@ -15,6 +15,7 @@ const createFilterMenuTemplate = (filters) => {
   </nav>`;
 };
 
+
 export default class FilterMenu {
   constructor(filters) {
     this._filters = filters;
@@ -29,6 +30,7 @@ export default class FilterMenu {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
     return this._element;
   }
 

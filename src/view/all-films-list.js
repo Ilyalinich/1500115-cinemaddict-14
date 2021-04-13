@@ -10,6 +10,7 @@ const createAllFilmsListTemplate = () =>
 
   </section>`;
 
+
 export default class AllFilmsList {
   constructor() {
     this._element = null;
@@ -23,6 +24,7 @@ export default class AllFilmsList {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
     return this._element;
   }
 

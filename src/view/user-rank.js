@@ -22,11 +22,11 @@ const userRankMap = {
   'movie buff': MovieBuffRange ,
 };
 
+
 const createUserRankTemplate = (films) => {
-  const watchedFilmsCount = films.reduce(
-    (accumulator, {userDetails}) => {
-      return accumulator + Number(userDetails.alreadyWatched);
-    }, 0);
+  const watchedFilmsCount = films.reduce((accumulator, {userDetails}) => {
+    return accumulator + Number(userDetails.alreadyWatched);
+  }, 0);
 
   const userRank = Object.entries(userRankMap)
     .find(([ ,{MIN, MAX}]) => isNumberInRange(watchedFilmsCount, MIN, MAX))[0];
@@ -36,6 +36,7 @@ const createUserRankTemplate = (films) => {
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`;
 };
+
 
 export default class UserRank {
   constructor(films) {
@@ -51,6 +52,7 @@ export default class UserRank {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
     return this._element;
   }
 

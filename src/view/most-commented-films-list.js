@@ -8,6 +8,7 @@ const createMostCommentedFilmsListTemplate = () =>
     <div class="films-list__container" id="most-commented-films-container"></div>
   </section>`;
 
+
 export default class MostCommentedFilmsList {
   constructor() {
     this._element = null;
@@ -21,6 +22,7 @@ export default class MostCommentedFilmsList {
     if (!this._element) {
       this._element = createElement(this.getTemplate());
     }
+
     return this._element;
   }
 
