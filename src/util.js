@@ -16,6 +16,8 @@ const render = (container, element, place = RenderPosition.BEFOREEND) => {
     case RenderPosition.BEFOREEND:
       container.append(element);
       break;
+    default:
+      throw new Error('invalid value for the place parameter');
   }
 };
 

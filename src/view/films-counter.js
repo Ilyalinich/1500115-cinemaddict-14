@@ -1,17 +1,14 @@
 import {createElement} from '../util.js';
 
 
-const createFilmsCounterTemplate = (films) => `<p>${films.length.toLocaleString()} movies inside</p>`;
-
-
 export default class FilmsCounter {
-  constructor(films) {
-    this._films = films;
+  constructor(filmsCount) {
+    this._filmsCount = filmsCount;
     this._element = null;
   }
 
   getTemplate() {
-    return createFilmsCounterTemplate(this._films);
+    return `<p>${this._filmsCount.toLocaleString()} movies inside</p>`;
   }
 
   getElement() {

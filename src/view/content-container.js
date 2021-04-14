@@ -1,16 +1,13 @@
 import {createElement} from '../util.js';
 
 
-const createContentContainerTemplate = () => '<section class="films"></section>';
-
-
 export default class ContentContainer {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createContentContainerTemplate();
+    return '<section class="films"></section>';
   }
 
   getElement() {
