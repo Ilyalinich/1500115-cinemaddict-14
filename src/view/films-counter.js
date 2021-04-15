@@ -1,25 +1,13 @@
-import {createElement} from '../util.js';
+import AbstractView from './abstract.js';
 
 
-export default class FilmsCounter {
+export default class FilmsCounter extends AbstractView{
   constructor(filmsCount) {
+    super();
     this._filmsCount = filmsCount;
-    this._element = null;
   }
 
   getTemplate() {
     return `<p>${this._filmsCount.toLocaleString()} movies inside</p>`;
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

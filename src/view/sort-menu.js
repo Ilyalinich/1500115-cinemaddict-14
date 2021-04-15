@@ -1,4 +1,4 @@
-import {createElement} from '../util.js';
+import AbstractView from './abstract.js';
 import {creteSortItemTemplate} from './sort-item.js';
 
 const SORT_ITEM_NAMES = ['Sort by default', 'Sort by date', 'Sort by rating'];
@@ -14,24 +14,8 @@ const createSortMenuTemplate = () => {
 };
 
 
-export default class SortMenu {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SortMenu extends AbstractView{
   getTemplate() {
     return createSortMenuTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

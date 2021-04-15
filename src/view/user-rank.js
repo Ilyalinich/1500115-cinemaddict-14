@@ -1,4 +1,5 @@
-import {isNumberInRange, createElement} from '../util.js';
+import {isNumberInRange} from '../util.js';
+import AbstractView from './abstract.js';
 
 
 const NoviceRange = {
@@ -38,25 +39,13 @@ const createUserRankTemplate = (films) => {
 };
 
 
-export default class UserRank {
+export default class UserRank extends AbstractView{
   constructor(films) {
+    super();
     this._films = films;
-    this._element = null;
   }
 
   getTemplate() {
     return createUserRankTemplate(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

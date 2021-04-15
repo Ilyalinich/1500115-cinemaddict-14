@@ -1,4 +1,4 @@
-import {createElement} from '../util.js';
+import AbstractView from './abstract.js';
 import {createFilterItemTemplate} from './filter-item.js';
 
 
@@ -16,25 +16,13 @@ const createFilterMenuTemplate = (filters) => {
 };
 
 
-export default class FilterMenu {
+export default class FilterMenu extends AbstractView{
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilterMenuTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

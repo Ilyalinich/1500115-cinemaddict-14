@@ -91,17 +91,17 @@ const renderFilm = (filmListContainer, film) => {
     }
   };
 
-  const popupRenderTriggers = filmComponent.getElement().querySelectorAll('.film-card__poster, .film-card__title, .film-card__comments');
-
-  popupRenderTriggers.forEach((trigger) => trigger.addEventListener('click', () => {
+  filmComponent.setPopupRenderTriggerClickHandler(() => {
     renderPopup();
-    document.addEventListener('keydown', onDocumentEscKeydown);
-  }));
 
-  popupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', () => {
-    removePopup();
-    document.removeEventListener('keydown', onDocumentEscKeydown);
+    document.addEventListener('keydown', onDocumentEscKeydown);
+
+    popupComponent.setCloseButtonClickHandler(() => {
+      removePopup();
+      document.removeEventListener('keydown', onDocumentEscKeydown);
+    });
   });
+
 
   render(filmListContainer, filmComponent.getElement());
 };
@@ -133,9 +133,7 @@ const renderContentBoard = (contentBoardContainer, films) => {
     let renderedFilmsCount = FILMS_RENDER_STEP;
     render(allFilmsListComponent.getElement(), showMoreButtonComponent.getElement());
 
-    showMoreButtonComponent.getElement().addEventListener('click', (evt) => {
-      evt.preventDefault();
-
+    showMoreButtonComponent.setButtonClickHandler(() => {
       films
         .slice(renderedFilmsCount, renderedFilmsCount + FILMS_RENDER_STEP)
         .forEach((film) => renderFilm(allFilmsContainer, film));
