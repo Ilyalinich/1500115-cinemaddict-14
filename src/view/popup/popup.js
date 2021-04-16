@@ -1,4 +1,6 @@
-import {getAllArrayValuesList, formatDate, getFilmDuration} from '../../util.js';
+import {getAllArrayValuesList} from '../../util/common.js';
+import {formatDate} from '../../util/day.js';
+import {getFilmDuration} from '../../util/film.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 import {createPopupCommentsTemplate} from './popup-comments-list.js';

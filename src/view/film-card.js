@@ -1,4 +1,6 @@
-import {getAllArrayValuesList, getDateYearValue, getFilmDuration} from '../util.js';
+import {getAllArrayValuesList} from '../util/common.js';
+import {getDateYearValue} from '../util/day.js';
+import {getFilmDuration} from '../util/film.js';
 import AbstractView from './abstract.js';
 
 const DESCRIPTION_SYMBOL_LIMIT = 140;
@@ -54,7 +56,9 @@ export default class FilmCard extends AbstractView{
 
   setPopupRenderTriggerClickHandler(callback) {
     this._callback.popupRenderTriggerClick = callback;
-    const popupRenderTriggers = this.getElement().querySelectorAll('.film-card__poster, .film-card__title, .film-card__comments');
-    popupRenderTriggers.forEach((trigger) => trigger.addEventListener('click', this._popupRenderTriggerClickHandler));
+    this
+      .getElement()
+      .querySelectorAll('.film-card__poster, .film-card__title, .film-card__comments')
+      .forEach((trigger) => trigger.addEventListener('click', this._popupRenderTriggerClickHandler));
   }
 }

@@ -1,4 +1,4 @@
-import {isNumberInRange} from '../util.js';
+import {isNumberInRange} from '../util/common.js';
 import AbstractView from './abstract.js';
 
 

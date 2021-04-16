@@ -1,4 +1,4 @@
-import {getRelativeDate} from '../../util.js';
+import {getRelativeDate} from '../../util/day.js';
 
 const createPopupCommentTemplate = ({author, comment, date, emotion}) =>
   `<li class="film-details__comment">
