@@ -73,5 +73,6 @@ const getShuffleArray = (array) => {
 
 const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
 
+
 export {render, createElement, getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, formatDate,
   getRelativeDate, getFilmDuration, getAllArrayValuesList, isNumberInRange, getRandomValue, getRandomValues};
