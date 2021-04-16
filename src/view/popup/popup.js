@@ -1,13 +1,13 @@
-import {getAllArrayValuesList, formatDate, getFilmDuration} from '../../util.js';
+import {getAllArrayValuesList, formatDate, getFilmDuration, createElement} from '../../util.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
+import {createPopupCommentsTemplate} from './popup-comments-list.js';
 
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
-
-export const createPopupTemplate = (film) => {
+const createPopupTemplate = (film, filmComments) => {
   const {comments} = film;
   const {title,  alternativeTitle, totalRating, poster, ageRating,
     director, writers, actors, release, runtime, genre, description} = film.filmInfo;
@@ -89,7 +89,7 @@ export const createPopupTemplate = (film) => {
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-
+            ${createPopupCommentsTemplate(filmComments)}
           </ul>
 
           <div class="film-details__new-comment">
@@ -108,3 +108,28 @@ export const createPopupTemplate = (film) => {
     </form>
   </section>`;
 };
+
+
+export default class Popup {
+  constructor(film, filmComments) {
+    this._film = film;
+    this._filmComments = filmComments;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film, this._filmComments);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this.element = null;
+  }
+}

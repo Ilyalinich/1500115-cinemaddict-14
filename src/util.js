@@ -2,6 +2,32 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 dayjs.extend(relativeTime);
 
+
+const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+const render = (container, element, place = RenderPosition.BEFOREEND) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+    default:
+      throw new Error('invalid value for the place parameter');
+  }
+};
+
+const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+};
+
 const getRandomValue = (values) => values[getRandomInteger(0, values.length - 1)];
 const getRandomValues = (values, valuesEnumeration) => {
   const randomValuesCount = getRandomInteger(valuesEnumeration.MIN, valuesEnumeration.MAX);
@@ -47,5 +73,5 @@ const getShuffleArray = (array) => {
 
 const getRandomBoolean = () => Boolean(getRandomInteger(0, 1));
 
-export {getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, formatDate,
+export {render, createElement, getRandomInteger, getRandomFloat, getShuffleArray, getRandomBoolean, getDateYearValue, formatDate,
   getRelativeDate, getFilmDuration, getAllArrayValuesList, isNumberInRange, getRandomValue, getRandomValues};

@@ -12,6 +12,7 @@ export const generateFilm = (commentsIds) => {
   return {
     id: nanoid(ID_LENGTH),
     comments: commentsIds,
+
     filmInfo: {
       title,
       alternativeTitle: FILM_TITLES[title],
@@ -29,6 +30,7 @@ export const generateFilm = (commentsIds) => {
       genre: getRandomValues(GENRES, GenresCount),
       description: getRandomValues(DESCRIPTION_SENTENCES, DescriptionSentencesCount).join(''),
     },
+
     userDetails: {
       watchlist: getRandomBoolean(),
       alreadyWatched: getRandomBoolean(),

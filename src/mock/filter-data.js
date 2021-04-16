@@ -7,9 +7,11 @@ const createFilmsToFilterMap = (films) => {
     if (userDetails.watchlist) {
       watchlistCounter++;
     }
+
     if (userDetails.alreadyWatched) {
       alreadyWatchedCounter++;
     }
+
     if (userDetails.favorite) {
       favoriteCounter++;
     }
@@ -26,6 +28,7 @@ const createFilmsToFilterMap = (films) => {
 
 export const generateFilter = (films) => {
   const filterMap = createFilmsToFilterMap(films);
+
   return Object.entries(filterMap).map(([filterName, filmsCount]) => (
     {
       name: filterName,
