@@ -4,6 +4,7 @@ import Abstract from '../view/abstract.js';
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
+  BEFORE: 'before',
 };
 
 
@@ -22,6 +23,9 @@ const render = (container, child, place = RenderPosition.BEFOREEND) => {
       break;
     case RenderPosition.BEFOREEND:
       container.append(child);
+      break;
+    case RenderPosition.BEFORE:
+      container.before(child);
       break;
     default:
       throw new Error('invalid value for the place parameter');
@@ -45,4 +49,4 @@ const createElement = (template) => {
 };
 
 
-export {render, remove, createElement};
+export {render, remove, createElement, RenderPosition};

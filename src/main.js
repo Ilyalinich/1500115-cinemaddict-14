@@ -12,7 +12,7 @@ import {generateComment} from './mock/comment.js';
 // import ShowMoreButtonView from './view/show-more-button.js';
 import FilterMenuView from './view/filter-menu.js';
 import UserRankView from './view/user-rank.js';
-import SortMenuView from './view/sort-menu.js';
+// import SortMenuView from './view/sort-menu.js';
 import FilmsCounterView from './view/films-counter.js';
 import ContentBoardPresenter from './presenter/content-board.js';
 // import FilmCardView from './view/film-card.js';
@@ -63,11 +63,11 @@ const renderUserRank = (userRankContainer, films) => {
 
 const renderFilterMenu = (filterMenuContainer, filters) => render(filterMenuContainer, new FilterMenuView(filters));
 
-const renderSortMenu = (sortMenuContainer, filmsCount) => {
-  if (filmsCount !== 0) {
-    render(sortMenuContainer, new SortMenuView());
-  }
-};
+// const renderSortMenu = (sortMenuContainer, filmsCount) => {
+//   if (filmsCount !== 0) {
+//     render(sortMenuContainer, new SortMenuView());
+//   }
+// };
 
 // const renderFilm = (filmListContainer, film) => {
 //   const filmComments = commentsList.filter(({id}) => film.comments.includes(id));
@@ -182,7 +182,7 @@ const contentBoardPresenter = new ContentBoardPresenter(siteMainElement, pageBod
 
 renderUserRank(siteHeaderElement, films);
 renderFilterMenu(siteMainElement, filters);
-renderSortMenu(siteMainElement, filmsCount);
+// renderSortMenu(siteMainElement, filmsCount);
 contentBoardPresenter.init(films, commentsList);
 // renderContentBoard(siteMainElement, films);
 renderFilmsCounter(siteFooterStatisticsElement, filmsCount);

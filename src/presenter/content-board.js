@@ -1,4 +1,5 @@
 import ContentContainerView from '../view/content-container.js';
+import SortMenuView from '../view/sort-menu.js';
 import NoFilmsListView from '../view/no-films-list.js';
 import AllFilmsListView from '../view/all-films-list.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
@@ -6,7 +7,7 @@ import TopRatedFilmsListView from '../view/top-rated-films-list.js';
 import MostCommentedFilmsListView from '../view/most-commented-films-list.js';
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup/popup.js';
-import {render, remove} from '../util/render.js';
+import {render, remove, RenderPosition} from '../util/render.js';
 
 
 const FILMS_RENDER_STEP = 5;
@@ -23,6 +24,12 @@ export default class ContentBoard {
     this._allFilmsListComponent = new AllFilmsListView();
     this._topRatedFilmsComponent = new TopRatedFilmsListView();
     this._mostCommentedFilmsComponent = new MostCommentedFilmsListView();
+    this._sortMenuComponent = new SortMenuView();
+    this._showMoreButtonComponent = new ShowMoreButtonView();
+
+    this._renderedFilmsCount = FILMS_RENDER_STEP;
+
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
   init(films, commentsList) {
@@ -81,15 +88,19 @@ export default class ContentBoard {
     render(this._contentContainerComponent, this._noFilmsListComponent);
   }
 
+  _renderSortMenu() {
+    render(this._contentContainerComponent, this._sortMenuComponent, RenderPosition.BEFORE);
+  }
+
   _renderAllFilmsList() {
     render(this._contentContainerComponent, this._allFilmsListComponent);
     this._allFilmsContainer = this._allFilmsListComponent.getElement().querySelector('#all-films-container');
 
     this._renderFilms(this._allFilmsContainer, this._films, 0, Math.min(this._films.length, FILMS_RENDER_STEP));
 
-    if (this._films.length > FILMS_RENDER_STEP) {
-      this._renderShowMoreButton();
-    }
+    // if (this._films.length > FILMS_RENDER_STEP) {
+    //   this._renderShowMoreButton();
+    // }
   }
 
   _renderTopRatedFilmsList() {
@@ -116,24 +127,21 @@ export default class ContentBoard {
     }
   }
 
+  _handleShowMoreButtonClick() {
+    this._renderFilms(this._allFilmsContainer, this._films, this._renderedFilmsCount, this._renderedFilmsCount + FILMS_RENDER_STEP);
+    this._renderedFilmsCount += FILMS_RENDER_STEP;
+
+    if (this._renderedFilmsCount >= this._films.length) {
+      remove(this._showMoreButtonComponent);
+    }
+  }
+
   _renderShowMoreButton() {
-    let renderedFilmsCount = FILMS_RENDER_STEP;
+    if (this._films.length > FILMS_RENDER_STEP) {
+      render(this._allFilmsListComponent, this._showMoreButtonComponent);
 
-    const showMoreButtonComponent = new ShowMoreButtonView();
-
-    render(this._allFilmsListComponent, showMoreButtonComponent);
-
-    showMoreButtonComponent.setButtonClickHandler(() => {
-      this._films
-        .slice(renderedFilmsCount, renderedFilmsCount + FILMS_RENDER_STEP)
-        .forEach((film) => this._renderFilm(this._allFilmsContainer, film));
-
-      renderedFilmsCount += FILMS_RENDER_STEP;
-
-      if (renderedFilmsCount >= this._films.length) {
-        remove(showMoreButtonComponent);
-      }
-    });
+      this._showMoreButtonComponent.setButtonClickHandler(this._handleShowMoreButtonClick);
+    }
   }
 
   _renderContent() {
@@ -141,7 +149,9 @@ export default class ContentBoard {
       return this._renderNoFilmsList();
     }
 
+    this._renderSortMenu();
     this._renderAllFilmsList();
+    this._renderShowMoreButton();
     this._renderTopRatedFilmsList();
     this._renderMostCommentedFilmsList();
   }
