@@ -1,7 +1,10 @@
-import {getAllArrayValuesList, formatDate, getFilmDuration, createElement} from '../../util.js';
+import {getAllArrayValuesList} from '../../util/common.js';
+import {formatDate} from '../../util/day.js';
+import {getFilmDuration} from '../../util/film.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 import {createPopupCommentsTemplate} from './popup-comments-list.js';
+import AbstractView from '../abstract.js';
 
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 
@@ -110,26 +113,26 @@ const createPopupTemplate = (film, filmComments) => {
 };
 
 
-export default class Popup {
+export default class Popup extends AbstractView{
   constructor(film, filmComments) {
+    super();
     this._film = film;
     this._filmComments = filmComments;
-    this._element = null;
+
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._film, this._filmComments);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _closeButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeButtonClick();
   }
 
-  removeElement() {
-    this.element = null;
+  setCloseButtonClickHandler(callback) {
+    this._callback.closeButtonClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeButtonClickHandler);
   }
 }

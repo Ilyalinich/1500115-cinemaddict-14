@@ -1,4 +1,7 @@
-import {getAllArrayValuesList, getDateYearValue, getFilmDuration, createElement} from '../util.js';
+import {getAllArrayValuesList} from '../util/common.js';
+import {getDateYearValue} from '../util/day.js';
+import {getFilmDuration} from '../util/film.js';
+import AbstractView from './abstract.js';
 
 const DESCRIPTION_SYMBOL_LIMIT = 140;
 
@@ -34,25 +37,28 @@ const createFilmCardTemplate = (film) => {
 };
 
 
-export default class FilmCard {
+export default class FilmCard extends AbstractView{
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+
+    this._popupRenderTriggerClickHandler = this._popupRenderTriggerClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _popupRenderTriggerClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.popupRenderTriggerClick();
   }
 
-  removeElement() {
-    this.element = null;
+  setPopupRenderTriggerClickHandler(callback) {
+    this._callback.popupRenderTriggerClick = callback;
+    this
+      .getElement()
+      .querySelectorAll('.film-card__poster, .film-card__title, .film-card__comments')
+      .forEach((trigger) => trigger.addEventListener('click', this._popupRenderTriggerClickHandler));
   }
 }
