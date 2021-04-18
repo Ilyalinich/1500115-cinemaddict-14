@@ -14,7 +14,7 @@ const createSortMenuTemplate = () => {
 };
 
 
-export default class SortMenu extends AbstractView{
+export default class SortMenu extends AbstractView {
   getTemplate() {
     return createSortMenuTemplate();
   }

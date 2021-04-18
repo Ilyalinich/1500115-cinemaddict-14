@@ -39,7 +39,7 @@ const createUserRankTemplate = (films) => {
 };
 
 
-export default class UserRank extends AbstractView{
+export default class UserRank extends AbstractView {
   constructor(films) {
     super();
     this._films = films;

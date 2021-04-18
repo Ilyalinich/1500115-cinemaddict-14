@@ -5,8 +5,9 @@ import AllFilmsListView from '../view/all-films-list.js';
 import ShowMoreButtonView from '../view/show-more-button.js';
 import TopRatedFilmsListView from '../view/top-rated-films-list.js';
 import MostCommentedFilmsListView from '../view/most-commented-films-list.js';
-import FilmCardView from '../view/film-card.js';
-import PopupView from '../view/popup/popup.js';
+import FilmPresenter from './film.js';
+// import FilmCardView from '../view/film-card.js';
+// import PopupView from '../view/popup/popup.js';
 import {render, remove, RenderPosition} from '../util/render.js';
 
 
@@ -41,47 +42,50 @@ export default class ContentBoard {
     this._renderContent();
   }
 
-  _renderFilm(filmListContainer, film) {
+  _renderFilm(filmsContainer, film) {
     const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));
-    const filmComponent = new FilmCardView(film);
-    const popupComponent = new PopupView(film, filmComments);
 
-    const renderPopup = () => {
-      this._pageBodyContainer.classList.add('hide-overflow');
-      render(this._pageBodyContainer, popupComponent);
-    };
+    const filmPresenter = new FilmPresenter(filmsContainer, this._pageBodyContainer);
+    filmPresenter.init(film, filmComments);
+    // const filmComponent = new FilmCardView(film);
+    // const popupComponent = new PopupView(film, filmComments);
 
-    const removePopup = () => {
-      this._pageBodyContainer.classList.remove('hide-overflow');
-      remove(popupComponent);
-    };
+    // const renderPopup = () => {
+    //   this._pageBodyContainer.classList.add('hide-overflow');
+    //   render(this._pageBodyContainer, popupComponent);
+    // };
 
-    const onDocumentEscKeydown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        removePopup();
-        document.removeEventListener('keydown', onDocumentEscKeydown);
-      }
-    };
+    // const removePopup = () => {
+    //   this._pageBodyContainer.classList.remove('hide-overflow');
+    //   remove(popupComponent);
+    // };
 
-    filmComponent.setPopupRenderTriggerClickHandler(() => {
-      renderPopup();
-      document.addEventListener('keydown', onDocumentEscKeydown);
+    // const onDocumentEscKeydown = (evt) => {
+    //   if (evt.key === 'Escape' || evt.key === 'Esc') {
+    //     evt.preventDefault();
+    //     removePopup();
+    //     document.removeEventListener('keydown', onDocumentEscKeydown);
+    //   }
+    // };
 
-      popupComponent.setCloseButtonClickHandler(() => {
-        removePopup();
-        document.removeEventListener('keydown', onDocumentEscKeydown);
-      });
-    });
+    // filmComponent.setPopupRenderTriggerClickHandler(() => {
+    //   renderPopup();
+    //   document.addEventListener('keydown', onDocumentEscKeydown);
+
+    //   popupComponent.setCloseButtonClickHandler(() => {
+    //     removePopup();
+    //     document.removeEventListener('keydown', onDocumentEscKeydown);
+    //   });
+    // });
 
 
-    render(filmListContainer, filmComponent);
+    // render(filmListContainer, filmComponent);
   }
 
-  _renderFilms(filmListContainer, films, from, to) {
+  _renderFilms(filmsContainer, films, from, to) {
     films
       .slice(from, to)
-      .forEach((film) => this._renderFilm(filmListContainer, film));
+      .forEach((film) => this._renderFilm(filmsContainer, film));
   }
 
   _renderNoFilmsList() {
