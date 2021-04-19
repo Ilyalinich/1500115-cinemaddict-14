@@ -43,15 +43,34 @@ export default class FilmCard extends AbstractView {
     this._film = film;
 
     this._popupRenderTriggerClickHandler = this._popupRenderTriggerClickHandler.bind(this);
-  }
-
-  getTemplate() {
-    return createFilmCardTemplate(this._film);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
   }
 
   _popupRenderTriggerClickHandler(evt) {
     evt.preventDefault();
     this._callback.popupRenderTriggerClick();
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
+  _favoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoritesClick();
+  }
+
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
   }
 
   setPopupRenderTriggerClickHandler(callback) {
@@ -60,5 +79,26 @@ export default class FilmCard extends AbstractView {
       .getElement()
       .querySelectorAll('.film-card__poster, .film-card__title, .film-card__comments')
       .forEach((trigger) => trigger.addEventListener('click', this._popupRenderTriggerClickHandler));
+  }
+
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    this.getElement()
+      .querySelector('.film-card__controls-item--add-to-watchlist')
+      .addEventListener('click', this._watchlistClickHandler);
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    this.getElement()
+      .querySelector('.film-card__controls-item--mark-as-watched')
+      .addEventListener('click', this._watchedClickHandler);
+  }
+
+  setFavoritesClickHandler(callback) {
+    this._callback.favoritesClick = callback;
+    this.getElement()
+      .querySelector('.film-card__controls-item--favorite')
+      .addEventListener('click', this._favoritesClickHandler);
   }
 }

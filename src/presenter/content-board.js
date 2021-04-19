@@ -1,3 +1,5 @@
+import {render, remove, RenderPosition} from '../util/render.js';
+import {updateItem} from '../util/common.js';
 import ContentContainerView from '../view/content-container.js';
 import SortMenuView from '../view/sort-menu.js';
 import NoFilmsListView from '../view/no-films-list.js';
@@ -8,7 +10,6 @@ import MostCommentedFilmsListView from '../view/most-commented-films-list.js';
 import FilmPresenter from './film.js';
 // import FilmCardView from '../view/film-card.js';
 // import PopupView from '../view/popup/popup.js';
-import {render, remove, RenderPosition} from '../util/render.js';
 
 
 const FILMS_RENDER_STEP = 5;
@@ -30,7 +31,10 @@ export default class ContentBoard {
 
     this._renderedFilmsCount = FILMS_RENDER_STEP;
 
+    this._filmPresenter = {};
+
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleFilmChange = this._handleFilmChange.bind(this);
   }
 
   init(films, commentsList) {
@@ -43,43 +47,12 @@ export default class ContentBoard {
   }
 
   _renderFilm(filmsContainer, film) {
-    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));
+    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));/*!!!!*/
 
-    const filmPresenter = new FilmPresenter(filmsContainer, this._pageBodyContainer);
-    filmPresenter.init(film, filmComments);
-    // const filmComponent = new FilmCardView(film);
-    // const popupComponent = new PopupView(film, filmComments);
+    const filmPresenter = new FilmPresenter(filmsContainer, filmComments, this._pageBodyContainer, this._handleFilmChange);
+    filmPresenter.init(film);
 
-    // const renderPopup = () => {
-    //   this._pageBodyContainer.classList.add('hide-overflow');
-    //   render(this._pageBodyContainer, popupComponent);
-    // };
-
-    // const removePopup = () => {
-    //   this._pageBodyContainer.classList.remove('hide-overflow');
-    //   remove(popupComponent);
-    // };
-
-    // const onDocumentEscKeydown = (evt) => {
-    //   if (evt.key === 'Escape' || evt.key === 'Esc') {
-    //     evt.preventDefault();
-    //     removePopup();
-    //     document.removeEventListener('keydown', onDocumentEscKeydown);
-    //   }
-    // };
-
-    // filmComponent.setPopupRenderTriggerClickHandler(() => {
-    //   renderPopup();
-    //   document.addEventListener('keydown', onDocumentEscKeydown);
-
-    //   popupComponent.setCloseButtonClickHandler(() => {
-    //     removePopup();
-    //     document.removeEventListener('keydown', onDocumentEscKeydown);
-    //   });
-    // });
-
-
-    // render(filmListContainer, filmComponent);
+    this._filmPresenter[film.id] = filmPresenter;
   }
 
   _renderFilms(filmsContainer, films, from, to) {
@@ -107,6 +80,14 @@ export default class ContentBoard {
     // }
   }
 
+  _renderShowMoreButton() {
+    if (this._films.length > FILMS_RENDER_STEP) {
+      render(this._allFilmsListComponent, this._showMoreButtonComponent);
+
+      this._showMoreButtonComponent.setButtonClickHandler(this._handleShowMoreButtonClick);
+    }
+  }
+
   _renderTopRatedFilmsList() {
     const compareFilmsRating = (previousFilm, nextFilm) => nextFilm.filmInfo.totalRating - previousFilm.filmInfo.totalRating;
     const topRatedFilms = this._films.slice().sort(compareFilmsRating);
@@ -131,23 +112,6 @@ export default class ContentBoard {
     }
   }
 
-  _handleShowMoreButtonClick() {
-    this._renderFilms(this._allFilmsContainer, this._films, this._renderedFilmsCount, this._renderedFilmsCount + FILMS_RENDER_STEP);
-    this._renderedFilmsCount += FILMS_RENDER_STEP;
-
-    if (this._renderedFilmsCount >= this._films.length) {
-      remove(this._showMoreButtonComponent);
-    }
-  }
-
-  _renderShowMoreButton() {
-    if (this._films.length > FILMS_RENDER_STEP) {
-      render(this._allFilmsListComponent, this._showMoreButtonComponent);
-
-      this._showMoreButtonComponent.setButtonClickHandler(this._handleShowMoreButtonClick);
-    }
-  }
-
   _renderContent() {
     if (this._films.length === 0) {
       return this._renderNoFilmsList();
@@ -158,5 +122,31 @@ export default class ContentBoard {
     this._renderShowMoreButton();
     this._renderTopRatedFilmsList();
     this._renderMostCommentedFilmsList();
+    // console.log(this._filmPresenter);
+  }
+
+  _clearFilmsList() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
+    this._renderedFilmsCount = FILMS_RENDER_STEP;
+    remove(this._showMoreButtonComponent);
+  }
+
+  _handleShowMoreButtonClick() {
+    this._renderFilms(this._allFilmsContainer, this._films, this._renderedFilmsCount, this._renderedFilmsCount + FILMS_RENDER_STEP);
+    this._renderedFilmsCount += FILMS_RENDER_STEP;
+
+    if (this._renderedFilmsCount >= this._films.length) {
+      remove(this._showMoreButtonComponent);
+    }
+  }
+
+  _handleFilmChange(updatedFilm) {
+    console.log(this._films.find((prevFilm) => prevFilm.id === updatedFilm.id));
+    this._films = updateItem(this._films, updatedFilm);
+    console.log(updatedFilm);
+    this._filmPresenter[updatedFilm.id].init(updatedFilm);
   }
 }
