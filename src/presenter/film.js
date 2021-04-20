@@ -2,15 +2,22 @@ import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup/popup.js';
 import {render, remove, replace} from '../util/render.js';
 
+const Mode = {
+  STANDART: 'STANDART',
+  DETAILED: 'DETAILED',
+};
+
 export default class Film {
-  constructor(filmsContainer, filmComments, popupContainer, changeData) {
+  constructor(filmsContainer, filmComments, popupContainer, changeData, changeMode) {
     this._filmsContainer = filmsContainer;
     this._filmComments = filmComments;
     this._popupContainer = popupContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._filmComponent = null;
     this._popupComponent = null;
+    this._mode = Mode.STANDART;
 
     this._handleTriggerClick = this._handleTriggerClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
@@ -49,7 +56,7 @@ export default class Film {
     }
 
     if (this._popupContainer.contains(prevPopupComponent.getElement())) {
-      // this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
+      this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
       replace(this._popupComponent, prevPopupComponent);
     }
 
@@ -60,6 +67,12 @@ export default class Film {
   destroy() {
     remove(this._filmComponent);
     remove(this._popupComponent);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.STANDART) {
+      this._removePopup();
+    }
   }
 
   _handleTriggerClick() {
@@ -95,13 +108,17 @@ export default class Film {
   }
 
   _renderPopup() {
+    this._changeMode();
     this._popupContainer.classList.add('hide-overflow');
     render(this._popupContainer, this._popupComponent);
+    this._mode = Mode.DETAILED;
   }
 
   _removePopup() {
     this._popupContainer.classList.remove('hide-overflow');
-    remove(this._popupComponent);
+    this._popupContainer.removeChild(this._popupComponent.getElement());
+    // remove(this._popupComponent); вопрос!!!!!!!!!
+    this._mode = Mode.STANDART;
   }
 
   _onDocumentEscKeydown(evt) {

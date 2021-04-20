@@ -8,8 +8,6 @@ import ShowMoreButtonView from '../view/show-more-button.js';
 import TopRatedFilmsListView from '../view/top-rated-films-list.js';
 import MostCommentedFilmsListView from '../view/most-commented-films-list.js';
 import FilmPresenter from './film.js';
-// import FilmCardView from '../view/film-card.js';
-// import PopupView from '../view/popup/popup.js';
 
 
 const FILMS_RENDER_STEP = 5;
@@ -31,10 +29,18 @@ export default class ContentBoard {
 
     this._renderedFilmsCount = FILMS_RENDER_STEP;
 
-    this._filmPresenter = {};
+    this._filmPresenter = {
+      allfilmPresenter: {},
+      topRatedfilmPresenter: {},
+      mostCommentedfilmPresenter: {},
+    };
+    // this._allfilmPresenter = {};
+    // this._topRatedfilmPresenter = {};
+    // this._mostCommentedfilmPresenter = {};
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
   }
 
   init(films, commentsList) {
@@ -49,10 +55,23 @@ export default class ContentBoard {
   _renderFilm(filmsContainer, film) {
     const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));/*!!!!*/
 
-    const filmPresenter = new FilmPresenter(filmsContainer, filmComments, this._pageBodyContainer, this._handleFilmChange);
+    const filmPresenter = new FilmPresenter(filmsContainer, filmComments, this._pageBodyContainer, this._handleFilmChange, this._handleModeChange);
     filmPresenter.init(film);
+    // this._filmPresenter[film.id] = filmPresenter;
 
-    this._filmPresenter[film.id] = filmPresenter;
+    switch (filmsContainer.id) {
+      case 'all-films-container':
+        this._filmPresenter.allfilmPresenter[film.id] = filmPresenter;
+        break;
+      case 'top-rated-films-container':
+        this._filmPresenter.topRatedfilmPresenter[film.id] = filmPresenter;
+        break;
+      case 'most-commented-films-container':
+        this._filmPresenter.mostCommentedfilmPresenter[film.id] = filmPresenter;
+        break;
+      default:
+        throw new Error('invalid value for the filmsContainer.id');
+    }
   }
 
   _renderFilms(filmsContainer, films, from, to) {
@@ -122,14 +141,13 @@ export default class ContentBoard {
     this._renderShowMoreButton();
     this._renderTopRatedFilmsList();
     this._renderMostCommentedFilmsList();
-    // console.log(this._filmPresenter);
   }
 
-  _clearFilmsList() {
+  _clearAllFilmsList() {
     Object
-      .values(this._filmPresenter)
+      .values(this._AllfilmPresenter)
       .forEach((presenter) => presenter.destroy());
-    this._filmPresenter = {};
+    this._AllfilmPresenter = {};
     this._renderedFilmsCount = FILMS_RENDER_STEP;
     remove(this._showMoreButtonComponent);
   }
@@ -144,9 +162,33 @@ export default class ContentBoard {
   }
 
   _handleFilmChange(updatedFilm) {
-    console.log(this._films.find((prevFilm) => prevFilm.id === updatedFilm.id));
     this._films = updateItem(this._films, updatedFilm);
-    console.log(updatedFilm);
-    this._filmPresenter[updatedFilm.id].init(updatedFilm);
+    // this._filmPresenter[updatedFilm.id].init(updatedFilm);
+
+    if (updatedFilm.id in this._filmPresenter.allfilmPresenter) {
+      this._filmPresenter.allfilmPresenter[updatedFilm.id].init(updatedFilm);
+    }
+
+    if (updatedFilm.id in this._filmPresenter.topRatedfilmPresenter) {
+      this._filmPresenter.topRatedfilmPresenter[updatedFilm.id].init(updatedFilm);
+    }
+
+    if (updatedFilm.id in this._filmPresenter.mostCommentedfilmPresenter) {
+      this._filmPresenter.mostCommentedfilmPresenter[updatedFilm.id].init(updatedFilm);
+    }
+  }
+
+  _handleModeChange() {
+    Object
+      .values(this._filmPresenter.allfilmPresenter)
+      .forEach((presenter) => presenter.resetView());
+
+    Object
+      .values(this._filmPresenter.topRatedfilmPresenter)
+      .forEach((presenter) => presenter.resetView());
+
+    Object
+      .values(this._filmPresenter.mostCommentedfilmPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 }
