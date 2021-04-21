@@ -29,14 +29,11 @@ export default class ContentBoard {
 
     this._renderedFilmsCount = FILMS_RENDER_STEP;
 
-    this._filmPresenter = {
-      allfilmPresenter: {},
-      topRatedfilmPresenter: {},
-      mostCommentedfilmPresenter: {},
+    this._filmPresenterStorage = {
+      allfilmPresenterStorage: {},
+      topRatedfilmPresenterStorage: {},
+      mostCommentedfilmPresenterStorage: {},
     };
-    // this._allfilmPresenter = {};
-    // this._topRatedfilmPresenter = {};
-    // this._mostCommentedfilmPresenter = {};
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
@@ -57,17 +54,16 @@ export default class ContentBoard {
 
     const filmPresenter = new FilmPresenter(filmsContainer, filmComments, this._pageBodyContainer, this._handleFilmChange, this._handleModeChange);
     filmPresenter.init(film);
-    // this._filmPresenter[film.id] = filmPresenter;
 
     switch (filmsContainer.id) {
       case 'all-films-container':
-        this._filmPresenter.allfilmPresenter[film.id] = filmPresenter;
+        this._filmPresenterStorage.allfilmPresenterStorage[film.id] = filmPresenter;
         break;
       case 'top-rated-films-container':
-        this._filmPresenter.topRatedfilmPresenter[film.id] = filmPresenter;
+        this._filmPresenterStorage.topRatedfilmPresenterStorage[film.id] = filmPresenter;
         break;
       case 'most-commented-films-container':
-        this._filmPresenter.mostCommentedfilmPresenter[film.id] = filmPresenter;
+        this._filmPresenterStorage.mostCommentedfilmPresenterStorage[film.id] = filmPresenter;
         break;
       default:
         throw new Error('invalid value for the filmsContainer.id');
@@ -94,17 +90,14 @@ export default class ContentBoard {
 
     this._renderFilms(this._allFilmsContainer, this._films, 0, Math.min(this._films.length, FILMS_RENDER_STEP));
 
-    // if (this._films.length > FILMS_RENDER_STEP) {
-    //   this._renderShowMoreButton();
-    // }
+    if (this._films.length > FILMS_RENDER_STEP) {
+      this._renderShowMoreButton();
+    }
   }
 
   _renderShowMoreButton() {
-    if (this._films.length > FILMS_RENDER_STEP) {
-      render(this._allFilmsListComponent, this._showMoreButtonComponent);
-
-      this._showMoreButtonComponent.setButtonClickHandler(this._handleShowMoreButtonClick);
-    }
+    this._showMoreButtonComponent.setButtonClickHandler(this._handleShowMoreButtonClick);
+    render(this._allFilmsListComponent, this._showMoreButtonComponent);
   }
 
   _renderTopRatedFilmsList() {
@@ -138,16 +131,15 @@ export default class ContentBoard {
 
     this._renderSortMenu();
     this._renderAllFilmsList();
-    this._renderShowMoreButton();
     this._renderTopRatedFilmsList();
     this._renderMostCommentedFilmsList();
   }
 
   _clearAllFilmsList() {
     Object
-      .values(this._AllfilmPresenter)
+      .values(this._filmPresenterStorage.allfilmPresenterStorage)
       .forEach((presenter) => presenter.destroy());
-    this._AllfilmPresenter = {};
+    this._filmPresenterStorage.allfilmPresenterStorage = {};
     this._renderedFilmsCount = FILMS_RENDER_STEP;
     remove(this._showMoreButtonComponent);
   }
@@ -163,32 +155,23 @@ export default class ContentBoard {
 
   _handleFilmChange(updatedFilm) {
     this._films = updateItem(this._films, updatedFilm);
-    // this._filmPresenter[updatedFilm.id].init(updatedFilm);
 
-    if (updatedFilm.id in this._filmPresenter.allfilmPresenter) {
-      this._filmPresenter.allfilmPresenter[updatedFilm.id].init(updatedFilm);
-    }
-
-    if (updatedFilm.id in this._filmPresenter.topRatedfilmPresenter) {
-      this._filmPresenter.topRatedfilmPresenter[updatedFilm.id].init(updatedFilm);
-    }
-
-    if (updatedFilm.id in this._filmPresenter.mostCommentedfilmPresenter) {
-      this._filmPresenter.mostCommentedfilmPresenter[updatedFilm.id].init(updatedFilm);
-    }
+    Object
+      .values(this._filmPresenterStorage)
+      .forEach((storage) => {
+        if (updatedFilm.id in storage) {
+          storage[updatedFilm.id].init(updatedFilm);
+        }
+      });
   }
 
   _handleModeChange() {
     Object
-      .values(this._filmPresenter.allfilmPresenter)
-      .forEach((presenter) => presenter.resetView());
-
-    Object
-      .values(this._filmPresenter.topRatedfilmPresenter)
-      .forEach((presenter) => presenter.resetView());
-
-    Object
-      .values(this._filmPresenter.mostCommentedfilmPresenter)
-      .forEach((presenter) => presenter.resetView());
+      .values(this._filmPresenterStorage)
+      .forEach((storage) => {
+        Object
+          .values(storage)
+          .forEach((presenter) => presenter.resetView());
+      });
   }
 }

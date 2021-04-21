@@ -3,8 +3,8 @@ import PopupView from '../view/popup/popup.js';
 import {render, remove, replace} from '../util/render.js';
 
 const Mode = {
-  STANDART: 'STANDART',
-  DETAILED: 'DETAILED',
+  CARD: 'CARD',
+  POPUP: 'POPUP',
 };
 
 export default class Film {
@@ -17,7 +17,7 @@ export default class Film {
 
     this._filmComponent = null;
     this._popupComponent = null;
-    this._mode = Mode.STANDART;
+    this._mode = Mode.CARD;
 
     this._handleTriggerClick = this._handleTriggerClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
@@ -70,15 +70,18 @@ export default class Film {
   }
 
   resetView() {
-    if (this._mode !== Mode.STANDART) {
+    if (this._mode !== Mode.CARD) {
       this._removePopup();
     }
   }
 
   _handleTriggerClick() {
-    this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
+    this._changeMode();
     this._renderPopup();
-    document.addEventListener('keydown', this._onDocumentEscKeydown);
+
+    if (!this._popupContainer.classList.contains('hide-overflow')) {
+      this._popupContainer.classList.add('hide-overflow');
+    }
   }
 
   _handleWatchlistClick() {
@@ -104,28 +107,28 @@ export default class Film {
 
   _handleCloseButtonClick() {
     this._removePopup();
-    document.removeEventListener('keydown', this._onDocumentEscKeydown);
+    this._popupContainer.classList.remove('hide-overflow');
   }
 
   _renderPopup() {
-    this._changeMode();
-    this._popupContainer.classList.add('hide-overflow');
+    this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
     render(this._popupContainer, this._popupComponent);
-    this._mode = Mode.DETAILED;
+    this._mode = Mode.POPUP;
+    document.addEventListener('keydown', this._onDocumentEscKeydown);
   }
 
   _removePopup() {
-    this._popupContainer.classList.remove('hide-overflow');
     this._popupContainer.removeChild(this._popupComponent.getElement());
     // remove(this._popupComponent); вопрос!!!!!!!!!
-    this._mode = Mode.STANDART;
+    this._mode = Mode.CARD;
+    document.removeEventListener('keydown', this._onDocumentEscKeydown);
   }
 
   _onDocumentEscKeydown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._removePopup();
-      document.removeEventListener('keydown', this._onDocumentEscKeydown);
+      this._popupContainer.classList.remove('hide-overflow');
     }
   }
 }

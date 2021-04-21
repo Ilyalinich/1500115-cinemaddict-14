@@ -6,7 +6,9 @@ import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 import {createPopupCommentsTemplate} from './popup-comments-list.js';
 import AbstractView from '../abstract.js';
 
+
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
+
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
