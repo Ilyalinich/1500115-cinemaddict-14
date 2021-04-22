@@ -2,10 +2,12 @@ import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup/popup.js';
 import {render, remove, replace} from '../util/render.js';
 
+
 const Mode = {
   CARD: 'CARD',
   POPUP: 'POPUP',
 };
+
 
 export default class Film {
   constructor(filmsContainer, filmComments, popupContainer, changeData, changeMode) {
@@ -45,7 +47,6 @@ export default class Film {
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._popupComponent.setFavoritesClickHandler(this._handleFavoritesClick);
-
 
     if (prevFilmComponent === null || prevPopupComponent === null) {
       return render(this._filmsContainer, this._filmComponent);

@@ -3,9 +3,9 @@ import {creteSortItemTemplate} from './sort-item.js';
 import {SortType} from '../constant.js';
 
 
-const createSortMenuTemplate = () => {
+const createSortMenuTemplate = (currentSortType) => {
   const sortItemsTemplate = Object.values(SortType)
-    .map((type, index) => creteSortItemTemplate(type, index === 0))
+    .map((type) => creteSortItemTemplate(type, currentSortType))
     .join('');
 
   return `<ul class="sort">
@@ -18,19 +18,21 @@ export default class SortMenu extends AbstractView {
   constructor() {
     super();
 
+    this._currentSortType = SortType.DEFAULT;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createSortMenuTemplate();
+    return createSortMenuTemplate(this._currentSortType);
   }
 
   _sortTypeChangeHandler(evt) {
     if (evt.target.tagName !== 'A') {
       return;
     }
+
     evt.preventDefault();
-    // evt.target.classList.t('sort__button--active');
+    this._currentSortType = evt.target.dataset.sortType;
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 

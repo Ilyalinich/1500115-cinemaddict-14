@@ -21,6 +21,8 @@ export default class ContentBoard {
     this._contentBoardContainer = contentBoardContainer;
     this._pageBodyContainer = pageBodyContainer;
 
+    this._renderedFilmsCount = FILMS_RENDER_STEP;
+    this._currentSortType = SortType.DEFAULT;
 
     this._contentContainerComponent = new ContentContainerView();
     this._noFilmsListComponent = new NoFilmsListView();
@@ -29,9 +31,7 @@ export default class ContentBoard {
     this._mostCommentedFilmsComponent = new MostCommentedFilmsListView();
     this._sortMenuComponent = new SortMenuView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
-
-    this._renderedFilmsCount = FILMS_RENDER_STEP;
-    this._currentSortType = SortType.DEFAULT;
+    // this._sortMenuComponent = new SortMenuView(this._currentSortType); вопрос
 
     this._filmPresenterStorage = {
       allfilmPresenterStorage: {},
@@ -39,12 +39,10 @@ export default class ContentBoard {
       mostCommentedfilmPresenterStorage: {},
     };
 
-
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
   }
 
   init(films, commentsList) {
@@ -58,7 +56,7 @@ export default class ContentBoard {
   }
 
   _renderFilm(filmsContainer, film) {
-    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));/*!!!!*/
+    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));/*вопрос!!!!*/
 
     const filmPresenter = new FilmPresenter(filmsContainer, filmComments, this._pageBodyContainer, this._handleFilmChange, this._handleModeChange);
     filmPresenter.init(film);
@@ -89,8 +87,8 @@ export default class ContentBoard {
   }
 
   _renderSortMenu() {
-    render(this._contentContainerComponent, this._sortMenuComponent, RenderPosition.BEFORE);
     this._sortMenuComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._contentContainerComponent, this._sortMenuComponent, RenderPosition.BEFORE);
   }
 
   _renderAllFilmsList() {
@@ -110,7 +108,6 @@ export default class ContentBoard {
   }
 
   _renderTopRatedFilmsList() {
-    // const compareFilmsRating = (previousFilm, nextFilm) => nextFilm.filmInfo.totalRating - previousFilm.filmInfo.totalRating;
     const topRatedFilms = this._films.slice().sort(sortFilmsByRating);
 
     if (topRatedFilms[0].filmInfo.totalRating !== 0) {
@@ -122,7 +119,6 @@ export default class ContentBoard {
   }
 
   _renderMostCommentedFilmsList() {
-    // const compareFilmsCommentsLength = (previousFilm, nextFilm) => nextFilm.comments.length - previousFilm.comments.length;
     const mostCommentedFilms = this._films.slice().sort(sortFilmsByCommentsCount);
 
     if (mostCommentedFilms[0].comments.length !== 0) {
@@ -190,6 +186,13 @@ export default class ContentBoard {
       return;
     }
 
+    this._currentSortType = sortType;
+
+    remove(this._sortMenuComponent);
+    // this._sortMenuComponent = new SortMenuView(this._currentSortType); вопрос
+    this._renderSortMenu();
+
+
     this._sortFilms(sortType);
     this._clearAllFilmsList();
     this._renderFilms(this._allFilmsContainer, this._films, 0, Math.min(this._films.length, FILMS_RENDER_STEP));
@@ -197,8 +200,6 @@ export default class ContentBoard {
     if (this._films.length > FILMS_RENDER_STEP) {
       this._renderShowMoreButton();
     }
-
-    this._currentSortType = sortType;
   }
 
   _sortFilms(sortType)  {
