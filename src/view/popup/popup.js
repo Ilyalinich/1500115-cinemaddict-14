@@ -6,7 +6,9 @@ import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 import {createPopupCommentsTemplate} from './popup-comments-list.js';
 import AbstractView from '../abstract.js';
 
+
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
+
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
@@ -113,17 +115,16 @@ const createPopupTemplate = (film, filmComments) => {
 };
 
 
-export default class Popup extends AbstractView{
+export default class Popup extends AbstractView {
   constructor(film, filmComments) {
     super();
     this._film = film;
     this._filmComments = filmComments;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
-  }
-
-  getTemplate() {
-    return createPopupTemplate(this._film, this._filmComments);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
   }
 
   _closeButtonClickHandler(evt) {
@@ -131,8 +132,50 @@ export default class Popup extends AbstractView{
     this._callback.closeButtonClick();
   }
 
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
+  _favoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoritesClick();
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film, this._filmComments);
+  }
+
   setCloseButtonClickHandler(callback) {
     this._callback.closeButtonClick = callback;
-    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeButtonClickHandler);
+    this.getElement()
+      .querySelector('.film-details__close-btn')
+      .addEventListener('click', this._closeButtonClickHandler);
+  }
+
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    this.getElement()
+      .querySelector('#watchlist')
+      .addEventListener('click', this._watchlistClickHandler);
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    this.getElement()
+      .querySelector('#watched')
+      .addEventListener('click', this._watchedClickHandler);
+  }
+
+  setFavoritesClickHandler(callback) {
+    this._callback.favoritesClick = callback;
+    this.getElement()
+      .querySelector('#favorite')
+      .addEventListener('click', this._favoritesClickHandler);
   }
 }

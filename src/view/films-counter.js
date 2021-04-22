@@ -1,7 +1,7 @@
 import AbstractView from './abstract.js';
 
 
-export default class FilmsCounter extends AbstractView{
+export default class FilmsCounter extends AbstractView {
   constructor(filmsCount) {
     super();
     this._filmsCount = filmsCount;

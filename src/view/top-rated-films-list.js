@@ -1,7 +1,7 @@
 import AbstractView from './abstract.js';
 
 
-export default class TopRatedFilmsList extends AbstractView{
+export default class TopRatedFilmsList extends AbstractView {
   getTemplate() {
     return `<section class="films-list films-list--extra">
       <h2 class="films-list__title">Top rated</h2>
