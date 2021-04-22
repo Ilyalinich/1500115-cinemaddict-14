@@ -1,6 +1,6 @@
 import {getRandomInteger, getRandomFloat, getRandomBoolean, getRandomValue, getRandomValues} from '../util/common.js';
 import {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION,
-  TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount} from './constant.js';
+  TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount} from '../constant.js';
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
 

@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {nanoid} from 'nanoid';
-import {DESCRIPTION_SENTENCES, PERSONS, ID_LENGTH, DateInMillisecondsCount} from './constant.js';
+import {DESCRIPTION_SENTENCES, PERSONS, ID_LENGTH, DateInMillisecondsCount} from '../constant.js';
 import {getRandomInteger, getRandomValue} from '../util/common.js';
 
 

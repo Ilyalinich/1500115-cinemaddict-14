@@ -1,3 +1,9 @@
+const SortType = {
+  DEFAULT: 'Sort by default',
+  BY_DATE: 'Sort by date',
+  BY_RATING: 'Sort by rating',
+};
+
 const FILM_TITLES = {
   'Побег из Шоушенка': 'The Shawshank Redemption',
   'Зеленая миля': 'The Green Mile',
@@ -132,4 +138,4 @@ const DateInMillisecondsCount = {
 
 
 export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION,
-  CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount};
+  CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount, SortType};

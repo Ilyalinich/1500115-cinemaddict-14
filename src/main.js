@@ -1,6 +1,6 @@
 import {getRandomInteger} from './util/common.js';
 import {render} from './util/render.js';
-import {CommentsCount} from './mock/constant.js';
+import {CommentsCount} from './constant.js';
 import {generateFilm} from './mock/film-data.js';
 import {generateFilter} from './mock/filter-data.js';
 import {generateComment} from './mock/comment.js';
