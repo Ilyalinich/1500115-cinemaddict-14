@@ -1,7 +1,7 @@
-export const creteSortItemTemplate = (type, currentSortType) =>
+export const creteSortItemTemplate = (type, isSelected) =>
   `<li>
     <a href="#"
-      class="sort__button ${(type === currentSortType) ? 'sort__button--active' : ''}"
+      class="sort__button ${isSelected ? 'sort__button--active' : ''}"
       data-sort-type="${type}">
       ${type}
     </a>

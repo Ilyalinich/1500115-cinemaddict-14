@@ -22,7 +22,7 @@ export default class ContentBoard {
     this._pageBodyContainer = pageBodyContainer;
 
     this._renderedFilmsCount = FILMS_RENDER_STEP;
-    this._currentSortType = SortType.DEFAULT;
+    // this._currentSortType = SortType.DEFAULT;
 
     this._contentContainerComponent = new ContentContainerView();
     this._noFilmsListComponent = new NoFilmsListView();
@@ -31,7 +31,6 @@ export default class ContentBoard {
     this._mostCommentedFilmsComponent = new MostCommentedFilmsListView();
     this._sortMenuComponent = new SortMenuView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
-    // this._sortMenuComponent = new SortMenuView(this._currentSortType); вопрос
 
     this._filmPresenterStorage = {
       allfilmPresenterStorage: {},
@@ -182,15 +181,11 @@ export default class ContentBoard {
   }
 
   _handleSortTypeChange(sortType) {
-    if (this._currentSortType === sortType) {
-      return;
-    }
+    // if (this._currentSortType === sortType) {
+    //   return;
+    // }
 
-    this._currentSortType = sortType;
-
-    remove(this._sortMenuComponent);
-    // this._sortMenuComponent = new SortMenuView(this._currentSortType); вопрос
-    this._renderSortMenu();
+    // this._currentSortType = sortType;
 
 
     this._sortFilms(sortType);
