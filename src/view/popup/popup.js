@@ -4,7 +4,7 @@ import {getFilmDuration} from '../../util/film.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 import {createPopupCommentsTemplate} from './popup-comments-list.js';
-import AbstractView from '../abstract.js';
+import SmartView from '../smart.js';
 
 
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
@@ -12,11 +12,11 @@ const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
-const createPopupTemplate = (film, filmComments) => {
-  const {comments} = film;
+const createPopupTemplate = (state, filmComments) => {
+  const {comments, isEmojiCurrent, newCommentEmoji, isNewCommentText, newCommentText} = state;
   const {title,  alternativeTitle, totalRating, poster, ageRating,
-    director, writers, actors, release, runtime, genre, description} = film.filmInfo;
-  const {watchlist, alreadyWatched, favorite} = film.userDetails;
+    director, writers, actors, release, runtime, genre, description} = state.filmInfo;
+  const {watchlist, alreadyWatched, favorite} = state.userDetails;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -98,14 +98,20 @@ const createPopupTemplate = (film, filmComments) => {
           </ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">
+              ${isEmojiCurrent ? `<img src="images/emoji/${newCommentEmoji}.png" width="55" height="55" alt="emoji-${newCommentEmoji}">` : ''}
+            </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea
+                class="film-details__comment-input"
+                placeholder="Select reaction below and write comment here"
+                name="comment"
+              >${isNewCommentText ? newCommentText : ''}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              ${createPopupEmojiListTemplate()}
+              ${createPopupEmojiListTemplate(isEmojiCurrent, newCommentEmoji)}
             </div>
           </div>
         </section>
@@ -115,16 +121,67 @@ const createPopupTemplate = (film, filmComments) => {
 };
 
 
-export default class Popup extends AbstractView {
+export default class Popup extends SmartView {
   constructor(film, filmComments) {
     super();
-    this._film = film;
+    // this._film = film;
+    this._state = Popup.parseFilmToState(film);
     this._filmComments = filmComments;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
+    this._newCommentTextInputHandler = this._newCommentTextInputHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+  reset(film) {
+    this.updateState(
+      Popup.parseFilmToState(film),
+    );
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._state, this._filmComments);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setFavoritesClickHandler(this._callback.favoritesClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelectorAll('input[name = comment-emoji]')
+      .forEach((input) => input.addEventListener('click', this._emojiChangeHandler));
+    this.getElement()
+      .querySelector('textarea[name = comment]')
+      .addEventListener('change', this._newCommentTextInputHandler);
+    //в демке предлагали input. Зачем при каждом символе переписываать состояние, если можно поставить change?
+  }
+
+  _emojiChangeHandler(evt) {
+    this.updateState({
+      isEmojiCurrent: true,
+      newCommentEmoji: evt.target.value,
+    });
+  }
+
+  _newCommentTextInputHandler(evt) {
+    evt.preventDefault();
+    this.updateState({
+      isNewCommentText: true,
+      newCommentText: evt.target.value,
+    }, true);
   }
 
   _closeButtonClickHandler(evt) {
@@ -147,8 +204,11 @@ export default class Popup extends AbstractView {
     this._callback.favoritesClick();
   }
 
-  getTemplate() {
-    return createPopupTemplate(this._film, this._filmComments);
+  _formSubmitHandler(evt) {
+    if (evt.key === 'Control') {
+      evt.preventDefault();
+      this._callback.formSubmit(Popup.parseStateToFilm(this._state));
+    }
   }
 
   setCloseButtonClickHandler(callback) {
@@ -177,5 +237,35 @@ export default class Popup extends AbstractView {
     this.getElement()
       .querySelector('#favorite')
       .addEventListener('click', this._favoritesClickHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('keydown', this._formSubmitHandler);
+  }
+
+
+  static parseFilmToState(film) {
+    return Object.assign(
+      {},
+      film,
+      {
+        isEmojiCurrent: false,
+        newCommentEmoji: null,
+        isNewCommentText: false,
+        newCommentText: null,
+      },
+      // создавать ключи состояния, если они нужны
+    );
+  }
+
+  static parseStateToFilm(state) {
+    state = Object.assign({}, state);
+
+    // условия, по значениям ключей в состоянии, возвращающие поля с данными
+
+    // удаление ключей
+
+    return state;
   }
 }

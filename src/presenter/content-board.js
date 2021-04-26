@@ -55,7 +55,7 @@ export default class ContentBoard {
   }
 
   _renderFilm(filmsContainer, film) {
-    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));/*вопрос!!!!*/
+    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));
 
     const filmPresenter = new FilmPresenter(filmsContainer, filmComments, this._pageBodyContainer, this._handleFilmChange, this._handleModeChange);
     filmPresenter.init(film);

@@ -28,6 +28,7 @@ export default class Film {
 
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
     this._onDocumentEscKeydown = this._onDocumentEscKeydown.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(film) {
@@ -38,6 +39,7 @@ export default class Film {
 
     this._filmComponent = new FilmCardView(film);
     this._popupComponent = new PopupView(film, this._filmComments);
+    // console.log(this._popupComponent);
 
     this._filmComponent.setPopupRenderTriggerClickHandler(this._handleTriggerClick);
     this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
@@ -47,6 +49,7 @@ export default class Film {
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._popupComponent.setFavoritesClickHandler(this._handleFavoritesClick);
+    this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevFilmComponent === null || prevPopupComponent === null) {
       return render(this._filmsContainer, this._filmComponent);
@@ -100,6 +103,25 @@ export default class Film {
   }
 
   _handleFavoritesClick() {
+    // const changedObj =
+    //   Object.assign(
+    //     {},
+    //     this._film.userDetails,
+    //     {favorite: !this._film.userDetails.favorite},
+    //   );
+
+    // this._changeData(
+    //   Object.assign(
+    //     {},
+    //     this._film,
+    //     {
+    //       userDetails: changedObj,
+    //     },
+    //   ));
+    // Обсудить эту реализацию. Это Resource Sharing?
+    // Нужно ли здесь выполнять глубокое копирование не лучшим из способов через JSON?
+
+
     const updatedFilm = JSON.parse(JSON.stringify(this._film));
     updatedFilm.userDetails.favorite = !this._film.userDetails.favorite;
 
@@ -107,8 +129,14 @@ export default class Film {
   }
 
   _handleCloseButtonClick() {
+    this._popupComponent.reset(this._film);
     this._removePopup();
     this._popupContainer.classList.remove('hide-overflow');
+  }
+
+  _handleFormSubmit(film) {
+    console.log('форма отправлена');
+    console.log(film);
   }
 
   _renderPopup() {
@@ -128,6 +156,7 @@ export default class Film {
   _onDocumentEscKeydown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this._popupComponent.reset(this._film);
       this._removePopup();
       this._popupContainer.classList.remove('hide-overflow');
     }
