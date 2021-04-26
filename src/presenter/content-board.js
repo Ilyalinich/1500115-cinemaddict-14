@@ -1,5 +1,7 @@
 import {render, remove, RenderPosition} from '../util/render.js';
 import {updateItem} from '../util/common.js';
+import {sortFilmsByDate, sortFilmsByRating, sortFilmsByCommentsCount} from '../util/film.js';
+import {SortType} from '../constant.js';
 import ContentContainerView from '../view/content-container.js';
 import SortMenuView from '../view/sort-menu.js';
 import NoFilmsListView from '../view/no-films-list.js';
@@ -19,6 +21,9 @@ export default class ContentBoard {
     this._contentBoardContainer = contentBoardContainer;
     this._pageBodyContainer = pageBodyContainer;
 
+    this._renderedFilmsCount = FILMS_RENDER_STEP;
+    // this._currentSortType = SortType.DEFAULT;
+
     this._contentContainerComponent = new ContentContainerView();
     this._noFilmsListComponent = new NoFilmsListView();
     this._allFilmsListComponent = new AllFilmsListView();
@@ -26,8 +31,6 @@ export default class ContentBoard {
     this._mostCommentedFilmsComponent = new MostCommentedFilmsListView();
     this._sortMenuComponent = new SortMenuView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
-
-    this._renderedFilmsCount = FILMS_RENDER_STEP;
 
     this._filmPresenterStorage = {
       allfilmPresenterStorage: {},
@@ -38,10 +41,12 @@ export default class ContentBoard {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(films, commentsList) {
     this._films = films.slice();
+    this._sourcedFilms = films.slice();
     this._commentsList = commentsList;
 
     render(this._contentBoardContainer, this._contentContainerComponent);
@@ -50,7 +55,7 @@ export default class ContentBoard {
   }
 
   _renderFilm(filmsContainer, film) {
-    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));/*!!!!*/
+    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));/*вопрос!!!!*/
 
     const filmPresenter = new FilmPresenter(filmsContainer, filmComments, this._pageBodyContainer, this._handleFilmChange, this._handleModeChange);
     filmPresenter.init(film);
@@ -81,11 +86,12 @@ export default class ContentBoard {
   }
 
   _renderSortMenu() {
+    this._sortMenuComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._contentContainerComponent, this._sortMenuComponent, RenderPosition.BEFORE);
   }
 
   _renderAllFilmsList() {
-    render(this._contentContainerComponent, this._allFilmsListComponent);
+    render(this._contentContainerComponent, this._allFilmsListComponent, RenderPosition.AFTERBEGIN);
     this._allFilmsContainer = this._allFilmsListComponent.getElement().querySelector('#all-films-container');
 
     this._renderFilms(this._allFilmsContainer, this._films, 0, Math.min(this._films.length, FILMS_RENDER_STEP));
@@ -101,8 +107,7 @@ export default class ContentBoard {
   }
 
   _renderTopRatedFilmsList() {
-    const compareFilmsRating = (previousFilm, nextFilm) => nextFilm.filmInfo.totalRating - previousFilm.filmInfo.totalRating;
-    const topRatedFilms = this._films.slice().sort(compareFilmsRating);
+    const topRatedFilms = this._films.slice().sort(sortFilmsByRating);
 
     if (topRatedFilms[0].filmInfo.totalRating !== 0) {
       render(this._contentContainerComponent, this._topRatedFilmsComponent);
@@ -113,8 +118,7 @@ export default class ContentBoard {
   }
 
   _renderMostCommentedFilmsList() {
-    const compareFilmsCommentsLength = (previousFilm, nextFilm) => nextFilm.comments.length - previousFilm.comments.length;
-    const mostCommentedFilms = this._films.slice().sort(compareFilmsCommentsLength);
+    const mostCommentedFilms = this._films.slice().sort(sortFilmsByCommentsCount);
 
     if (mostCommentedFilms[0].comments.length !== 0) {
       render(this._contentContainerComponent, this._mostCommentedFilmsComponent);
@@ -155,6 +159,7 @@ export default class ContentBoard {
 
   _handleFilmChange(updatedFilm) {
     this._films = updateItem(this._films, updatedFilm);
+    this._sourcedFilms = updateItem(this._sourcedFilms, updatedFilm);
 
     Object
       .values(this._filmPresenterStorage)
@@ -173,5 +178,35 @@ export default class ContentBoard {
           .values(storage)
           .forEach((presenter) => presenter.resetView());
       });
+  }
+
+  _handleSortTypeChange(sortType) {
+    // if (this._currentSortType === sortType) {
+    //   return;
+    // }
+
+    // this._currentSortType = sortType;
+
+
+    this._sortFilms(sortType);
+    this._clearAllFilmsList();
+    this._renderFilms(this._allFilmsContainer, this._films, 0, Math.min(this._films.length, FILMS_RENDER_STEP));
+
+    if (this._films.length > FILMS_RENDER_STEP) {
+      this._renderShowMoreButton();
+    }
+  }
+
+  _sortFilms(sortType)  {
+    switch (sortType) {
+      case SortType.BY_DATE:
+        this._films.sort(sortFilmsByDate);
+        break;
+      case SortType.BY_RATING:
+        this._films.sort(sortFilmsByRating);
+        break;
+      default:
+        this._films = this._sourcedFilms.slice();
+    }
   }
 }
