@@ -18,7 +18,7 @@ export default class SortMenu extends AbstractView {
   constructor() {
     super();
 
-    // this._currentSortType = SortType.DEFAULT;
+    this._currentSortType = SortType.DEFAULT;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
@@ -31,9 +31,9 @@ export default class SortMenu extends AbstractView {
       return;
     }
 
-    // if (this._currentSortType === evt.target.dataset.sortType) {
-    //   return;
-    // }
+    if (this._currentSortType === evt.target.dataset.sortType) {
+      return;
+    }
 
     evt.preventDefault();
     this
@@ -43,7 +43,7 @@ export default class SortMenu extends AbstractView {
 
     evt.target.classList.add('sort__button--active');
 
-    // this._currentSortType = evt.target.dataset.sortType;
+    this._currentSortType = evt.target.dataset.sortType;
 
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
