@@ -29,11 +29,12 @@ export default class Smart extends AbstractView {
     const parent = prevElement.parentElement;
     this.removeElement();
 
-
     const newElement = this.getElement();
 
+    const prevElementYscrollValue = prevElement.scrollTop;
+
     parent.replaceChild(newElement, prevElement);
-    //может использовать метод replace?
+    newElement.scrollTop = prevElementYscrollValue;
 
     this.restoreHandlers();
   }

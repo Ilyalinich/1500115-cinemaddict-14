@@ -39,7 +39,6 @@ export default class Film {
 
     this._filmComponent = new FilmCardView(film);
     this._popupComponent = new PopupView(film, this._filmComments);
-    // console.log(this._popupComponent);
 
     this._filmComponent.setPopupRenderTriggerClickHandler(this._handleTriggerClick);
     this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
@@ -61,7 +60,12 @@ export default class Film {
 
     if (this._popupContainer.contains(prevPopupComponent.getElement())) {
       this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
+
+      const prevPopupYscrollValue = prevPopupComponent.getElement().scrollTop;
+
       replace(this._popupComponent, prevPopupComponent);
+
+      this._popupComponent.getElement().scrollTop = prevPopupYscrollValue;
     }
 
     remove(prevFilmComponent);
@@ -103,25 +107,6 @@ export default class Film {
   }
 
   _handleFavoritesClick() {
-    // const changedObj =
-    //   Object.assign(
-    //     {},
-    //     this._film.userDetails,
-    //     {favorite: !this._film.userDetails.favorite},
-    //   );
-
-    // this._changeData(
-    //   Object.assign(
-    //     {},
-    //     this._film,
-    //     {
-    //       userDetails: changedObj,
-    //     },
-    //   ));
-    // Обсудить эту реализацию. Это Resource Sharing?
-    // Нужно ли здесь выполнять глубокое копирование не лучшим из способов через JSON?
-
-
     const updatedFilm = JSON.parse(JSON.stringify(this._film));
     updatedFilm.userDetails.favorite = !this._film.userDetails.favorite;
 
@@ -134,9 +119,9 @@ export default class Film {
     this._popupContainer.classList.remove('hide-overflow');
   }
 
-  _handleFormSubmit(film) {
-    console.log('форма отправлена');
-    console.log(film);
+  _handleFormSubmit(/*newComment*/) {
+    // отправляем коммент на сервер, он обновляет commentsList и спсиок id указанного в комменте фильма
+    // перерисоваваем компонент
   }
 
   _renderPopup() {
@@ -148,7 +133,6 @@ export default class Film {
 
   _removePopup() {
     this._popupContainer.removeChild(this._popupComponent.getElement());
-    // remove(this._popupComponent); вопрос!!!!!!!!!
     this._mode = Mode.CARD;
     document.removeEventListener('keydown', this._onDocumentEscKeydown);
   }

@@ -124,7 +124,7 @@ const createPopupTemplate = (state, filmComments) => {
 export default class Popup extends SmartView {
   constructor(film, filmComments) {
     super();
-    // this._film = film;
+
     this._state = Popup.parseFilmToState(film);
     this._filmComments = filmComments;
 
@@ -166,7 +166,6 @@ export default class Popup extends SmartView {
     this.getElement()
       .querySelector('textarea[name = comment]')
       .addEventListener('change', this._newCommentTextInputHandler);
-    //в демке предлагали input. Зачем при каждом символе переписываать состояние, если можно поставить change?
   }
 
   _emojiChangeHandler(evt) {
@@ -205,10 +204,8 @@ export default class Popup extends SmartView {
   }
 
   _formSubmitHandler(evt) {
-    if (evt.key === 'Control') {
-      evt.preventDefault();
-      this._callback.formSubmit(Popup.parseStateToFilm(this._state));
-    }
+    evt.preventDefault();
+    this._callback.formSubmit(Popup.parseStateToNewComment(this._state));
   }
 
   setCloseButtonClickHandler(callback) {
@@ -241,7 +238,7 @@ export default class Popup extends SmartView {
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('keydown', this._formSubmitHandler);
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
 
@@ -255,17 +252,30 @@ export default class Popup extends SmartView {
         isNewCommentText: false,
         newCommentText: null,
       },
-      // создавать ключи состояния, если они нужны
     );
   }
 
   static parseStateToFilm(state) {
     state = Object.assign({}, state);
 
-    // условия, по значениям ключей в состоянии, возвращающие поля с данными
-
-    // удаление ключей
-
     return state;
+  }
+
+  static parseStateToNewComment(state) {
+    return  Object.assign(
+      {},
+      {
+        id: state.id,
+      },
+      {
+        comment: state.newCommentText,
+        emotion: state.newCommentEmoji,
+      },
+
+      delete state.isEmojiCurrent,
+      delete state.newCommentEmoji,
+      delete state.isNewCommentText,
+      delete state.newCommentText,
+    );
   }
 }

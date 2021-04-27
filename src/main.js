@@ -10,7 +10,7 @@ import FilmsCounterView from './view/films-counter.js';
 import ContentBoardPresenter from './presenter/content-board.js';
 
 
-const FILMS_COUNT = 5;
+const FILMS_COUNT = 20;
 const commentsList = [];
 
 
@@ -32,7 +32,6 @@ const films = new Array(FILMS_COUNT)
     return generateFilm(commentsIds);
   });
 
-window.__films__ = films;
 
 const filmsCount = films.length;
 

@@ -20,31 +20,31 @@ export default class SortMenu extends AbstractView {
 
     this._currentSortType = SortType.DEFAULT;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._updateView = this._updateView.bind(this);
   }
 
   getTemplate() {
     return createSortMenuTemplate();
   }
 
-  _sortTypeChangeHandler(evt) {
-    if (evt.target.tagName !== 'A') {
-      return;
-    }
-
-    if (this._currentSortType === evt.target.dataset.sortType) {
-      return;
-    }
-
-    evt.preventDefault();
+  _updateView(evt) {
     this
       .getElement()
       .querySelector('.sort__button--active')
       .classList.remove('sort__button--active');
 
     evt.target.classList.add('sort__button--active');
+  }
 
+  _sortTypeChangeHandler(evt) {
+    if (evt.target.tagName !== 'A' || this._currentSortType === evt.target.dataset.sortType) {
+      return;
+    }
+
+    evt.preventDefault();
+
+    this._updateView(evt);
     this._currentSortType = evt.target.dataset.sortType;
-
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 
