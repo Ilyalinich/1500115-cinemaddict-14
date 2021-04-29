@@ -13,10 +13,10 @@ const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
 const createPopupTemplate = (state, filmComments) => {
-  const {comments, isEmojiCurrent, newCommentEmoji, isNewCommentText, newCommentText} = state;
+  const {comments, emotion, comment, filmInfo, userDetails} = state;
   const {title,  alternativeTitle, totalRating, poster, ageRating,
-    director, writers, actors, release, runtime, genre, description} = state.filmInfo;
-  const {watchlist, alreadyWatched, favorite} = state.userDetails;
+    director, writers, actors, release, runtime, genre, description} = filmInfo;
+  const {watchlist, alreadyWatched, favorite} = userDetails;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -99,7 +99,7 @@ const createPopupTemplate = (state, filmComments) => {
 
           <div class="film-details__new-comment">
             <div class="film-details__add-emoji-label">
-              ${isEmojiCurrent ? `<img src="images/emoji/${newCommentEmoji}.png" width="55" height="55" alt="emoji-${newCommentEmoji}">` : ''}
+              ${!emotion ? '' : `<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">`}
             </div>
 
             <label class="film-details__comment-label">
@@ -107,11 +107,11 @@ const createPopupTemplate = (state, filmComments) => {
                 class="film-details__comment-input"
                 placeholder="Select reaction below and write comment here"
                 name="comment"
-              >${isNewCommentText ? newCommentText : ''}</textarea>
+              >${!comment ? '' : comment}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              ${createPopupEmojiListTemplate(isEmojiCurrent, newCommentEmoji)}
+              ${createPopupEmojiListTemplate(emotion)}
             </div>
           </div>
         </section>
@@ -125,28 +125,47 @@ export default class Popup extends SmartView {
   constructor(film, filmComments) {
     super();
 
-    this._state = Popup.parseFilmToState(film);
+    this._state = this._parseFilmToState(film);
     this._filmComments = filmComments;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
-    this._formSubmitHandler = this._formSubmitHandler.bind(this);
-    this._emojiChangeHandler = this._emojiChangeHandler.bind(this);
+    this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
     this._newCommentTextInputHandler = this._newCommentTextInputHandler.bind(this);
 
     this._setInnerHandlers();
   }
 
-  reset(film) {
-    this.updateState(
-      Popup.parseFilmToState(film),
-    );
-  }
 
   getTemplate() {
     return createPopupTemplate(this._state, this._filmComments);
+  }
+
+  reset(film) {
+    this.updateState(
+      this._parseFilmToState(film),
+    );
+  }
+
+  isNewCommentValid() {
+    const {emotion, comment} = this._state;
+
+    return emotion && comment;
+  }
+
+  getNewComment() {
+    const {emotion, comment} = this._state;
+
+    return {
+      emotion,
+      comment,
+    };
+  }
+
+  shakeCommentField() {
+  // метод, накладывающий эффект 'покачивание головой"
   }
 
   restoreHandlers() {
@@ -156,30 +175,38 @@ export default class Popup extends SmartView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
     this.setFavoritesClickHandler(this._callback.favoritesClick);
-    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _parseFilmToState(film) {
+    return Object.assign(
+      {},
+      film,
+      {
+        emotion: null,
+        comment: null,
+      },
+    );
   }
 
   _setInnerHandlers() {
     this.getElement()
       .querySelectorAll('input[name = comment-emoji]')
-      .forEach((input) => input.addEventListener('click', this._emojiChangeHandler));
+      .forEach((input) => input.addEventListener('click', this._emotionChangeHandler));
     this.getElement()
       .querySelector('textarea[name = comment]')
-      .addEventListener('change', this._newCommentTextInputHandler);
+      .addEventListener('input', this._newCommentTextInputHandler);
   }
 
-  _emojiChangeHandler(evt) {
+  _emotionChangeHandler(evt) {
     this.updateState({
-      isEmojiCurrent: true,
-      newCommentEmoji: evt.target.value,
+      emotion: evt.target.value,
     });
   }
 
   _newCommentTextInputHandler(evt) {
     evt.preventDefault();
     this.updateState({
-      isNewCommentText: true,
-      newCommentText: evt.target.value,
+      comment: evt.target.value,
     }, true);
   }
 
@@ -201,11 +228,6 @@ export default class Popup extends SmartView {
   _favoritesClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoritesClick();
-  }
-
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(Popup.parseStateToNewComment(this._state));
   }
 
   setCloseButtonClickHandler(callback) {
@@ -234,48 +256,5 @@ export default class Popup extends SmartView {
     this.getElement()
       .querySelector('#favorite')
       .addEventListener('click', this._favoritesClickHandler);
-  }
-
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
-  }
-
-
-  static parseFilmToState(film) {
-    return Object.assign(
-      {},
-      film,
-      {
-        isEmojiCurrent: false,
-        newCommentEmoji: null,
-        isNewCommentText: false,
-        newCommentText: null,
-      },
-    );
-  }
-
-  static parseStateToFilm(state) {
-    state = Object.assign({}, state);
-
-    return state;
-  }
-
-  static parseStateToNewComment(state) {
-    return  Object.assign(
-      {},
-      {
-        id: state.id,
-      },
-      {
-        comment: state.newCommentText,
-        emotion: state.newCommentEmoji,
-      },
-
-      delete state.isEmojiCurrent,
-      delete state.newCommentEmoji,
-      delete state.isNewCommentText,
-      delete state.newCommentText,
-    );
   }
 }

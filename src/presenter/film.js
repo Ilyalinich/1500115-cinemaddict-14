@@ -27,8 +27,7 @@ export default class Film {
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
 
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
-    this._onDocumentEscKeydown = this._onDocumentEscKeydown.bind(this);
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._onDocumentKeydown = this._onDocumentKeydown.bind(this);
   }
 
   init(film) {
@@ -48,7 +47,7 @@ export default class Film {
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
     this._popupComponent.setFavoritesClickHandler(this._handleFavoritesClick);
-    this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
+
 
     if (prevFilmComponent === null || prevPopupComponent === null) {
       return render(this._filmsContainer, this._filmComponent);
@@ -61,11 +60,13 @@ export default class Film {
     if (this._popupContainer.contains(prevPopupComponent.getElement())) {
       this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
 
-      const prevPopupYscrollValue = prevPopupComponent.getElement().scrollTop;
+      const prevPopupCommentState = prevPopupComponent.getNewComment();
 
+      const prevPopupScrollPosition = prevPopupComponent.getScrollPosition();
       replace(this._popupComponent, prevPopupComponent);
+      this._popupComponent.setScrollPosition(prevPopupScrollPosition);
 
-      this._popupComponent.getElement().scrollTop = prevPopupYscrollValue;
+      this._popupComponent.updateState(prevPopupCommentState);
     }
 
     remove(prevFilmComponent);
@@ -83,6 +84,19 @@ export default class Film {
     }
   }
 
+  _renderPopup() {
+    this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
+    render(this._popupContainer, this._popupComponent);
+    this._mode = Mode.POPUP;
+    document.addEventListener('keydown', this._onDocumentKeydown);
+  }
+
+  _removePopup() {
+    this._popupContainer.removeChild(this._popupComponent.getElement());
+    this._mode = Mode.CARD;
+    document.removeEventListener('keydown', this._onDocumentKeydown);
+  }
+
   _handleTriggerClick() {
     this._changeMode();
     this._renderPopup();
@@ -93,22 +107,55 @@ export default class Film {
   }
 
   _handleWatchlistClick() {
-    const updatedFilm = JSON.parse(JSON.stringify(this._film));
-    updatedFilm.userDetails.watchlist = !this._film.userDetails.watchlist;
+    const update = Object.assign(
+      {},
+      this._film.userDetails,
+      {watchlist: !this._film.userDetails.watchlist},
+    );
+
+    const updatedFilm = Object.assign(
+      {},
+      this._film,
+      {
+        userDetails: update,
+      },
+    );
 
     this._changeData(updatedFilm);
   }
 
   _handleWatchedClick() {
-    const updatedFilm = JSON.parse(JSON.stringify(this._film));
-    updatedFilm.userDetails.alreadyWatched = !this._film.userDetails.alreadyWatched;
+    const update = Object.assign(
+      {},
+      this._film.userDetails,
+      {alreadyWatched: !this._film.userDetails.alreadyWatched},
+    );
+
+    const updatedFilm = Object.assign(
+      {},
+      this._film,
+      {
+        userDetails: update,
+      },
+    );
 
     this._changeData(updatedFilm);
   }
 
   _handleFavoritesClick() {
-    const updatedFilm = JSON.parse(JSON.stringify(this._film));
-    updatedFilm.userDetails.favorite = !this._film.userDetails.favorite;
+    const update = Object.assign(
+      {},
+      this._film.userDetails,
+      {favorite: !this._film.userDetails.favorite},
+    );
+
+    const updatedFilm = Object.assign(
+      {},
+      this._film,
+      {
+        userDetails: update,
+      },
+    );
 
     this._changeData(updatedFilm);
   }
@@ -119,30 +166,23 @@ export default class Film {
     this._popupContainer.classList.remove('hide-overflow');
   }
 
-  _handleFormSubmit(/*newComment*/) {
-    // отправляем коммент на сервер, он обновляет commentsList и спсиок id указанного в комменте фильма
-    // перерисоваваем компонент
-  }
-
-  _renderPopup() {
-    this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
-    render(this._popupContainer, this._popupComponent);
-    this._mode = Mode.POPUP;
-    document.addEventListener('keydown', this._onDocumentEscKeydown);
-  }
-
-  _removePopup() {
-    this._popupContainer.removeChild(this._popupComponent.getElement());
-    this._mode = Mode.CARD;
-    document.removeEventListener('keydown', this._onDocumentEscKeydown);
-  }
-
-  _onDocumentEscKeydown(evt) {
+  _onDocumentKeydown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._popupComponent.reset(this._film);
       this._removePopup();
       this._popupContainer.classList.remove('hide-overflow');
+    }
+
+    if (evt.ctrlKey && evt.key === 'Enter') {
+      evt.preventDefault();
+
+      if (this._popupComponent.isNewCommentValid()) {
+        this._popupComponent.getNewComment();
+        // отправка коммента в модель
+        return;
+      }
+      this._popupComponent.shakeCommentField();
     }
   }
 }
