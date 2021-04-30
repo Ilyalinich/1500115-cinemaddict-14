@@ -1,13 +1,14 @@
 const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 
-export const createPopupEmojiListTemplate = () =>
+export const createPopupEmojiListTemplate = (newCommentEmotion) =>
   EMOTIONS.map((emotion) =>
     `<input
       class="film-details__emoji-item visually-hidden"
       name="comment-emoji"
       type="radio"
       id="emoji-${emotion}"
-      value="${emotion}">
+      value="${emotion}"
+      ${newCommentEmotion === emotion ? 'checked' : ''}>
     <label
       class="film-details__emoji-label"
       for="emoji-${emotion}">

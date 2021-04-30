@@ -32,6 +32,7 @@ const films = new Array(FILMS_COUNT)
     return generateFilm(commentsIds);
   });
 
+
 const filmsCount = films.length;
 
 const filters = generateFilter(films);

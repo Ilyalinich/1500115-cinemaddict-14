@@ -22,7 +22,6 @@ export default class ContentBoard {
     this._pageBodyContainer = pageBodyContainer;
 
     this._renderedFilmsCount = FILMS_RENDER_STEP;
-    // this._currentSortType = SortType.DEFAULT;
 
     this._contentContainerComponent = new ContentContainerView();
     this._noFilmsListComponent = new NoFilmsListView();
@@ -55,7 +54,7 @@ export default class ContentBoard {
   }
 
   _renderFilm(filmsContainer, film) {
-    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));/*вопрос!!!!*/
+    const filmComments = this._commentsList.filter(({id}) => film.comments.includes(id));
 
     const filmPresenter = new FilmPresenter(filmsContainer, filmComments, this._pageBodyContainer, this._handleFilmChange, this._handleModeChange);
     filmPresenter.init(film);
@@ -181,13 +180,6 @@ export default class ContentBoard {
   }
 
   _handleSortTypeChange(sortType) {
-    // if (this._currentSortType === sortType) {
-    //   return;
-    // }
-
-    // this._currentSortType = sortType;
-
-
     this._sortFilms(sortType);
     this._clearAllFilmsList();
     this._renderFilms(this._allFilmsContainer, this._films, 0, Math.min(this._films.length, FILMS_RENDER_STEP));

@@ -48,6 +48,10 @@ export default class FilmCard extends AbstractView {
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
   }
 
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
   _popupRenderTriggerClickHandler(evt) {
     evt.preventDefault();
     this._callback.popupRenderTriggerClick();
@@ -66,11 +70,6 @@ export default class FilmCard extends AbstractView {
   _favoritesClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoritesClick();
-  }
-
-
-  getTemplate() {
-    return createFilmCardTemplate(this._film);
   }
 
   setPopupRenderTriggerClickHandler(callback) {

@@ -4,7 +4,7 @@ import {getFilmDuration} from '../../util/film.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 import {createPopupCommentsTemplate} from './popup-comments-list.js';
-import AbstractView from '../abstract.js';
+import SmartView from '../smart.js';
 
 
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
@@ -12,11 +12,11 @@ const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
-const createPopupTemplate = (film, filmComments) => {
-  const {comments} = film;
+const createPopupTemplate = (state, filmComments) => {
+  const {comments, emotion, comment, filmInfo, userDetails} = state;
   const {title,  alternativeTitle, totalRating, poster, ageRating,
-    director, writers, actors, release, runtime, genre, description} = film.filmInfo;
-  const {watchlist, alreadyWatched, favorite} = film.userDetails;
+    director, writers, actors, release, runtime, genre, description} = filmInfo;
+  const {watchlist, alreadyWatched, favorite} = userDetails;
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -98,14 +98,20 @@ const createPopupTemplate = (film, filmComments) => {
           </ul>
 
           <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
+            <div class="film-details__add-emoji-label">
+              ${!emotion ? '' : `<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">`}
+            </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea
+                class="film-details__comment-input"
+                placeholder="Select reaction below and write comment here"
+                name="comment"
+              >${!comment ? '' : comment}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
-              ${createPopupEmojiListTemplate()}
+              ${createPopupEmojiListTemplate(emotion)}
             </div>
           </div>
         </section>
@@ -115,16 +121,93 @@ const createPopupTemplate = (film, filmComments) => {
 };
 
 
-export default class Popup extends AbstractView {
+export default class Popup extends SmartView {
   constructor(film, filmComments) {
     super();
-    this._film = film;
+
+    this._state = this._parseFilmToState(film);
     this._filmComments = filmComments;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
+    this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
+    this._newCommentTextInputHandler = this._newCommentTextInputHandler.bind(this);
+
+    this._setInnerHandlers();
+  }
+
+
+  getTemplate() {
+    return createPopupTemplate(this._state, this._filmComments);
+  }
+
+  reset(film) {
+    this.updateState(
+      this._parseFilmToState(film),
+    );
+  }
+
+  isNewCommentValid() {
+    const {emotion, comment} = this._state;
+
+    return emotion && comment;
+  }
+
+  getNewComment() {
+    const {emotion, comment} = this._state;
+
+    return {
+      emotion,
+      comment,
+    };
+  }
+
+  shakeCommentField() {
+  // метод, накладывающий эффект 'покачивание головой"
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setFavoritesClickHandler(this._callback.favoritesClick);
+  }
+
+  _parseFilmToState(film) {
+    return Object.assign(
+      {},
+      film,
+      {
+        emotion: null,
+        comment: null,
+      },
+    );
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelectorAll('input[name = comment-emoji]')
+      .forEach((input) => input.addEventListener('click', this._emotionChangeHandler));
+    this.getElement()
+      .querySelector('textarea[name = comment]')
+      .addEventListener('input', this._newCommentTextInputHandler);
+  }
+
+  _emotionChangeHandler(evt) {
+    this.updateState({
+      emotion: evt.target.value,
+    });
+  }
+
+  _newCommentTextInputHandler(evt) {
+    evt.preventDefault();
+    this.updateState({
+      comment: evt.target.value,
+    }, true);
   }
 
   _closeButtonClickHandler(evt) {
@@ -145,10 +228,6 @@ export default class Popup extends AbstractView {
   _favoritesClickHandler(evt) {
     evt.preventDefault();
     this._callback.favoritesClick();
-  }
-
-  getTemplate() {
-    return createPopupTemplate(this._film, this._filmComments);
   }
 
   setCloseButtonClickHandler(callback) {
