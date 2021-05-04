@@ -4,6 +4,25 @@ const SortType = {
   BY_RATING: 'Sort by rating',
 };
 
+const FilterType = {
+  ALL: 'All',
+  WATCHLIST: 'Watchlist',
+  HISTORY: 'History',
+  FAVORITES: 'Favorites',
+};
+
+const UserAction = {
+  UPDATE_FILM: 'UPDATE_FILM',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
 const FILM_TITLES = {
   'Побег из Шоушенка': 'The Shawshank Redemption',
   'Зеленая миля': 'The Green Mile',
@@ -138,4 +157,5 @@ const DateInMillisecondsCount = {
 
 
 export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION,
-  CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount, SortType};
+  CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount,
+  UserAction, UpdateType, SortType, FilterType};

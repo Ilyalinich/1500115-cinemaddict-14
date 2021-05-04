@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup/popup.js';
 import {render, remove, replace} from '../util/render.js';
+import {UserAction, UpdateType} from '../constant.js';
 
 
 const Mode = {
@@ -121,7 +122,12 @@ export default class Film {
       },
     );
 
-    this._changeData(updatedFilm);
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      updatedFilm);
+    // подумать о значении UpdateType 44 минута лекции
+    // подумать о вынесении повторяющегося кода в приватный метод
   }
 
   _handleWatchedClick() {
@@ -139,7 +145,12 @@ export default class Film {
       },
     );
 
-    this._changeData(updatedFilm);
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      updatedFilm);
+    // подумать о значении UpdateType 44 минута лекции
+    // подумать о вынесении повторяющегося кода в приватный метод
   }
 
   _handleFavoritesClick() {
@@ -157,7 +168,12 @@ export default class Film {
       },
     );
 
-    this._changeData(updatedFilm);
+    this._changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
+      updatedFilm);
+    // подумать о значении UpdateType 44 минута лекции
+    // подумать о вынесении повторяющегося кода в приватный метод
   }
 
   _handleCloseButtonClick() {
@@ -178,10 +194,15 @@ export default class Film {
       evt.preventDefault();
 
       if (this._popupComponent.isNewCommentValid()) {
-        this._popupComponent.getNewComment();
-        // отправка коммента в модель
-        return;
+        const newComment = this._popupComponent.getNewComment();
+
+        return this._changeData(
+          UserAction.ADD_COMMENT,
+          UpdateType.PATCH,
+          newComment);
+        // подумать о значении UpdateType 44 минута лекции
       }
+
       this._popupComponent.shakeCommentField();
     }
   }

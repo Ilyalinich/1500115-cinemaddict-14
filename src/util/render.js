@@ -53,6 +53,11 @@ const replace = (newChild, oldChild) => {
 
 
 const remove = (component) => {
+  if (component === null) {
+    return;
+    // 57 минута лекции
+  }
+
   if (!(component instanceof Abstract)) {
     throw new Error('Can remove only components');
   }
