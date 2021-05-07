@@ -2,9 +2,11 @@ import Observer from '../util/observer.js';
 
 
 export default class Comments extends Observer {
-  constructor() {
+  constructor(addCommentToFilm, removeCommentFromFilm) {
     super();
     this._comments = [];
+    this._addCommentToFilm = addCommentToFilm;
+    this._removeCommentFromFilm = removeCommentFromFilm;
   }
 
   setComments(comments) {
@@ -21,7 +23,9 @@ export default class Comments extends Observer {
       ...this._comments,
     ];
 
-    this._notify(updateType, newComment);
+    this._addCommentToFilm(updateType, newComment);
+
+    // this._notify(updateType);
   }
 
   deleteComment(updateType, deletedComment) {
@@ -36,6 +40,8 @@ export default class Comments extends Observer {
       ...this._comments.slice(index + 1),
     ];
 
-    this._notify(updateType);
+    this._removeCommentFromFilm(updateType, deletedComment);
+
+    // this._notify(updateType);
   }
 }

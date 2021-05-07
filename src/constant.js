@@ -1,3 +1,22 @@
+const UserRankType = {
+  NO_RANK: 'no rank',
+  NOVICE: 'novice',
+  FAN: 'fan',
+  MOVIE_BUFF: 'movie buff',
+};
+
+const UpdatedFieldType = {
+  WATCHLIST: 'watchlist',
+  ALREADY_WATCHED: 'alreadyWatched',
+  FAVORITE: 'favorite',
+};
+
+const FilmContainerType = {
+  ALL: 'all-films-container',
+  TOP_RATED: 'top-rated-films-container',
+  MOST_COMMENTED: 'most-commented-films-container',
+};
+
 const SortType = {
   DEFAULT: 'Sort by default',
   BY_DATE: 'Sort by date',
@@ -19,6 +38,7 @@ const UserAction = {
 
 const UpdateType = {
   PATCH: 'PATCH',
+  COMMENT_PATCH: 'COMMENT_PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
 };
@@ -158,4 +178,4 @@ const DateInMillisecondsCount = {
 
 export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION,
   CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount,
-  UserAction, UpdateType, SortType, FilterType};
+  UserAction, UpdateType, SortType, FilterType, FilmContainerType, UserRankType, UpdatedFieldType};

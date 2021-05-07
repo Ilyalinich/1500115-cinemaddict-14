@@ -1,3 +1,6 @@
+import {nanoid} from 'nanoid';
+import he from 'he';
+import {ID_LENGTH} from '../../constant.js';
 import {getAllArrayValuesList} from '../../util/common.js';
 import {formatDate} from '../../util/day.js';
 import {getFilmDuration} from '../../util/film.js';
@@ -107,7 +110,7 @@ const createPopupTemplate = (state, filmComments) => {
                 class="film-details__comment-input"
                 placeholder="Select reaction below and write comment here"
                 name="comment"
-              >${!comment ? '' : comment}</textarea>
+              >${!comment ? '' : he.encode(comment)}</textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -134,6 +137,7 @@ export default class Popup extends SmartView {
     this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
     this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
     this._newCommentTextInputHandler = this._newCommentTextInputHandler.bind(this);
+    this._deleteButtonClickHandler = this._deleteButtonClickHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -143,9 +147,14 @@ export default class Popup extends SmartView {
     return createPopupTemplate(this._state, this._filmComments);
   }
 
-  reset(film) {
+  updateComments(newComments) {
+    this._filmComments = newComments;
+  }
+
+  resetState(film) {
     this.updateState(
       this._parseFilmToState(film),
+      true,
     );
   }
 
@@ -156,9 +165,11 @@ export default class Popup extends SmartView {
   }
 
   getNewComment() {
-    const {emotion, comment} = this._state;
+    const {id, emotion, comment} = this._state;
 
     return {
+      filmId: id,
+      id: nanoid(ID_LENGTH),
       emotion,
       comment,
     };
@@ -175,6 +186,7 @@ export default class Popup extends SmartView {
     this.setWatchlistClickHandler(this._callback.watchlistClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
     this.setFavoritesClickHandler(this._callback.favoritesClick);
+    this.setDeleteButtonClickHandler(this._callback.deleteButtonClick);
   }
 
   _parseFilmToState(film) {
@@ -230,6 +242,11 @@ export default class Popup extends SmartView {
     this._callback.favoritesClick();
   }
 
+  _deleteButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteButtonClick(evt.target.dataset.commentId);
+  }
+
   setCloseButtonClickHandler(callback) {
     this._callback.closeButtonClick = callback;
     this.getElement()
@@ -256,5 +273,12 @@ export default class Popup extends SmartView {
     this.getElement()
       .querySelector('#favorite')
       .addEventListener('click', this._favoritesClickHandler);
+  }
+
+  setDeleteButtonClickHandler(callback) {
+    this._callback.deleteButtonClick = callback;
+    this.getElement()
+      .querySelectorAll('.film-details__comment-delete')
+      .forEach((button) => button.addEventListener('click', this._deleteButtonClickHandler));
   }
 }
