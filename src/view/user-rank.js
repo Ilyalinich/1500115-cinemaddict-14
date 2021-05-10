@@ -13,4 +13,8 @@ export default class UserRank extends AbstractView {
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`;
   }
+
+  updateRank(newRank) {
+    this.getElement().querySelector('.profile__rating').textContent = newRank;
+  }
 }

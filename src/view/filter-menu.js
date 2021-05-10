@@ -31,6 +31,7 @@ export default class FilterMenu extends AbstractView {
 
   _filterTypeChangeHandler(evt) {
     if (evt.target.tagName !== 'A' || this._currentFilter === evt.target.dataset.filterType) {
+
       return;
     }
 

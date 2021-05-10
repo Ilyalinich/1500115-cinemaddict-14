@@ -22,7 +22,7 @@ export default class Popup {
 
   init(film) {
     this._film = film;
-    this._filmComments = this._getComments(film);
+    this._filmComments = this._commentsModel.get(film.comments);
 
     const prevPopupComponent = this._popupComponent;
     this._popupComponent = new PopupView(film, this._filmComments);
@@ -50,12 +50,14 @@ export default class Popup {
     }
 
     if (updateType === UpdateType.COMMENT_PATCH) {
-      const newComments = this._getComments(data);
+      const newComments = this._commentsModel.get(data.comments);
       this._popupComponent.updateComments(newComments);
+
 
       if (newComments.length > this._filmComments.length) {
         this._popupComponent.resetState(this._film);
       }
+      this._filmComments = newComments;
     }
 
     this._film = data;
@@ -87,11 +89,7 @@ export default class Popup {
     this._popupContainer.classList.remove('hide-overflow');
   }
 
-  _getComments(film) {
-    return this._commentsModel.getComments().filter(({id}) => film.comments.includes(id));
-  }
-
-  _createUpdate(updatedField) {
+  _getUpdatedFilm(updatedField) {
     const updatedPart = Object.assign(
       {},
       this._film.userDetails,
@@ -107,11 +105,12 @@ export default class Popup {
     );
   }
 
-  _sendFilmUpdate(update) {
+  _sendUpdatedFilm(updatedFilm) {
     this._changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
-      update);
+      updatedFilm,
+    );
   }
 
   _sendComment() {
@@ -120,34 +119,39 @@ export default class Popup {
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.COMMENT_PATCH,
-      newComment);
+      newComment,
+    );
   }
 
   _handleWatchlistClick() {
-    const update = this._createUpdate(UpdatedFieldType.WATCHLIST);
-    this._sendFilmUpdate(update);
+    const updatedFilm = this._getUpdatedFilm(UpdatedFieldType.WATCHLIST);
+    this._sendUpdatedFilm(updatedFilm);
   }
 
   _handleWatchedClick() {
-    const update = this._createUpdate(UpdatedFieldType.ALREADY_WATCHED);
-    this._sendFilmUpdate(update);
+    const updatedFilm = this._getUpdatedFilm(UpdatedFieldType.ALREADY_WATCHED);
+    this._sendUpdatedFilm(updatedFilm);
   }
 
   _handleFavoritesClick() {
-    const update = this._createUpdate(UpdatedFieldType.FAVORITE);
-    this._sendFilmUpdate(update);
+    const updatedFilm = this._getUpdatedFilm(UpdatedFieldType.FAVORITE);
+    this._sendUpdatedFilm(updatedFilm);
   }
 
   _handleDeleteCommentClick(commentId) {
-    const deletedComment = {
-      filmId: this._film.id,
-      id: commentId,
-    };
+    const deletedComment = Object.assign(
+      {},
+      {
+        filmId: this._film.id,
+        id: commentId,
+      },
+    );
 
     this._changeData(
       UserAction.DELETE_COMMENT,
       UpdateType.COMMENT_PATCH,
-      deletedComment);
+      deletedComment,
+    );
   }
 
   _handleCloseButtonClick() {

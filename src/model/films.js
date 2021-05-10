@@ -7,15 +7,15 @@ export default class Films extends Observer {
     this._films = [];
   }
 
-  setFilms(films) {
+  set(films) {
     this._films = films.slice();
   }
 
-  getFilms() {
+  get() {
     return this._films;
   }
 
-  updateFilm(updateType, update) {
+  update(updateType, update) {
     const index = this._films.findIndex((film) => film.id === update.id);
 
     if (index === -1) {
@@ -34,7 +34,10 @@ export default class Films extends Observer {
   addNewComment(updateType, newComment) {
     const updatedFilm = this._films.find((film) => film.id === newComment.filmId);
 
-    updatedFilm.comments.push(newComment.id);
+    updatedFilm.comments = [
+      newComment.id,
+      ...updatedFilm.comments,
+    ];
 
     this._notify(updateType, updatedFilm);
   }

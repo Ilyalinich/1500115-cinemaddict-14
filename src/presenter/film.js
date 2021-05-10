@@ -44,7 +44,7 @@ export default class Film {
     remove(this._filmComponent);
   }
 
-  _createUpdate(updatedField) {
+  _getUpdatedFilm(updatedField) {
     const updatedPart = Object.assign(
       {},
       this._film.userDetails,
@@ -60,26 +60,27 @@ export default class Film {
     );
   }
 
-  _sendFilmUpdate(update) {
+  _sendUpdatedFilm(updatedFilm) {
     this._changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
-      update);
+      updatedFilm,
+    );
   }
 
   _handleWatchlistClick() {
-    const update = this._createUpdate(UpdatedFieldType.WATCHLIST);
-    this._sendFilmUpdate(update);
+    const updatedFilm = this._getUpdatedFilm(UpdatedFieldType.WATCHLIST);
+    this._sendUpdatedFilm(updatedFilm);
   }
 
   _handleWatchedClick() {
-    const update = this._createUpdate(UpdatedFieldType.ALREADY_WATCHED);
-    this._sendFilmUpdate(update);
+    const updatedFilm = this._getUpdatedFilm(UpdatedFieldType.ALREADY_WATCHED);
+    this._sendUpdatedFilm(updatedFilm);
   }
 
   _handleFavoritesClick() {
-    const update = this._createUpdate(UpdatedFieldType.FAVORITE);
-    this._sendFilmUpdate(update);
+    const updatedFilm = this._getUpdatedFilm(UpdatedFieldType.FAVORITE);
+    this._sendUpdatedFilm(updatedFilm);
   }
 
   _handleTriggerClick() {

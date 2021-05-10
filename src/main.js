@@ -43,7 +43,7 @@ const films = new Array(FILMS_COUNT)
 
 
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(films);
+filmsModel.set(films);
 
 const addCommentToFilm = (updateType, newComment) => {
   filmsModel.addNewComment(updateType, newComment);
@@ -54,16 +54,14 @@ const removeCommentFromFilm = (updateType, removedComment) => {
 };
 
 const commentsModel = new CommentsModel(addCommentToFilm, removeCommentFromFilm);
-commentsModel.setComments(commentsList);
+commentsModel.set(commentsList);
 
 const filterModel = new FiltersModel();
 
 
-const userRankPresenter = new UserRankPresenter(siteHeaderElement, filmsModel);
-const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
 const contentBoardPresenter = new ContentBoardPresenter(siteMainElement, pageBodyElement, filmsModel, commentsModel, filterModel);
 
-userRankPresenter.init();
-filterPresenter.init();
+new UserRankPresenter(siteHeaderElement, filmsModel).init();
+new FilterPresenter(siteMainElement, filterModel, filmsModel).init();
 contentBoardPresenter.init();
 render(siteFooterStatisticsElement, new FilmsCounterView(films.length));

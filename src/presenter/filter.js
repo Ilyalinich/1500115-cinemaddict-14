@@ -1,7 +1,6 @@
+import {UpdateType, FilterType} from '../constant.js';
 import FilterView from '../view/filter-menu.js';
 import {render, replace, remove} from '../util/render.js';
-import {getFilters} from '../util/filter.js';
-import {UpdateType} from '../constant.js';
 
 export default class Filter {
   constructor(filterMenuContainer, filterModel, filmsModel) {
@@ -19,14 +18,15 @@ export default class Filter {
   }
 
   init() {
-    const filters = this._getFilters();
+    const filters = this._getFilters(this._filmsModel.get());
     const prevFilterMenuComponent = this._filterMenuComponent;
 
-    this._filterMenuComponent = new FilterView(filters, this._filterModel.getActiveFilter());
+    this._filterMenuComponent = new FilterView(filters, this._filterModel.getActive());
     this._filterMenuComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterMenuComponent === null) {
       render(this._filterMenuContainer, this._filterMenuComponent);
+
       return;
     }
 
@@ -39,12 +39,38 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    this._filterModel.set(UpdateType.MAJOR, filterType);
   }
 
-  _getFilters() {
-    const films = this._filmsModel.getFilms();
+  _getFilters(films) {
+    const filterMap = {
+      [FilterType.ALL]: '',
+      [FilterType.WATCHLIST]: 0,
+      [FilterType.HISTORY]: 0,
+      [FilterType.FAVORITES]: 0,
+    };
 
-    return getFilters(films);
+    films.forEach(({userDetails}) => {
+      if (userDetails.watchlist) {
+        filterMap[FilterType.WATCHLIST]++;
+      }
+
+      if (userDetails.alreadyWatched) {
+        filterMap[FilterType.HISTORY]++;
+      }
+
+      if (userDetails.favorite) {
+        filterMap[FilterType.FAVORITES]++;
+      }
+    });
+
+    return Object
+      .entries(filterMap)
+      .map(([filterType, filmsCount]) => (
+        {
+          type: filterType,
+          count: filmsCount,
+        }
+      ));
   }
 }

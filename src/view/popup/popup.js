@@ -167,12 +167,15 @@ export default class Popup extends SmartView {
   getNewComment() {
     const {id, emotion, comment} = this._state;
 
-    return {
-      filmId: id,
-      id: nanoid(ID_LENGTH),
-      emotion,
-      comment,
-    };
+    return Object.assign(
+      {},
+      {
+        filmId: id,
+        id: nanoid(ID_LENGTH),
+        emotion,
+        comment,
+      },
+    );
   }
 
   shakeCommentField() {
@@ -210,16 +213,21 @@ export default class Popup extends SmartView {
   }
 
   _emotionChangeHandler(evt) {
-    this.updateState({
-      emotion: evt.target.value,
-    });
+    this.updateState(
+      {
+        emotion: evt.target.value,
+      },
+    );
   }
 
   _newCommentTextInputHandler(evt) {
     evt.preventDefault();
-    this.updateState({
-      comment: evt.target.value,
-    }, true);
+    this.updateState(
+      {
+        comment: evt.target.value,
+      },
+      true,
+    );
   }
 
   _closeButtonClickHandler(evt) {

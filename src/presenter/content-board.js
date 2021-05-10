@@ -68,8 +68,8 @@ export default class ContentBoard {
   }
 
   _getFilms() {
-    const activeFilterType = this._filterModel.getActiveFilter();
-    const films = this._filmsModel.getFilms();
+    const activeFilterType = this._filterModel.getActive();
+    const films = this._filmsModel.get();
     const filtredFilms = filterFilms(films, activeFilterType);
 
     switch (this._currentSortType) {
@@ -157,7 +157,7 @@ export default class ContentBoard {
 
   _renderTopRatedFilmsList() {
     const topRatedFilms = this._filmsModel
-      .getFilms()
+      .get()
       .slice()
       .sort(sortFilmsByRating);
 
@@ -174,7 +174,7 @@ export default class ContentBoard {
 
   _renderMostCommentedFilmsList() {
     const mostCommentedFilms = this._filmsModel
-      .getFilms()
+      .get()
       .slice()
       .sort(sortFilmsByCommentsCount);
 
@@ -214,6 +214,7 @@ export default class ContentBoard {
 
     if (resetRenderedFilmsCount) {
       this._renderedFilmsCount = FILMS_RENDER_STEP;
+
       return;
     }
 
@@ -271,13 +272,13 @@ export default class ContentBoard {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._filmsModel.updateFilm(updateType, update);
+        this._filmsModel.update(updateType, update);
         break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, update);
+        this._commentsModel.add(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
-        this._commentsModel.deleteComment(updateType, update);
+        this._commentsModel.delete(updateType, update);
         break;
     }
   }
