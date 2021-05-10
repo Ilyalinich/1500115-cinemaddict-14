@@ -139,13 +139,11 @@ export default class Popup {
   }
 
   _handleDeleteCommentClick(commentId) {
-    const deletedComment = Object.assign(
-      {},
+    const deletedComment =
       {
         filmId: this._film.id,
         id: commentId,
-      },
-    );
+      };
 
     this._changeData(
       UserAction.DELETE_COMMENT,

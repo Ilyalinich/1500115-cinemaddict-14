@@ -167,15 +167,12 @@ export default class Popup extends SmartView {
   getNewComment() {
     const {id, emotion, comment} = this._state;
 
-    return Object.assign(
-      {},
-      {
-        filmId: id,
-        id: nanoid(ID_LENGTH),
-        emotion,
-        comment,
-      },
-    );
+    return {
+      filmId: id,
+      id: nanoid(ID_LENGTH),
+      emotion,
+      comment,
+    };
   }
 
   shakeCommentField() {
