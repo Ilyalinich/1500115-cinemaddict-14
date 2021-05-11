@@ -1,3 +1,6 @@
+import dayjs from 'dayjs';
+
+
 const UserRankType = {
   NO_RANK: 'no rank',
   NOVICE: 'novice',
@@ -41,6 +44,14 @@ const UpdateType = {
   COMMENT_PATCH: 'COMMENT_PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+};
+
+const StatisticFilterType = {
+  ALL_TIME: 'all-time',
+  TODAY: 'today',
+  WEEK: 'week',
+  MONTH: 'month',
+  YEAR: 'year',
 };
 
 const FILM_TITLES = {
@@ -171,11 +182,11 @@ const GenresCount = {
 };
 
 const DateInMillisecondsCount = {
-  MIN: -1000000000000,
-  MAX: 1617461799418,
+  MIN: dayjs('2020-01-10').valueOf(),
+  MAX: dayjs().valueOf(),
 };
 
 
 export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION,
   CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount,
-  UserAction, UpdateType, SortType, FilterType, FilmContainerType, UserRankType, UpdatedFieldType};
+  UserAction, UpdateType, SortType, FilterType, FilmContainerType, UserRankType, UpdatedFieldType, StatisticFilterType};

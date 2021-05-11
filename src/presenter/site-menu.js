@@ -1,17 +1,21 @@
-import {UpdateType, FilterType} from '../constant.js';
-import FilterView from '../view/filter-menu.js';
+import {FilterType} from '../constant.js';
+import SiteMenuView from '../view/site-menu.js';
 import {render, replace, remove} from '../util/render.js';
 
-export default class Filter {
-  constructor(filterMenuContainer, filterModel, filmsModel) {
-    this._filterMenuContainer = filterMenuContainer;
+
+export default class SiteMenu {
+  constructor(siteMenuContainer, filterModel, filmsModel, showContent, showStatistic) {
+    this._siteMenuContainer = siteMenuContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
+    this._showContent = showContent;
+    this._showStatistic = showStatistic;
 
-    this._filterMenuComponent = null;
+    this._siteMenuComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
+    this._handleStatsClick = this._handleStatsClick.bind(this);
 
     this._filmsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
@@ -19,27 +23,32 @@ export default class Filter {
 
   init() {
     const filters = this._getFilters(this._filmsModel.get());
-    const prevFilterMenuComponent = this._filterMenuComponent;
+    const prevSiteMenuComponent = this._siteMenuComponent;
 
-    this._filterMenuComponent = new FilterView(filters, this._filterModel.getActive());
-    this._filterMenuComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._siteMenuComponent = new SiteMenuView(filters, this._filterModel.getActive());
+    this._siteMenuComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._siteMenuComponent.setStatsLinkClickHandler(this._handleStatsClick);
 
-    if (prevFilterMenuComponent === null) {
-      render(this._filterMenuContainer, this._filterMenuComponent);
+    if (prevSiteMenuComponent === null) {
+      render(this._siteMenuContainer, this._siteMenuComponent);
 
       return;
     }
 
-    replace(this._filterMenuComponent, prevFilterMenuComponent);
-    remove(prevFilterMenuComponent);
+    replace(this._siteMenuComponent, prevSiteMenuComponent);
+    remove(prevSiteMenuComponent);
   }
 
   _handleModelEvent() {
     this.init();
   }
 
-  _handleFilterTypeChange(filterType) {
-    this._filterModel.set(UpdateType.MAJOR, filterType);
+  _handleStatsClick() {
+    this._showStatistic();
+  }
+
+  _handleFilterTypeChange(currentFilter) {
+    this._showContent(currentFilter);
   }
 
   _getFilters(films) {

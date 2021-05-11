@@ -34,7 +34,7 @@ export const generateFilm = (commentsIds) => {
     userDetails: {
       watchlist: getRandomBoolean(),
       alreadyWatched: getRandomBoolean(),
-      watchingDate: dayjs().toISOString(),
+      watchingDate: dayjs(randomDate).toISOString(),
       favorite: getRandomBoolean(),
     },
   };
