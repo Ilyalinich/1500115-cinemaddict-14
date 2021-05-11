@@ -2,17 +2,26 @@ import {getRandomInteger} from './util/common.js';
 import {render} from './util/render.js';
 import {CommentsCount} from './constant.js';
 import {generateFilm} from './mock/film-data.js';
-import {generateFilter} from './mock/filter-data.js';
 import {generateComment} from './mock/comment.js';
-import FilterMenuView from './view/filter-menu.js';
-import UserRankView from './view/user-rank.js';
 import FilmsCounterView from './view/films-counter.js';
 import ContentBoardPresenter from './presenter/content-board.js';
+import FilterPresenter from './presenter/filter.js';
+import UserRankPresenter from './presenter/user-rank.js';
+import FilmsModel from './model/films.js';
+import CommentsModel from './model/comments.js';
+import FiltersModel from './model/filter.js';
 
 
 const FILMS_COUNT = 20;
-const commentsList = [];
 
+
+const pageBodyElement = document.querySelector('body');
+const siteHeaderElement = document.querySelector('.header');
+const siteMainElement = document.querySelector('.main');
+const siteFooterStatisticsElement = document.querySelector('.footer__statistics');
+
+
+const commentsList = [];
 
 const films = new Array(FILMS_COUNT)
   .fill(null)
@@ -33,31 +42,26 @@ const films = new Array(FILMS_COUNT)
   });
 
 
-const filmsCount = films.length;
+const filmsModel = new FilmsModel();
+filmsModel.set(films);
 
-const filters = generateFilter(films);
-
-
-const pageBodyElement = document.querySelector('body');
-const siteHeaderElement = document.querySelector('.header');
-const siteMainElement = document.querySelector('.main');
-const siteFooterStatisticsElement = document.querySelector('.footer__statistics');
-
-
-const renderUserRank = (userRankContainer, films) => {
-  if (films.length !== 0 && films.some(({userDetails}) => userDetails.alreadyWatched)) {
-    render(userRankContainer, new UserRankView(films));
-  }
+const addCommentToFilm = (updateType, newComment) => {
+  filmsModel.addNewComment(updateType, newComment);
 };
 
-const renderFilterMenu = (filterMenuContainer, filters) => render(filterMenuContainer, new FilterMenuView(filters));
+const removeCommentFromFilm = (updateType, removedComment) => {
+  filmsModel.removeComment(updateType, removedComment);
+};
 
-const renderFilmsCounter = (filmsCounterContainer, filmsCount) => render(filmsCounterContainer, new FilmsCounterView(filmsCount));
+const commentsModel = new CommentsModel(addCommentToFilm, removeCommentFromFilm);
+commentsModel.set(commentsList);
 
-const contentBoardPresenter = new ContentBoardPresenter(siteMainElement, pageBodyElement);
+const filterModel = new FiltersModel();
 
 
-renderUserRank(siteHeaderElement, films);
-renderFilterMenu(siteMainElement, filters);
-contentBoardPresenter.init(films, commentsList);
-renderFilmsCounter(siteFooterStatisticsElement, filmsCount);
+const contentBoardPresenter = new ContentBoardPresenter(siteMainElement, pageBodyElement, filmsModel, commentsModel, filterModel);
+
+new UserRankPresenter(siteHeaderElement, filmsModel).init();
+new FilterPresenter(siteMainElement, filterModel, filmsModel).init();
+contentBoardPresenter.init();
+render(siteFooterStatisticsElement, new FilmsCounterView(films.length));

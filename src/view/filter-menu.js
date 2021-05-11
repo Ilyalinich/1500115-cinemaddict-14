@@ -2,9 +2,9 @@ import AbstractView from './abstract.js';
 import {createFilterItemTemplate} from './filter-item.js';
 
 
-const createFilterMenuTemplate = (filters) => {
+const createFilterMenuTemplate = (filters, currentFilterType) => {
   const filterItemsTemplate = filters
-    .map((filter, index) => createFilterItemTemplate(filter, index === 0))
+    .map((filter) => createFilterItemTemplate(filter, currentFilterType))
     .join('');
 
   return `<nav class="main-navigation">
@@ -17,12 +17,31 @@ const createFilterMenuTemplate = (filters) => {
 
 
 export default class FilterMenu extends AbstractView {
-  constructor(filters) {
+  constructor(filters, currentFilterType) {
     super();
     this._filters = filters;
+    this._currentFilter = currentFilterType;
+
+    this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createFilterMenuTemplate(this._filters);
+    return createFilterMenuTemplate(this._filters, this._currentFilter);
+  }
+
+  _filterTypeChangeHandler(evt) {
+    if (evt.target.tagName !== 'A' || this._currentFilter === evt.target.dataset.filterType) {
+
+      return;
+    }
+
+    evt.preventDefault();
+
+    this._callback.filterTypeChange(evt.target.dataset.filterType);
+  }
+
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
   }
 }

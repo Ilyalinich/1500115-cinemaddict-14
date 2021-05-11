@@ -1,7 +1,46 @@
+const UserRankType = {
+  NO_RANK: 'no rank',
+  NOVICE: 'novice',
+  FAN: 'fan',
+  MOVIE_BUFF: 'movie buff',
+};
+
+const UpdatedFieldType = {
+  WATCHLIST: 'watchlist',
+  ALREADY_WATCHED: 'alreadyWatched',
+  FAVORITE: 'favorite',
+};
+
+const FilmContainerType = {
+  ALL: 'all-films-container',
+  TOP_RATED: 'top-rated-films-container',
+  MOST_COMMENTED: 'most-commented-films-container',
+};
+
 const SortType = {
   DEFAULT: 'Sort by default',
   BY_DATE: 'Sort by date',
   BY_RATING: 'Sort by rating',
+};
+
+const FilterType = {
+  ALL: 'All',
+  WATCHLIST: 'Watchlist',
+  HISTORY: 'History',
+  FAVORITES: 'Favorites',
+};
+
+const UserAction = {
+  UPDATE_FILM: 'UPDATE_FILM',
+  ADD_COMMENT: 'ADD_COMMENT',
+  DELETE_COMMENT: 'DELETE_COMMENT',
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  COMMENT_PATCH: 'COMMENT_PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
 };
 
 const FILM_TITLES = {
@@ -138,4 +177,5 @@ const DateInMillisecondsCount = {
 
 
 export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION,
-  CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount, SortType};
+  CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount,
+  UserAction, UpdateType, SortType, FilterType, FilmContainerType, UserRankType, UpdatedFieldType};
