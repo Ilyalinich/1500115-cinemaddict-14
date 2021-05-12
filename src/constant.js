@@ -182,7 +182,7 @@ const GenresCount = {
 };
 
 const DateInMillisecondsCount = {
-  MIN: dayjs('2020-01-10').valueOf(),
+  MIN: dayjs('2021-04-01').valueOf(),
   MAX: dayjs().valueOf(),
 };
 

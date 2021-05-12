@@ -18,12 +18,15 @@ const createFilmCardTemplate = (film) => {
     ? description.slice(0, DESCRIPTION_SYMBOL_LIMIT - 1)  + '…'
     : description;
 
+  const filmDuration = getDuration(runtime);
+
+
   return `<article class="film-card">
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${totalRating}</p>
     <p class="film-card__info">
       <span class="film-card__year">${formatDate(release.date, DATE_FORMAT)}</span>
-      <span class="film-card__duration">${getDuration(runtime).format(runtime > 60 ? 'H[h] mm[m]' : 'mm[m]')}</span>
+      <span class="film-card__duration">${filmDuration.format(filmDuration.hours() > 0 ? 'H[h] mm[m]' : 'mm[m]')}</span>
       <span class="film-card__genre">${getAllArrayValuesList(genre)}</span>
     </p>
     <img src="./images/posters/${poster}" alt="" class="film-card__poster">

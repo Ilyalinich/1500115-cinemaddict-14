@@ -20,6 +20,9 @@ const createPopupTemplate = (state, filmComments) => {
     director, writers, actors, release, runtime, genre, description} = filmInfo;
   const {watchlist, alreadyWatched, favorite} = userDetails;
 
+  const filmDuration = getDuration(runtime);
+
+
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
       <div class="film-details__top-container">
@@ -64,7 +67,7 @@ const createPopupTemplate = (state, filmComments) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${getDuration(runtime).format(runtime > 60 ? 'H[h] mm[m]' : 'mm[m]')}</td>
+                <td class="film-details__cell">${filmDuration.format(filmDuration.hours() > 0 ? 'H[h] mm[m]' : 'mm[m]')}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>

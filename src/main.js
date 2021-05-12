@@ -60,16 +60,16 @@ commentsModel.set(commentsList);
 
 const filterModel = new FiltersModel();
 
-let statsComponent = null;
+let statisticComponent = null;
 
 const showStatistic = () => {
-  statsComponent = new StatisticView(filmsModel.get());
+  statisticComponent = new StatisticView(filmsModel.get());
   contentBoardPresenter.hide();
-  render(siteMainElement, statsComponent);
+  render(siteMainElement, statisticComponent);
 };
 
 const showContent = (currentFilter) => {
-  remove(statsComponent);
+  remove(statisticComponent);
   filterModel.set(UpdateType.MAJOR, currentFilter);
   contentBoardPresenter.show();
 };

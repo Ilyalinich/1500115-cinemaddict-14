@@ -140,13 +140,12 @@ export default class Statistic extends SmartView {
     super();
     this._state = this._parseFilmsToState(films);
 
-
     this._chart = null;
 
     this._statisticFilterChangeHandler = this._statisticFilterChangeHandler.bind(this);
 
-    this._setChart();
     this.restoreHandlers();
+    this.restoreAdditionalViewParts();
   }
 
   getTemplate() {
@@ -157,26 +156,24 @@ export default class Statistic extends SmartView {
     this.getElement()
       .querySelector('.statistic__filters')
       .addEventListener('change', this._statisticFilterChangeHandler);
-    this._setChart();
-    //странно вызывать перерисовку графиков тут
   }
 
-  _statisticFilterChangeHandler(evt) {
-    if (evt.target.tagName !== 'INPUT' || this._state.currentStatisticFilter === evt.target.value) {
-      return;
-    }
+  restoreAdditionalViewParts() {
+    this._setChart();
+  }
 
-    const watchedFilms = this._getWatchedFilms(this._state.films, evt.target.value);
+  _parseFilmsToState(films) {
+    const watchedFilms = this._getWatchedFilms(films);
     const genresCounters = this._getGenresCounters(watchedFilms);
 
-    this.updateState(
-      {
-        currentStatisticFilter: evt.target.value,
-        watchedFilms,
-        genres: genresCounters.map((genresConter) => genresConter[0]),
-        counters: genresCounters.map((genresConter) => genresConter[1]),
-      },
-    );
+    return {
+      films,
+      userRank: getUserRank(films),
+      currentStatisticFilter: StatisticFilterType.ALL_TIME,
+      watchedFilms,
+      genres: genresCounters.map((genresConter) => genresConter[0]),
+      counters: genresCounters.map((genresConter) => genresConter[1]),
+    };
   }
 
   _setChart() {
@@ -216,20 +213,21 @@ export default class Statistic extends SmartView {
   }
 
 
-  _parseFilmsToState(films) {
-    const watchedFilms = this._getWatchedFilms(films);
+  _statisticFilterChangeHandler(evt) {
+    if (evt.target.tagName !== 'INPUT' || this._state.currentStatisticFilter === evt.target.value) {
+      return;
+    }
+
+    const watchedFilms = this._getWatchedFilms(this._state.films, evt.target.value);
     const genresCounters = this._getGenresCounters(watchedFilms);
 
-    return {
-      films,
-      userRank: getUserRank(films),
-      // два раза считаю количество просмотренных фильмов.
-      // вызов update state снаружи и передача измененных фильмов через стэйт, а не через пересоздание компонента
-      // не приведет к изменениям
-      currentStatisticFilter: StatisticFilterType.ALL_TIME,
-      watchedFilms,
-      genres: genresCounters.map((genresConter) => genresConter[0]),
-      counters: genresCounters.map((genresConter) => genresConter[1]),
-    };
+    this.updateState(
+      {
+        currentStatisticFilter: evt.target.value,
+        watchedFilms,
+        genres: genresCounters.map((genresConter) => genresConter[0]),
+        counters: genresCounters.map((genresConter) => genresConter[1]),
+      },
+    );
   }
 }
