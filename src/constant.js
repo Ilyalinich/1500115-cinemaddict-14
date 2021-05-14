@@ -46,9 +46,9 @@ const UpdateType = {
   MAJOR: 'MAJOR',
 };
 
-const StatisticFilterType = {
+const TimeRange = {
   ALL_TIME: 'all-time',
-  TODAY: 'today',
+  TODAY: 'day',
   WEEK: 'week',
   MONTH: 'month',
   YEAR: 'year',
@@ -189,4 +189,4 @@ const DateInMillisecondsCount = {
 
 export {FILM_TITLES, POSTER_NAMES, DESCRIPTION_SENTENCES, AGE_RATING_COUNTS, PERSONS, GENRES, COUNTRIES, ID_LENGTH, TOTAL_RATING_PRECISION,
   CommentsCount, TotalRatingCount, DescriptionSentencesCount, WritersCount, ActorsCount, RunTimeCount, GenresCount, DateInMillisecondsCount,
-  UserAction, UpdateType, SortType, FilterType, FilmContainerType, UserRankType, UpdatedFieldType, StatisticFilterType};
+  UserAction, UpdateType, SortType, FilterType, FilmContainerType, UserRankType, UpdatedFieldType, TimeRange};

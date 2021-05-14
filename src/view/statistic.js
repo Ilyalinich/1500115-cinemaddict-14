@@ -1,9 +1,7 @@
-import {StatisticFilterType} from '../constant.js';
-import {getUserRank} from '../util/user-rank.js';
-import dayjs from 'dayjs';
+import {TimeRange} from '../constant.js';
+import {getDuration} from '../util/day.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {getDuration} from '../util/day.js';
 import SmartView from './smart.js';
 
 
@@ -76,9 +74,8 @@ const renderChart = (statisticCtx, state) => {
   );
 };
 
-
 const createStatisticsTemplate = (state) => {
-  const {userRank, currentStatisticFilter, watchedFilms, genres} = state;
+  const {userRank, currentTimeRange, watchedFilms, genres} = state;
 
   const watchedFilmsRuntime = watchedFilms.reduce((accumulator, {filmInfo}) => {
     return accumulator + Number(filmInfo.runtime);
@@ -96,19 +93,19 @@ const createStatisticsTemplate = (state) => {
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
       <p class="statistic__filters-description">Show stats:</p>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="${StatisticFilterType.ALL_TIME}" ${currentStatisticFilter === StatisticFilterType.ALL_TIME ? 'checked' : ''}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-all-time" value="${TimeRange.ALL_TIME}" ${currentTimeRange === TimeRange.ALL_TIME ? 'checked' : ''}>
       <label for="statistic-all-time" class="statistic__filters-label">All time</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="${StatisticFilterType.TODAY}" ${currentStatisticFilter === StatisticFilterType.TODAY ? 'checked' : ''}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-today" value="${TimeRange.TODAY}" ${currentTimeRange === TimeRange.TODAY ? 'checked' : ''}>
       <label for="statistic-today" class="statistic__filters-label">Today</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="${StatisticFilterType.WEEK}" ${currentStatisticFilter === StatisticFilterType.WEEK ? 'checked' : ''}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-week" value="${TimeRange.WEEK}" ${currentTimeRange === TimeRange.WEEK ? 'checked' : ''}>
       <label for="statistic-week" class="statistic__filters-label">Week</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="${StatisticFilterType.MONTH}" ${currentStatisticFilter === StatisticFilterType.MONTH ? 'checked' : ''}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-month" value="${TimeRange.MONTH}" ${currentTimeRange === TimeRange.MONTH ? 'checked' : ''}>
       <label for="statistic-month" class="statistic__filters-label">Month</label>
 
-      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="${StatisticFilterType.YEAR}" ${currentStatisticFilter === StatisticFilterType.YEAR ? 'checked' : ''}>
+      <input type="radio" class="statistic__filters-input visually-hidden" name="statistic-filter" id="statistic-year" value="${TimeRange.YEAR}" ${currentTimeRange === TimeRange.YEAR ? 'checked' : ''}>
       <label for="statistic-year" class="statistic__filters-label">Year</label>
     </form>
 
@@ -136,98 +133,52 @@ const createStatisticsTemplate = (state) => {
 
 
 export default class Statistic extends SmartView {
-  constructor(films) {
+  constructor(userRank, {watchedFilms, currentTimeRange, genres, counters}) {
     super();
-    this._state = this._parseFilmsToState(films);
 
-    this._chart = null;
+    this._state = {
+      userRank,
+      watchedFilms,
+      currentTimeRange,
+      genres,
+      counters,
+    };
 
     this._statisticFilterChangeHandler = this._statisticFilterChangeHandler.bind(this);
 
-    this.restoreHandlers();
-    this.restoreAdditionalViewParts();
-  }
-
-  getTemplate() {
-    return createStatisticsTemplate(this._state);
+    this._setChart();
   }
 
   restoreHandlers() {
-    this.getElement()
-      .querySelector('.statistic__filters')
-      .addEventListener('change', this._statisticFilterChangeHandler);
+    this.setStatisticFilterChangeHandler(this._callback.statisticFilterChange);
   }
 
   restoreAdditionalViewParts() {
     this._setChart();
   }
 
-  _parseFilmsToState(films) {
-    const watchedFilms = this._getWatchedFilms(films);
-    const genresCounters = this._getGenresCounters(watchedFilms);
+  getTemplate() {
+    return createStatisticsTemplate(this._state);
+  }
 
-    return {
-      films,
-      userRank: getUserRank(films),
-      currentStatisticFilter: StatisticFilterType.ALL_TIME,
-      watchedFilms,
-      genres: genresCounters.map((genresConter) => genresConter[0]),
-      counters: genresCounters.map((genresConter) => genresConter[1]),
-    };
+  setStatisticFilterChangeHandler(callback) {
+    this._callback.statisticFilterChange = callback;
+    this.getElement()
+      .querySelector('.statistic__filters')
+      .addEventListener('change', this._statisticFilterChangeHandler);
   }
 
   _setChart() {
-    if (this._chart !== null) {
-      this._chart === null;
-    }
-
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
 
     this._chart = renderChart(statisticCtx, this._state);
   }
-
-  _getWatchedFilms(films, currentStatisticFilter) {
-    switch (currentStatisticFilter) {
-      case StatisticFilterType.TODAY:
-        return films.filter(({userDetails}) => userDetails.alreadyWatched && dayjs().diff(dayjs(userDetails.watchingDate), 'day') === 0);
-      case StatisticFilterType.WEEK:
-        return films.filter(({userDetails}) => userDetails.alreadyWatched && dayjs().diff(dayjs(userDetails.watchingDate), 'week') === 0);
-      case StatisticFilterType.MONTH:
-        return films.filter(({userDetails}) => userDetails.alreadyWatched && dayjs().diff(dayjs(userDetails.watchingDate), 'month') === 0);
-      case StatisticFilterType.YEAR:
-        return films.filter(({userDetails}) => userDetails.alreadyWatched && dayjs().diff(dayjs(userDetails.watchingDate), 'year') === 0);
-      default:
-        return films.filter(({userDetails}) => userDetails.alreadyWatched);
-    }
-  }
-
-  _getGenresCounters(watchedFilms) {
-    const genresConter = {};
-
-    watchedFilms.forEach(({filmInfo}) =>
-      filmInfo.genre.forEach((genre) => genre in genresConter ? genresConter[genre]++ : genresConter[genre] = 1));
-
-    return Object
-      .entries(genresConter)
-      .sort((genreCounterA, genreCounterB) => genreCounterB[1] - genreCounterA[1]);
-  }
-
 
   _statisticFilterChangeHandler(evt) {
     if (evt.target.tagName !== 'INPUT' || this._state.currentStatisticFilter === evt.target.value) {
       return;
     }
 
-    const watchedFilms = this._getWatchedFilms(this._state.films, evt.target.value);
-    const genresCounters = this._getGenresCounters(watchedFilms);
-
-    this.updateState(
-      {
-        currentStatisticFilter: evt.target.value,
-        watchedFilms,
-        genres: genresCounters.map((genresConter) => genresConter[0]),
-        counters: genresCounters.map((genresConter) => genresConter[1]),
-      },
-    );
+    this._callback.statisticFilterChange(evt.target.value);
   }
 }
