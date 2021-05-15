@@ -146,7 +146,7 @@ export default class Statistic extends SmartView {
 
     this._statisticFilterChangeHandler = this._statisticFilterChangeHandler.bind(this);
 
-    this._setChart();
+    this._createChart();
   }
 
   restoreHandlers() {
@@ -154,7 +154,7 @@ export default class Statistic extends SmartView {
   }
 
   restoreAdditionalViewParts() {
-    this._setChart();
+    this._createChart();
   }
 
   getTemplate() {
@@ -168,10 +168,10 @@ export default class Statistic extends SmartView {
       .addEventListener('change', this._statisticFilterChangeHandler);
   }
 
-  _setChart() {
+  _createChart() {
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
 
-    this._chart = renderChart(statisticCtx, this._state);
+    renderChart(statisticCtx, this._state);
   }
 
   _statisticFilterChangeHandler(evt) {

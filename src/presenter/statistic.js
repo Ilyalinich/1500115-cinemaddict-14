@@ -10,6 +10,8 @@ export default class Statistic {
     this._statisticContainer = statisticContainer;
     this._filmsModel = filmsModel;
 
+    this._statisticComponent = null;
+
     this._handleStatisticFilterChange = this._handleStatisticFilterChange.bind(this);
   }
 
@@ -23,6 +25,7 @@ export default class Statistic {
 
   destroy() {
     remove(this._statisticComponent);
+    this._statisticComponent = null;
   }
 
   _getWatchedFilmsByTimeRange(films, currentTimeRange) {
@@ -37,7 +40,19 @@ export default class Statistic {
     const genresCounter = {};
 
     watchedFilms.forEach(({filmInfo}) =>
-      filmInfo.genre.forEach((genre) => genre in genresCounter ? genresCounter[genre]++ : genresCounter[genre] = 1));
+      filmInfo.genre.reduce((genresCounter, genre) => {
+        if (genre in genresCounter) {
+          genresCounter[genre]++;
+        } else {
+          genresCounter[genre] = 1;
+        }
+        return genresCounter;
+      }, {genresCounter}),
+    );
+
+
+    console.log(genresCounter);
+    // filmInfo.genre.forEach((genre) => genre in genresCounter ? genresCounter[genre]++ : genresCounter[genre] = 1));
 
     return Object
       .entries(genresCounter)
@@ -51,8 +66,8 @@ export default class Statistic {
     return {
       watchedFilms,
       currentTimeRange,
-      genres: genresCounters.map((genresConter) => genresConter[0]),
-      counters: genresCounters.map((genresConter) => genresConter[1]),
+      genres: genresCounters.map((genresCounter) => genresCounter[0]),
+      counters: genresCounters.map((genresCounter) => genresCounter[1]),
     };
   }
 

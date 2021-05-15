@@ -14,7 +14,7 @@ import CommentsModel from './model/comments.js';
 import FiltersModel from './model/filter.js';
 
 
-const FILMS_COUNT = 20;
+const FILMS_COUNT = 10;
 
 
 const pageBodyElement = document.querySelector('body');
