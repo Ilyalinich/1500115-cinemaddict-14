@@ -37,22 +37,17 @@ export default class Statistic {
   }
 
   _getGenresCounters(watchedFilms) {
-    const genresCounter = {};
-
-    watchedFilms.forEach(({filmInfo}) =>
-      filmInfo.genre.reduce((genresCounter, genre) => {
-        if (genre in genresCounter) {
-          genresCounter[genre]++;
+    const genresCounter = watchedFilms.reduce((accumulator, {filmInfo}) => {
+      filmInfo.genre.forEach((genre) => {
+        if (accumulator[genre]) {
+          accumulator[genre]++;
         } else {
-          genresCounter[genre] = 1;
+          accumulator[genre] = 1;
         }
-        return genresCounter;
-      }, {genresCounter}),
-    );
+      });
 
-
-    console.log(genresCounter);
-    // filmInfo.genre.forEach((genre) => genre in genresCounter ? genresCounter[genre]++ : genresCounter[genre] = 1));
+      return accumulator;
+    }, {});
 
     return Object
       .entries(genresCounter)
