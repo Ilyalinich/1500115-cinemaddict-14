@@ -10,4 +10,8 @@ export default class FilmsCounter extends AbstractView {
   getTemplate() {
     return `<p>${this._filmsCount.toLocaleString()} movies inside</p>`;
   }
+
+  updateCounter(filmsCount) {
+    this.getElement().textContent = `${filmsCount} movies inside`;
+  }
 }

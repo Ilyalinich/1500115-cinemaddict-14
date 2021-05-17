@@ -1,4 +1,4 @@
-import {TimeRange} from '../constant.js';
+import {TimeRange, UserRankType} from '../constant.js';
 import {getDuration} from '../util/day.js';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -87,7 +87,7 @@ const createStatisticsTemplate = (state) => {
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">${userRank}</span>
+      <span class="statistic__rank-label">${userRank === UserRankType.NO_RANK ? '' : userRank}</span>
     </p>
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -149,13 +149,11 @@ export default class Statistic extends SmartView {
     this._createChart();
   }
 
-  restoreHandlers() {
+  restoreViewFunctionality() {
     this.setStatisticFilterChangeHandler(this._callback.statisticFilterChange);
-  }
-
-  restoreAdditionalViewParts() {
     this._createChart();
   }
+
 
   getTemplate() {
     return createStatisticsTemplate(this._state);

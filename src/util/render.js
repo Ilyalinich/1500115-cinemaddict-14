@@ -4,28 +4,32 @@ import Abstract from '../view/abstract.js';
 const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
+  AFTER: 'after',
   BEFORE: 'before',
 };
 
 
-const render = (container, child, place = RenderPosition.BEFOREEND) => {
-  if (container instanceof Abstract) {
-    container = container.getElement();
+const render = (element, insertedElement, place = RenderPosition.BEFOREEND) => {
+  if (element instanceof Abstract) {
+    element = element.getElement();
   }
 
-  if (child instanceof Abstract) {
-    child = child.getElement();
+  if (insertedElement instanceof Abstract) {
+    insertedElement = insertedElement.getElement();
   }
 
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(child);
+      element.prepend(insertedElement);
       break;
     case RenderPosition.BEFOREEND:
-      container.append(child);
+      element.append(insertedElement);
+      break;
+    case RenderPosition.AFTER:
+      element.after(insertedElement);
       break;
     case RenderPosition.BEFORE:
-      container.before(child);
+      element.before(insertedElement);
       break;
     default:
       throw new Error('invalid value for the place parameter');

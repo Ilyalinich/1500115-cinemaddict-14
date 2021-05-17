@@ -1,9 +1,5 @@
 import {UpdateType} from './constant.js';
-import {getRandomInteger} from './util/common.js';
 import {render} from './util/render.js';
-import {CommentsCount} from './constant.js';
-import {generateFilm} from './mock/film-data.js';
-import {generateComment} from './mock/comment.js';
 import FilmsCounterView from './view/films-counter.js';
 import ContentBoardPresenter from './presenter/content-board.js';
 import SiteMenuPresenter from './presenter/site-menu.js';
@@ -12,9 +8,11 @@ import StatisticPresenter from './presenter/statistic.js';
 import FilmsModel from './model/films.js';
 import CommentsModel from './model/comments.js';
 import FiltersModel from './model/filter.js';
+import Api from './api.js';
 
 
-const FILMS_COUNT = 10;
+const AUTHORIZATION = 'Basic ls4kjn5lkhm5fl';
+const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 
 const pageBodyElement = document.querySelector('body');
@@ -23,46 +21,16 @@ const siteMainElement = document.querySelector('.main');
 const siteFooterStatisticsElement = document.querySelector('.footer__statistics');
 
 
-const commentsList = [];
-
-const films = new Array(FILMS_COUNT)
-  .fill(null)
-  .map(() => {
-    const commentsCount = getRandomInteger(CommentsCount.MIN, CommentsCount.MAX);
-    const comments = new Array(commentsCount)
-      .fill(null)
-      .map(generateComment);
-
-    const commentsIds = [];
-
-    comments.forEach((comment) => {
-      commentsIds.push(comment.id);
-      commentsList.push(comment);
-    });
-
-    return generateFilm(commentsIds);
-  });
+const api = new Api(END_POINT, AUTHORIZATION);
 
 
 const filmsModel = new FilmsModel();
-filmsModel.set(films);
-
-const addCommentToFilm = (updateType, newComment) => {
-  filmsModel.addNewComment(updateType, newComment);
-};
-
-const removeCommentFromFilm = (updateType, removedComment) => {
-  filmsModel.removeComment(updateType, removedComment);
-};
-
-const commentsModel = new CommentsModel(addCommentToFilm, removeCommentFromFilm);
-commentsModel.set(commentsList);
-
+const commentsModel = new CommentsModel();
 const filterModel = new FiltersModel();
 
 
 const statisticPresenter = new StatisticPresenter(siteMainElement, filmsModel);
-const contentBoardPresenter = new ContentBoardPresenter(siteMainElement, pageBodyElement, filmsModel, commentsModel, filterModel);
+const contentBoardPresenter = new ContentBoardPresenter(siteMainElement, pageBodyElement, filmsModel, commentsModel, filterModel, api);
 
 
 const showStatistic = () => {
@@ -77,7 +45,16 @@ const showContent = (currentFilter) => {
 };
 
 
-new UserRankPresenter(siteHeaderElement, filmsModel).init();
 new SiteMenuPresenter(siteMainElement, filterModel, filmsModel, showContent, showStatistic).init();
 contentBoardPresenter.init();
-render(siteFooterStatisticsElement, new FilmsCounterView(films.length));
+
+const filmsCounter = new FilmsCounterView(filmsModel.get().length);
+render(siteFooterStatisticsElement, filmsCounter);
+
+api.getFilms()
+  .then((films) => filmsModel.set(UpdateType.INIT, films))
+  .catch(() => filmsModel.set(UpdateType.LOADING_ERROR, []))
+  .then(() => {
+    new UserRankPresenter(siteHeaderElement, filmsModel).init();
+    filmsCounter.updateCounter(filmsModel.get().length);
+  });
