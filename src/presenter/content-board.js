@@ -63,6 +63,15 @@ export default class ContentBoard {
     this._renderContent();
   }
 
+  show() {
+    this._contentContainerComponent.show();
+  }
+
+  hide() {
+    this._sortMenuComponent.hide();
+    this._contentContainerComponent.hide();
+  }
+
   _createPopup(film) {
     this._popupPresenter.init(film);
   }

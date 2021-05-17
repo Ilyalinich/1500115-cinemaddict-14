@@ -48,9 +48,14 @@ export default class Smart extends AbstractView {
     this.setScrollPosition(prevElementScrollValue);
 
     this.restoreHandlers();
+    this.restoreAdditionalViewParts();
   }
 
   restoreHandlers() {
     throw new Error('Abstract method not implemented: resetHandlers');
+  }
+
+  restoreAdditionalViewParts() {
+    throw new Error('Abstract method not implemented: additionalViewParts');
   }
 }

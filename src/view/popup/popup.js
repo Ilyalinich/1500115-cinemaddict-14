@@ -2,8 +2,7 @@ import {nanoid} from 'nanoid';
 import he from 'he';
 import {ID_LENGTH} from '../../constant.js';
 import {getAllArrayValuesList} from '../../util/common.js';
-import {formatDate} from '../../util/day.js';
-import {getFilmDuration} from '../../util/film.js';
+import {formatDate, getDuration} from '../../util/day.js';
 import {createPopupGenresTemplate} from './popup-genres-list.js';
 import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
 import {createPopupCommentsTemplate} from './popup-comments-list.js';
@@ -20,6 +19,9 @@ const createPopupTemplate = (state, filmComments) => {
   const {title,  alternativeTitle, totalRating, poster, ageRating,
     director, writers, actors, release, runtime, genre, description} = filmInfo;
   const {watchlist, alreadyWatched, favorite} = userDetails;
+
+  const filmDuration = getDuration(runtime);
+
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -65,7 +67,7 @@ const createPopupTemplate = (state, filmComments) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${getFilmDuration(runtime)}</td>
+                <td class="film-details__cell">${filmDuration.format(filmDuration.hours() > 0 ? 'H[h] mm[m]' : 'mm[m]')}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
