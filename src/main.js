@@ -29,10 +29,6 @@ const commentsModel = new CommentsModel();
 const filterModel = new FiltersModel();
 
 
-const statisticPresenter = new StatisticPresenter(siteMainElement, filmsModel);
-const contentBoardPresenter = new ContentBoardPresenter(siteMainElement, pageBodyElement, filmsModel, commentsModel, filterModel, api);
-
-
 const showStatistic = () => {
   contentBoardPresenter.hide();
   statisticPresenter.init();
@@ -46,10 +42,12 @@ const showContent = (currentFilter) => {
 
 
 new SiteMenuPresenter(siteMainElement, filterModel, filmsModel, showContent, showStatistic).init();
+const contentBoardPresenter = new ContentBoardPresenter(siteMainElement, pageBodyElement, filmsModel, commentsModel, filterModel, api);
 contentBoardPresenter.init();
-
 const filmsCounter = new FilmsCounterView(filmsModel.get().length);
 render(siteFooterStatisticsElement, filmsCounter);
+const statisticPresenter = new StatisticPresenter(siteMainElement, filmsModel);
+
 
 api.getFilms()
   .then((films) => filmsModel.set(UpdateType.INIT, films))

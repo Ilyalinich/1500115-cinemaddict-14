@@ -1,6 +1,6 @@
 import {getAllArrayValuesList} from '../../util/common.js';
 import {formatDate, getDuration} from '../../util/day.js';
-import SmartView from '../smart.js';
+import AbstractView from '../abstract.js';
 
 
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
@@ -93,28 +93,18 @@ const createPopupTemplate = (filmInfo) => {
 };
 
 
-export default class Popup extends SmartView {
-  constructor(film) {
+export default class Popup extends AbstractView {
+  constructor(filmInfo) {
     super();
 
-    this._film = film;
+    this._filmInfo = filmInfo;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
   }
 
 
   getTemplate() {
-    return createPopupTemplate(this._film.filmInfo);
-  }
-
-  restoreViewFunctionality() {
-    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
-  }
-  // скореевсего смарт компонентом в попапе останется только поле ввода коммента, а все остальные abstract
-
-  _closeButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.closeButtonClick();
+    return createPopupTemplate(this._filmInfo);
   }
 
   setCloseButtonClickHandler(callback) {
@@ -122,5 +112,10 @@ export default class Popup extends SmartView {
     this.getElement()
       .querySelector('.film-details__close-btn')
       .addEventListener('click', this._closeButtonClickHandler);
+  }
+
+  _closeButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeButtonClick();
   }
 }

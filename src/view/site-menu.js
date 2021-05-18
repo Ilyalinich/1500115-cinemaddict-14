@@ -38,6 +38,19 @@ export default class SiteMenu extends AbstractView {
     return createSiteMenuTemplate(this._filters, this._currentFilterType);
   }
 
+  setFilterTypeChangeHandler(callback) {
+    this._callback.filterTypeChange = callback;
+    this.getElement()
+      .querySelectorAll('.main-navigation__item')
+      .forEach((filter) => filter.addEventListener('click', this._filterClickHandler));
+  }
+
+  setStatsLinkClickHandler(callback) {
+    this._callback.statsLinkClick = callback;
+    this._statsLinkElement = this.getElement().querySelector('.main-navigation__additional');
+    this._statsLinkElement.addEventListener('click', this._statsLinkClickHandler);
+  }
+
   _filterClickHandler(evt) {
     if (evt.target.tagName !== 'A' || this._currentFilterType === evt.target.dataset.filterType) {
       return;
@@ -63,18 +76,5 @@ export default class SiteMenu extends AbstractView {
 
     this._statsLinkElement.classList.add('main-navigation__item--active');
     this._callback.statsLinkClick();
-  }
-
-  setFilterTypeChangeHandler(callback) {
-    this._callback.filterTypeChange = callback;
-    this.getElement()
-      .querySelectorAll('.main-navigation__item')
-      .forEach((filter) => filter.addEventListener('click', this._filterClickHandler));
-  }
-
-  setStatsLinkClickHandler(callback) {
-    this._callback.statsLinkClick = callback;
-    this._statsLinkElement = this.getElement().querySelector('.main-navigation__additional');
-    this._statsLinkElement.addEventListener('click', this._statsLinkClickHandler);
   }
 }

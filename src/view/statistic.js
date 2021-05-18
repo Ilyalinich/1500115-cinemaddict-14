@@ -74,8 +74,7 @@ const renderChart = (statisticCtx, state) => {
   );
 };
 
-const createStatisticsTemplate = (state) => {
-  const {userRank, currentTimeRange, watchedFilms, genres} = state;
+const createStatisticsTemplate = ({userRank, currentTimeRange, watchedFilms, genres}) => {
 
   const watchedFilmsRuntime = watchedFilms.reduce((accumulator, {filmInfo}) => {
     return accumulator + Number(filmInfo.runtime);
@@ -149,14 +148,13 @@ export default class Statistic extends SmartView {
     this._createChart();
   }
 
+  getTemplate() {
+    return createStatisticsTemplate(this._state);
+  }
+
   restoreViewFunctionality() {
     this.setStatisticFilterChangeHandler(this._callback.statisticFilterChange);
     this._createChart();
-  }
-
-
-  getTemplate() {
-    return createStatisticsTemplate(this._state);
   }
 
   setStatisticFilterChangeHandler(callback) {

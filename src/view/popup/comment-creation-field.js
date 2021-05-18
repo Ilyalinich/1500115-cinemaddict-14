@@ -4,6 +4,7 @@ import he from 'he';
 
 const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 
+
 const createPopupEmojiListTemplate = (newCommentEmotion) =>
   EMOTIONS.map((emotion) =>
     `<input
@@ -40,6 +41,7 @@ const createCommentCreationFieldTemplate = ({emotion, comment}) => {
   </div>`;
 };
 
+
 export default class CommentCreationField extends SmartView {
   constructor() {
     super();
@@ -56,7 +58,6 @@ export default class CommentCreationField extends SmartView {
 
     this._setInnerHandlers();
   }
-
 
   getTemplate() {
     return createCommentCreationFieldTemplate(this._state);
@@ -75,6 +76,12 @@ export default class CommentCreationField extends SmartView {
     );
   }
 
+  enable() {
+    this.getElement()
+      .querySelectorAll('input[name = comment-emoji], textarea[name = comment]')
+      .forEach((interactiveElement) => interactiveElement.disabled = false);
+  }
+
   isNewCommentValid() {
     const {emotion, comment} = this._state;
 
@@ -84,23 +91,14 @@ export default class CommentCreationField extends SmartView {
   getNewComment() {
     const {emotion, comment} = this._state;
 
+    this.getElement()
+      .querySelectorAll('input[name = comment-emoji], textarea[name = comment]')
+      .forEach((interactiveElement) => interactiveElement.disabled = true);
+
     return {
       emotion,
       comment,
     };
-  }
-
-  // shakeCommentField() {
-  //   this.getElement().classList.add('shake');
-  // }
-
-  _setInnerHandlers() {
-    this.getElement()
-      .querySelectorAll('input[name = comment-emoji]')
-      .forEach((input) => input.addEventListener('click', this._emotionChangeHandler));
-    this.getElement()
-      .querySelector('textarea[name = comment]')
-      .addEventListener('input', this._newCommentTextInputHandler);
   }
 
   _emotionChangeHandler(evt) {
@@ -119,5 +117,14 @@ export default class CommentCreationField extends SmartView {
       },
       true,
     );
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelectorAll('input[name = comment-emoji]')
+      .forEach((input) => input.addEventListener('click', this._emotionChangeHandler));
+    this.getElement()
+      .querySelector('textarea[name = comment]')
+      .addEventListener('input', this._newCommentTextInputHandler);
   }
 }

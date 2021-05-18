@@ -1,5 +1,6 @@
 import {getDate} from '../util/day.js';
 import {render, remove, replace, RenderPosition} from '../util/render.js';
+import {shake} from '../util/animation.js';
 import {UserAction, UpdateType, UpdatedFieldType} from '../constant.js';
 import PopupView from '../view/popup/popup.js';
 import LoadingView from '../view/loading.js';
@@ -29,7 +30,7 @@ export default class Popup {
 
     this._handleDeleteCommentClick = this._handleDeleteCommentClick.bind(this);
     this._handleCloseButtonClick = this._handleCloseButtonClick.bind(this);
-    this._onDocumentKeydown = this._onDocumentKeydown.bind(this);
+    this._handleDocumentKeydown = this._handleDocumentKeydown.bind(this);
 
     this._commentsModel.addObserver(this._popupHandleModelEvent);
   }
@@ -38,12 +39,12 @@ export default class Popup {
     this._film = film;
 
     const prevPopupComponent = this._popupComponent;
-    this._popupComponent = new PopupView(film);
+
+    this._popupComponent = new PopupView(this._film.filmInfo);
+    this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
+
     this._loadingComponent = new LoadingView();
 
-    // this._isLoading = true; возможно пока грузятся комменты надо будет что-то блокировать или что-то еще
-
-    this._popupComponent.setCloseButtonClickHandler(this._handleCloseButtonClick);
 
     this._controlsContainer = this._popupComponent
       .getElement()
@@ -53,8 +54,8 @@ export default class Popup {
       .getElement()
       .querySelector('.film-details__comments-wrap');
 
+
     if (prevPopupComponent === null) {
-      // блокировать кнопки в момент загрузки
       this._renderPopup();
       this._renderControls(this._film.userDetails);
       this._renderLoading();
@@ -63,16 +64,41 @@ export default class Popup {
     }
 
     if (this._popupContainer.contains(prevPopupComponent.getElement())) {
-      const prevPopupScrollPosition = prevPopupComponent.getScrollPosition();
-
       replace(this._popupComponent, prevPopupComponent);
       this._renderControls(this._film.userDetails);
       this._renderLoading();
-
-      this._popupComponent.setScrollPosition(prevPopupScrollPosition);
     }
 
     remove(prevPopupComponent);
+  }
+
+  generateDeletCommentErrorAction(deletingCommentId) {
+    this._commentsListComponent.enable(deletingCommentId);
+    shake(this._commentsListComponent.getComment(deletingCommentId));
+  }
+
+  generateAddCommentErrorAction() {
+    this._commentsCreationFieldComponent.enable();
+    shake(this._commentsCreationFieldComponent);
+  }
+
+  _renderPopup() {
+    render(this._popupContainer, this._popupComponent);
+
+    document.addEventListener('keydown', this._handleDocumentKeydown);
+    this._popupContainer.classList.add('hide-overflow');
+
+    this._filmsModel.addObserver(this._popupHandleModelEvent);
+  }
+
+  _removePopup() {
+    remove(this._popupComponent);
+    this._popupComponent = null;
+
+    document.removeEventListener('keydown', this._handleDocumentKeydown);
+    this._popupContainer.classList.remove('hide-overflow');
+
+    this._filmsModel.removeObserver(this._popupHandleModelEvent);
   }
 
   _renderControls(userDetails) {
@@ -89,23 +115,42 @@ export default class Popup {
     render(this._controlsContainer, this._controlsComponent);
   }
 
-  _renderPopup() {
-    render(this._popupContainer, this._popupComponent);
-
-    document.addEventListener('keydown', this._onDocumentKeydown);
-    this._popupContainer.classList.add('hide-overflow');
-
-    this._filmsModel.addObserver(this._popupHandleModelEvent);
+  _renderLoading() {
+    render(this._commentsBoardContainer, this._loadingComponent);
   }
 
-  _removePopup() {
-    remove(this._popupComponent);
-    this._popupComponent = null;
+  _renderLoadingErrorMessage() {
+    remove(this._loadingComponent);
 
-    document.removeEventListener('keydown', this._onDocumentKeydown);
-    this._popupContainer.classList.remove('hide-overflow');
+    this._loadingErrorMessage = new LoadingErrorView();
+    render(this._commentsBoardContainer, this._loadingErrorMessage);
+  }
 
-    this._filmsModel.removeObserver(this._popupHandleModelEvent);
+  _renderCommentsCounter(comments) {
+    if (this._commentsCounterComponent !== null) {
+      this._commentsCounterComponent = null;
+    }
+
+    this._commentsCounterComponent = new CommentsCounterView(comments);
+
+    render(this._commentsBoardContainer, this._commentsCounterComponent, RenderPosition.AFTERBEGIN);
+  }
+
+  _renderCommentsList(comments) {
+    if (this._commentsListComponent !== null) {
+      this._commentsListComponent = null;
+    }
+
+    this._commentsListComponent = new CommentsListView(comments);
+    this._commentsListComponent.setDeleteButtonClickHandler(this._handleDeleteCommentClick);
+
+    render(this._commentsCounterComponent, this._commentsListComponent, RenderPosition.AFTER);
+  }
+
+  _renderCommentCreationField() {
+    this._commentsCreationFieldComponent = new CommentCreationFielView();
+
+    render(this._commentsBoardContainer, this._commentsCreationFieldComponent);
   }
 
   _getUpdatedFilm(updatedField) {
@@ -187,10 +232,12 @@ export default class Popup {
     this._removePopup();
   }
 
-  _onDocumentKeydown(evt) {
+  _handleDocumentKeydown(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this._removePopup();
+
+      return;
     }
 
     if (evt.ctrlKey && evt.key === 'Enter') {
@@ -200,52 +247,13 @@ export default class Popup {
         return this._sendComment();
       }
 
-      this._commentsCreationFieldComponent.shake();
+      shake(this._commentsCreationFieldComponent);
     }
-  }
-
-  _renderLoading() {
-    render(this._commentsBoardContainer, this._loadingComponent);
-  }
-
-  _renderCommentsCounter(comments) {
-    if (this._commentsCounterComponent !== null) {
-      this._commentsCounterComponent = null;
-    }
-
-    this._commentsCounterComponent = new CommentsCounterView(comments);
-
-    render(this._commentsBoardContainer, this._commentsCounterComponent, RenderPosition.AFTERBEGIN);
-  }
-
-  _renderCommentsList(comments) {
-    if (this._commentsListComponent !== null) {
-      this._commentsListComponent = null;
-    }
-
-    this._commentsListComponent = new CommentsListView(comments);
-    this._commentsListComponent.setDeleteButtonClickHandler(this._handleDeleteCommentClick);
-
-    render(this._commentsCounterComponent, this._commentsListComponent, RenderPosition.AFTER);
-  }
-
-  _renderLoadingErrorMessage() {
-    remove(this._loadingComponent);
-
-    this._loadingErrorMessage = new LoadingErrorView();
-    render(this._commentsBoardContainer, this._loadingErrorMessage);
-  }
-
-  _renderCommentCreationField() {
-    this._commentsCreationFieldComponent = new CommentCreationFielView();
-
-    render(this._commentsBoardContainer, this._commentsCreationFieldComponent);
   }
 
   _popupHandleModelEvent(updateType, data) {
     switch (updateType) {
       case UpdateType.MINOR:
-
         if (this._film.id !== data.id) {
           return;
         }
@@ -275,20 +283,14 @@ export default class Popup {
         break;
 
       case UpdateType.INIT:
-        this._isLoading = false;
         remove(this._loadingComponent);
 
-        // изначально блокирвать контролы, а при init or error разблокировать
         this._renderCommentsCounter(this._commentsModel.get());
         this._renderCommentsList(this._commentsModel.get());
         this._renderCommentCreationField();
         break;
 
       case UpdateType.LOADING_ERROR:
-        this._isLoading = false;
-
-
-        // изначально блокирвать контролы, а при init or error разблокировать
         this._renderLoadingErrorMessage();
         this._renderCommentCreationField();
         break;

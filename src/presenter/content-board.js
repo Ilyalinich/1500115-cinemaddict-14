@@ -57,6 +57,7 @@ export default class ContentBoard {
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._createPopup = this._createPopup.bind(this);
 
+
     this._filmsModel.addObserver(this._handleModelEvent);
 
     this._popupPresenter = new PopupPresenter(this._popupContainer, this._filmsModel, this._commentsModel, this._handleViewAction);
@@ -79,26 +80,19 @@ export default class ContentBoard {
     }
   }
 
-  _createPopup(film) {
-    this._popupPresenter.init(film);
-    // this._api.getComments(film.id)
-    //   .then((comments) => this._commentsModel.set(UpdateType.INIT, comments))
-    //   .catch(() => this._commentsModel.set(UpdateType.LOADING_ERROR, []));
+  _renderLoading() {
+    render(this._contentContainerComponent, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
-  _getFilms() {
-    const activeFilterType = this._filterModel.getActive();
-    const films = this._filmsModel.get();
-    const filtredFilms = filterFilms(films, activeFilterType);
+  _renderLoadingErrorMessage() {
+    remove(this._loadingComponent);
 
-    switch (this._currentSortType) {
-      case SortType.BY_DATE:
-        return filtredFilms.slice().sort(sortFilmsByDate);
-      case SortType.BY_RATING:
-        return filtredFilms.slice().sort(sortFilmsByRating);
-      default:
-        return filtredFilms;
-    }
+    this._loadingErrorMessage = new LoadingErrorView();
+    render(this._contentContainerComponent, this._loadingErrorMessage);
+  }
+
+  _renderNoFilmsList() {
+    render(this._contentContainerComponent, this._noFilmsListComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilm(filmsContainer, film) {
@@ -122,21 +116,6 @@ export default class ContentBoard {
 
   _renderFilms(filmsContainer, films) {
     films.forEach((film) => this._renderFilm(filmsContainer, film));
-  }
-
-  _renderLoading() {
-    render(this._contentContainerComponent, this._loadingComponent, RenderPosition.AFTERBEGIN);
-  }
-
-  _renderLoadingErrorMessage() {
-    remove(this._loadingComponent);
-
-    this._loadingErrorMessage = new LoadingErrorView();
-    render(this._contentContainerComponent, this._loadingErrorMessage);
-  }
-
-  _renderNoFilmsList() {
-    render(this._contentContainerComponent, this._noFilmsListComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderSortMenu() {
@@ -169,6 +148,17 @@ export default class ContentBoard {
     }
   }
 
+  _renderShowMoreButton() {
+    if (this._showMoreButtonComponent !== null) {
+      this._showMoreButtonComponent = null;
+    }
+
+    this._showMoreButtonComponent = new ShowMoreButtonView();
+    this._showMoreButtonComponent.setButtonClickHandler(this._handleShowMoreButtonClick);
+
+    render(this._allFilmsListComponent, this._showMoreButtonComponent);
+  }
+
   _renderAllFilmsBoard() {
     if (this._getFilms().length === 0) {
       remove(this._allFilmsListComponent);
@@ -181,17 +171,6 @@ export default class ContentBoard {
 
     this._renderSortMenu();
     this._renderAllFilmsList();
-  }
-
-  _renderShowMoreButton() {
-    if (this._showMoreButtonComponent !== null) {
-      this._showMoreButtonComponent = null;
-    }
-
-    this._showMoreButtonComponent = new ShowMoreButtonView();
-    this._showMoreButtonComponent.setButtonClickHandler(this._handleShowMoreButtonClick);
-
-    render(this._allFilmsListComponent, this._showMoreButtonComponent);
   }
 
   _renderTopRatedFilmsList() {
@@ -273,6 +252,13 @@ export default class ContentBoard {
     }
   }
 
+  _clearMostCommentedFilmsList() {
+    Object
+      .values(this._filmPresenterStorage.mostCommentedfilmPresenterStorage)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenterStorage.mostCommentedfilmPresenterStorage = {};
+  }
+
   _updateAllFilmsList(data) {
     if (data.id in this._filmPresenterStorage.allfilmPresenterStorage) {
       this._filmPresenterStorage.allfilmPresenterStorage[data.id].init(data);
@@ -291,11 +277,32 @@ export default class ContentBoard {
     }
   }
 
-  _clearMostCommentedFilmsList() {
-    Object
-      .values(this._filmPresenterStorage.mostCommentedfilmPresenterStorage)
-      .forEach((presenter) => presenter.destroy());
-    this._filmPresenterStorage.mostCommentedfilmPresenterStorage = {};
+  _createPopup(film) {
+    this._popupPresenter.init(film);
+    this._api.getComments(film.id)
+      .then((comments) => this._commentsModel.set(UpdateType.INIT, comments))
+      .catch(() => this._commentsModel.set(UpdateType.LOADING_ERROR, []));
+  }
+
+  _getFilms() {
+    const activeFilterType = this._filterModel.getActive();
+    const films = this._filmsModel.get();
+    const filtredFilms = filterFilms(films, activeFilterType);
+
+    switch (this._currentSortType) {
+      case SortType.BY_DATE:
+        return filtredFilms.slice().sort(sortFilmsByDate);
+      case SortType.BY_RATING:
+        return filtredFilms.slice().sort(sortFilmsByRating);
+      default:
+        return filtredFilms;
+    }
+  }
+
+  _handleSortTypeChange(sortType) {
+    this._currentSortType = sortType;
+    this._clearAllFilmsBoard({resetRenderedFilmsCount: true});
+    this._renderAllFilmsBoard();
   }
 
   _handleShowMoreButtonClick() {
@@ -321,16 +328,20 @@ export default class ContentBoard {
         });
         break;
       case UserAction.ADD_COMMENT:
-        this._api.addComment(update).then((response) => {
-          this._filmsModel.update(updateType, response.movie);
-          this._commentsModel.add(updateType, response);
-        });
+        this._api.addComment(update)
+          .then((response) => {
+            this._filmsModel.update(updateType, response.movie);
+            this._commentsModel.add(updateType, response);
+          })
+          .catch(() => this._popupPresenter.generateAddCommentErrorAction());
         break;
       case UserAction.DELETE_COMMENT:
-        this._api.deleteComment(update.commentId).then(() => {
-          this._filmsModel.update(updateType, update.updatedFilm);
-          this._commentsModel.delete(updateType, update);
-        });
+        this._api.deleteComment(update.commentId)
+          .then(() => {
+            this._filmsModel.update(updateType, update.updatedFilm);
+            this._commentsModel.delete(updateType, update);
+          })
+          .catch(() => this._popupPresenter.generateDeletCommentErrorAction(update.commentId));
         break;
     }
   }
@@ -375,11 +386,5 @@ export default class ContentBoard {
         this._renderLoadingErrorMessage();
         break;
     }
-  }
-
-  _handleSortTypeChange(sortType) {
-    this._currentSortType = sortType;
-    this._clearAllFilmsBoard({resetRenderedFilmsCount: true});
-    this._renderAllFilmsBoard();
   }
 }

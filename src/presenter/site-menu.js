@@ -39,18 +39,6 @@ export default class SiteMenu {
     remove(prevSiteMenuComponent);
   }
 
-  _handleModelEvent() {
-    this.init();
-  }
-
-  _handleStatsClick() {
-    this._showStatistic();
-  }
-
-  _handleFilterTypeChange(currentFilter) {
-    this._showContent(currentFilter);
-  }
-
   _getFilters(films) {
     const filterMap = {
       [FilterType.ALL]: '',
@@ -81,5 +69,17 @@ export default class SiteMenu {
           count: filmsCount,
         }
       ));
+  }
+
+  _handleStatsClick() {
+    this._showStatistic();
+  }
+
+  _handleFilterTypeChange(currentFilter) {
+    this._showContent(currentFilter);
+  }
+
+  _handleModelEvent() {
+    this.init();
   }
 }

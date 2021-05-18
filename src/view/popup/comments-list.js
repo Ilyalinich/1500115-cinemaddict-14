@@ -1,9 +1,10 @@
-import SmartView from '../smart.js';
+import AbstractView from '../abstract.js';
 import {getRelativeDate} from '../../util/day.js';
 import he from 'he';
 
+
 const createCommentTemplate = ({id, author, comment, date, emotion}) =>
-  `<li class="film-details__comment">
+  `<li class="film-details__comment" id="${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
     </span>
@@ -29,7 +30,7 @@ const createCommentsTemplate = (comments) => {
 };
 
 
-export default class CommentsList extends SmartView {
+export default class CommentsList extends AbstractView {
   constructor(comments) {
     super();
 
@@ -42,13 +43,15 @@ export default class CommentsList extends SmartView {
     return createCommentsTemplate(this._comments);
   }
 
-  restoreHandlers() {
-    this.setDeleteButtonClickHandler(this._callback.deleteButtonClick);
+  getComment(commentId) {
+    return this.getElement().querySelector(`[id = "${commentId}"`);
   }
 
-  _deleteButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.deleteButtonClick(evt.target.dataset.commentId);
+  enable(deletingCommentId) {
+    const button = this.getElement().querySelector(`button[data-comment-id = "${deletingCommentId}"]`);
+
+    button.textContent = 'Delete';
+    button.disabled = false;
   }
 
   setDeleteButtonClickHandler(callback) {
@@ -56,5 +59,12 @@ export default class CommentsList extends SmartView {
     this.getElement()
       .querySelectorAll('.film-details__comment-delete')
       .forEach((button) => button.addEventListener('click', this._deleteButtonClickHandler));
+  }
+
+  _deleteButtonClickHandler(evt) {
+    evt.preventDefault();
+    evt.target.textContent = 'Deleting...';
+    evt.target.disabled = true;
+    this._callback.deleteButtonClick(evt.target.dataset.commentId);
   }
 }

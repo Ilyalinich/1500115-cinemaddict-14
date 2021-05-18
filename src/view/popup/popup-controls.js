@@ -31,21 +31,6 @@ export default class Controls extends AbstractView {
     return createControlsTemplate(this._userDetails);
   }
 
-  _watchlistClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchlistClick();
-  }
-
-  _watchedClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchedClick();
-  }
-
-  _favoritesClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoritesClick();
-  }
-
   setWatchlistClickHandler(callback) {
     this._callback.watchlistClick = callback;
     this.getElement()
@@ -65,5 +50,20 @@ export default class Controls extends AbstractView {
     this.getElement()
       .querySelector('#favorite')
       .addEventListener('click', this._favoritesClickHandler);
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
+  _favoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoritesClick();
   }
 }
