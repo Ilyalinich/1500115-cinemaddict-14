@@ -36,19 +36,23 @@ export default class UserRank {
 
     const userRank = getUserRank(this._filmsModel.get());
 
-    if (userRank === UserRankType.NO_RANK) {
-      return this._userRankComponent.hide();
-    }
+    if (this._userRankComponent === null && userRank === UserRankType.NO_RANK) {
 
-    if (this._userRankComponent === null) {
-      // перебрать этот модуль
+      return;
+
+    } else if (this._userRankComponent === null && userRank !== UserRankType.NO_RANK) {
+
       this._userRankComponent = new UserRankView(userRank);
       render(this._userRankContainer, this._userRankComponent);
 
-      return;
-    }
+    } else if (this._userRankComponent !== null && userRank === UserRankType.NO_RANK) {
 
-    this._userRankComponent.updateRank(userRank);
-    this._userRankComponent.show();
+      this._userRankComponent.hide();
+
+    } else {
+
+      this._userRankComponent.updateRank(userRank);
+      this._userRankComponent.show();
+    }
   }
 }

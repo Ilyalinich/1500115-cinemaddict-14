@@ -1,4 +1,4 @@
-import AbstractView from '../abstract.js';
+import SmartView from '../smart.js';
 import {getRelativeDate} from '../../util/day.js';
 import he from 'he';
 
@@ -29,7 +29,7 @@ const createCommentsTemplate = (comments) => {
 };
 
 
-export default class CommentsList extends AbstractView {
+export default class CommentsList extends SmartView {
   constructor(comments) {
     super();
 
