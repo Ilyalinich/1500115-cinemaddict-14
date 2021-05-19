@@ -19,8 +19,10 @@ export default class Popup {
     this._changeData = changeData;
 
     this._popupComponent = null;
+    this._commentsCounterComponent = null;
+    this._commentsListComponent = null;
+    this._loadingErrorMessageComponent = null;
 
-    this._isLoading = true;
 
     this._popupHandleModelEvent = this._popupHandleModelEvent.bind(this);
 
@@ -122,8 +124,8 @@ export default class Popup {
   _renderLoadingErrorMessage() {
     remove(this._loadingComponent);
 
-    this._loadingErrorMessage = new LoadingErrorView();
-    render(this._commentsBoardContainer, this._loadingErrorMessage);
+    this._loadingErrorMessageComponent = new LoadingErrorView();
+    render(this._commentsBoardContainer, this._loadingErrorMessageComponent);
   }
 
   _renderCommentsCounter(comments) {
@@ -244,7 +246,9 @@ export default class Popup {
       evt.preventDefault();
 
       if (this._commentsCreationFieldComponent.isNewCommentValid()) {
-        return this._sendComment();
+        this._sendComment();
+
+        return;
       }
 
       shake(this._commentsCreationFieldComponent);
@@ -272,6 +276,7 @@ export default class Popup {
           this._commentsCreationFieldComponent.resetState();
         }
 
+        remove(this._loadingErrorMessageComponent);
         remove(this._commentsCounterComponent);
         remove(this._commentsListComponent);
 
