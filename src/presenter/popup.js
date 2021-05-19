@@ -185,8 +185,6 @@ export default class Popup {
   }
 
   _sendComment() {
-    this._filmsModel.removeObserver(this._popupHandleModelEvent);
-
     this._changeData(
       UserAction.ADD_COMMENT,
       UpdateType.COMMENT_PATCH,
@@ -213,8 +211,6 @@ export default class Popup {
   }
 
   _handleDeleteCommentClick(commentId) {
-    this._filmsModel.removeObserver(this._popupHandleModelEvent);
-
     const updatedFilm = Object.assign(
       {},
       this._film,
@@ -283,8 +279,6 @@ export default class Popup {
         this._renderCommentsCounter(this._commentsModel.get());
         this._renderCommentsList(this._commentsModel.get());
         this._film.comments = data.comments.slice();
-
-        this._filmsModel.addObserver(this._popupHandleModelEvent);
         break;
 
       case UpdateType.INIT:

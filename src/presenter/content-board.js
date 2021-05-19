@@ -327,19 +327,21 @@ export default class ContentBoard {
           this._filmsModel.update(updateType, response);
         });
         break;
+
       case UserAction.ADD_COMMENT:
         this._api.addComment(update)
           .then((response) => {
+            this._commentsModel.add(response.comments);
             this._filmsModel.update(updateType, response.movie);
-            this._commentsModel.add(updateType, response);
           })
           .catch(() => this._popupPresenter.generateAddCommentErrorAction());
         break;
+
       case UserAction.DELETE_COMMENT:
         this._api.deleteComment(update.commentId)
           .then(() => {
+            this._commentsModel.delete(update.commentId);
             this._filmsModel.update(updateType, update.updatedFilm);
-            this._commentsModel.delete(updateType, update);
           })
           .catch(() => this._popupPresenter.generateDeletCommentErrorAction(update.commentId));
         break;
