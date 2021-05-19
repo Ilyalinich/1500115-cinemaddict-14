@@ -1,7 +1,7 @@
+import {SortType, UpdateType, UserAction, FilmContainerType} from '../constant.js';
 import {render, remove, RenderPosition} from '../util/render.js';
 import {filterFilms} from '../util/filter.js';
 import {sortFilmsByDate, sortFilmsByRating, sortFilmsByCommentsCount} from '../util/sort.js';
-import {SortType, UpdateType, UserAction, FilmContainerType} from '../constant.js';
 import LoadingView from '../view/loading.js';
 import LoadingErrorView from '../view/loading-error.js';
 import ContentContainerView from '../view/content-container.js';
@@ -102,12 +102,15 @@ export default class ContentBoard {
     switch (filmsContainer.id) {
       case FilmContainerType.ALL:
         this._filmPresenterStorage.allfilmPresenterStorage[film.id] = filmPresenter;
+
         break;
       case FilmContainerType.TOP_RATED:
         this._filmPresenterStorage.topRatedfilmPresenterStorage[film.id] = filmPresenter;
+
         break;
       case FilmContainerType.MOST_COMMENTED:
         this._filmPresenterStorage.mostCommentedfilmPresenterStorage[film.id] = filmPresenter;
+
         break;
       default:
         throw new Error('invalid value for the filmsContainer.id');
@@ -326,6 +329,7 @@ export default class ContentBoard {
         this._api.updateFilm(update).then((response) => {
           this._filmsModel.update(updateType, response);
         });
+
         break;
 
       case UserAction.ADD_COMMENT:
@@ -335,6 +339,7 @@ export default class ContentBoard {
             this._filmsModel.update(updateType, response.movie);
           })
           .catch(() => this._popupPresenter.generateAddCommentErrorAction());
+
         break;
 
       case UserAction.DELETE_COMMENT:
@@ -344,23 +349,19 @@ export default class ContentBoard {
             this._filmsModel.update(updateType, update.updatedFilm);
           })
           .catch(() => this._popupPresenter.generateDeletCommentErrorAction(update.commentId));
+
         break;
     }
   }
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
-      case UpdateType.PATCH: /*этот тип обновления в данный момент не используется, удалить, если не понадобится*/
-        this._updateAllFilmsList(data);
-        this._updateTopRatedFilmsList(data);
-        this._updateMostCommentedFilmsList(data);
-        break;
-
       case UpdateType.COMMENT_PATCH:
         this._updateAllFilmsList(data);
         this._updateTopRatedFilmsList(data);
         this._clearMostCommentedFilmsList();
         this._renderMostCommentedFilmsList();
+
         break;
 
       case UpdateType.MINOR:
@@ -368,6 +369,7 @@ export default class ContentBoard {
         this._renderAllFilmsBoard();
         this._updateTopRatedFilmsList(data);
         this._updateMostCommentedFilmsList(data);
+
         break;
 
       case UpdateType.MAJOR:
@@ -375,17 +377,20 @@ export default class ContentBoard {
         this._renderAllFilmsBoard();
         this._updateTopRatedFilmsList(data);
         this._updateMostCommentedFilmsList(data);
+
         break;
 
       case UpdateType.INIT:
         this._isLoading = false;
         remove(this._loadingComponent);
         this._renderContent();
+
         break;
 
       case UpdateType.LOADING_ERROR:
         this._isLoading = false;
         this._renderLoadingErrorMessage();
+
         break;
     }
   }

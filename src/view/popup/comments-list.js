@@ -1,10 +1,10 @@
-import AbstractView from '../abstract.js';
 import {getRelativeDate} from '../../util/day.js';
+import AbstractView from '../abstract.js';
 import he from 'he';
 
 
-const createCommentTemplate = ({id, author, comment, date, emotion}) =>
-  `<li class="film-details__comment" id="${id}">
+const createCommentTemplate = ({id, author, comment, date, emotion}) => {
+  return `<li class="film-details__comment" id="${id}">
     <span class="film-details__comment-emoji">
       <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">
     </span>
@@ -17,6 +17,7 @@ const createCommentTemplate = ({id, author, comment, date, emotion}) =>
       </p>
     </div>
   </li>`;
+};
 
 
 const createCommentsTemplate = (comments) => {

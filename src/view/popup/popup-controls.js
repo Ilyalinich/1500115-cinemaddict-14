@@ -3,8 +3,8 @@ import AbstractView from '../abstract.js';
 
 const createControlStatus = (isActive) => isActive ? 'checked' : '';
 
-const createControlsTemplate = ({watchlist, alreadyWatched, favorite}) =>
-  `<section class="film-details__controls">
+const createControlsTemplate = ({watchlist, alreadyWatched, favorite}) => {
+  return `<section class="film-details__controls">
     <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${createControlStatus(watchlist)}>
     <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
@@ -14,6 +14,7 @@ const createControlsTemplate = ({watchlist, alreadyWatched, favorite}) =>
     <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${createControlStatus(favorite)}>
     <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
   </section>`;
+};
 
 
 export default class Controls extends AbstractView {

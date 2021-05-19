@@ -1,7 +1,7 @@
-import {getDate} from '../util/day.js';
-import {render, remove, replace, RenderPosition} from '../util/render.js';
-import {shake} from '../util/animation.js';
 import {UserAction, UpdateType, UpdatedFieldType} from '../constant.js';
+import {render, remove, replace, RenderPosition} from '../util/render.js';
+import {getDate} from '../util/day.js';
+import {shake} from '../util/animation.js';
 import PopupView from '../view/popup/popup.js';
 import LoadingView from '../view/loading.js';
 import LoadingErrorView from '../view/loading-error.js';
@@ -265,8 +265,8 @@ export default class Popup {
           {},
           data.userDetails,
         );
-        break;
 
+        break;
       case UpdateType.COMMENT_PATCH:
         if (this._commentsModel.get().length > this._film.comments.length) {
           this._commentsCreationFieldComponent.resetState();
@@ -279,19 +279,20 @@ export default class Popup {
         this._renderCommentsCounter(this._commentsModel.get());
         this._renderCommentsList(this._commentsModel.get());
         this._film.comments = data.comments.slice();
-        break;
 
+        break;
       case UpdateType.INIT:
         remove(this._loadingComponent);
 
         this._renderCommentsCounter(this._commentsModel.get());
         this._renderCommentsList(this._commentsModel.get());
         this._renderCommentCreationField();
-        break;
 
+        break;
       case UpdateType.LOADING_ERROR:
         this._renderLoadingErrorMessage();
         this._renderCommentCreationField();
+
         break;
     }
   }

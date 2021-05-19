@@ -1,5 +1,5 @@
-import AbstractView from './abstract.js';
 import {FilmContainerType} from '../constant.js';
+import AbstractView from './abstract.js';
 
 export default class MostCommentedFilmsList extends AbstractView {
   getTemplate() {

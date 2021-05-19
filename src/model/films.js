@@ -50,6 +50,7 @@ export default class Films extends Observer {
       {
         ageRating: film_info.age_rating,
         alternativeTitle: film_info.alternative_title,
+        genres: film_info.genre,
         release: updatedRelease,
         totalRating: film_info.total_rating,
       },
@@ -69,8 +70,6 @@ export default class Films extends Observer {
       film,
       {
         filmInfo: adaptedFilmInfo,
-      },
-      {
         userDetails: adaptaedUserDetails,
       },
     );
@@ -78,6 +77,7 @@ export default class Films extends Observer {
     delete adaptedFilm.film_info;
     delete adaptedFilm.filmInfo.age_rating;
     delete adaptedFilm.filmInfo.alternative_title;
+    delete adaptedFilm.filmInfo.genre,
     delete adaptedFilm.filmInfo.total_rating;
     delete adaptedFilm.filmInfo.release.release_country;
 
@@ -105,6 +105,7 @@ export default class Films extends Observer {
       {
         'age_rating': filmInfo.ageRating,
         'alternative_title': filmInfo.alternativeTitle,
+        genre: filmInfo.genres,
         release: updatedRelease,
         'total_rating': filmInfo.totalRating,
       },
@@ -124,8 +125,6 @@ export default class Films extends Observer {
       film,
       {
         'film_info': adaptedFilmInfo,
-      },
-      {
         'user_details': adaptaedUserDetails,
       },
     );
@@ -133,6 +132,7 @@ export default class Films extends Observer {
     delete adaptedFilm.filmInfo;
     delete adaptedFilm.film_info.ageRating;
     delete adaptedFilm.film_info.alternativeTitle;
+    delete adaptedFilm.film_info.genres;
     delete adaptedFilm.film_info.totalRating;
     delete adaptedFilm.film_info.release.releaseCountry;
 

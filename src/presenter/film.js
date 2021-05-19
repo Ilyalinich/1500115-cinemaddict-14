@@ -1,7 +1,7 @@
-import FilmCardView from '../view/film-card.js';
-import {render, remove, replace} from '../util/render.js';
 import {UserAction, UpdateType, UpdatedFieldType} from '../constant.js';
+import {render, remove, replace} from '../util/render.js';
 import {getDate} from '../util/day.js';
+import FilmCardView from '../view/film-card.js';
 
 
 export default class Film {

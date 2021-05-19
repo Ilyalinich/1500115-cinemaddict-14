@@ -21,15 +21,19 @@ const render = (element, insertedElement, place = RenderPosition.BEFOREEND) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       element.prepend(insertedElement);
+
       break;
     case RenderPosition.BEFOREEND:
       element.append(insertedElement);
+
       break;
     case RenderPosition.AFTER:
       element.after(insertedElement);
+
       break;
     case RenderPosition.BEFORE:
       element.before(insertedElement);
+
       break;
     default:
       throw new Error('invalid value for the place parameter');

@@ -1,5 +1,5 @@
-import {remove, render} from '../util/render.js';
 import {TimeRange} from '../constant.js';
+import {remove, render} from '../util/render.js';
 import {getUserRank} from '../util/user-rank.js';
 import {isDateInRange} from '../util/day.js';
 import StatisticView from '../view/statistic.js';
@@ -38,7 +38,7 @@ export default class Statistic {
 
   _getGenresCounters(watchedFilms) {
     const genresCounter = watchedFilms.reduce((accumulator, {filmInfo}) => {
-      filmInfo.genre.forEach((genre) => {
+      filmInfo.genres.forEach((genre) => {
         if (accumulator[genre]) {
           accumulator[genre]++;
         } else {

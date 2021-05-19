@@ -1,6 +1,6 @@
 import {FilterType} from '../constant.js';
-import SiteMenuView from '../view/site-menu.js';
 import {render, replace, remove} from '../util/render.js';
+import SiteMenuView from '../view/site-menu.js';
 
 
 export default class SiteMenu {

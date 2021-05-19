@@ -1,4 +1,3 @@
-import {getAllArrayValuesList} from '../util/common.js';
 import {formatDate, getDuration} from '../util/day.js';
 import AbstractView from './abstract.js';
 
@@ -11,7 +10,7 @@ const createControlClassName = (isActive) => isActive ? 'film-card__controls-ite
 
 const createFilmCardTemplate = (film) => {
   const {comments} = film;
-  const {title, totalRating, release, runtime, genre, poster, description} = film.filmInfo;
+  const {title, totalRating, release, runtime, genres, poster, description} = film.filmInfo;
   const {watchlist, alreadyWatched, favorite} = film.userDetails;
 
   const filmDescription = description.length > DESCRIPTION_SYMBOL_LIMIT
@@ -27,7 +26,7 @@ const createFilmCardTemplate = (film) => {
     <p class="film-card__info">
       <span class="film-card__year">${formatDate(release.date, DATE_FORMAT)}</span>
       <span class="film-card__duration">${filmDuration.format(filmDuration.hours() > 0 ? 'H[h] mm[m]' : 'mm[m]')}</span>
-      <span class="film-card__genre">${getAllArrayValuesList(genre)}</span>
+      <span class="film-card__genre">${genres.join(', ')}</span>
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${filmDescription}</p>

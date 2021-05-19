@@ -1,4 +1,3 @@
-import {isNumberInRange} from '../util/common.js';
 import {UserRankType} from '../constant.js';
 
 
@@ -36,7 +35,7 @@ const getUserRank = (films) => {
   }, 0);
 
   return Object.entries(userRankMap)
-    .find(([ ,{MIN, MAX}]) => isNumberInRange(watchedFilmsCount, MIN, MAX))[0];
+    .find(([ ,{MIN, MAX}]) => watchedFilmsCount >= MIN && watchedFilmsCount <= MAX)[0];
 };
 
 export {getUserRank};

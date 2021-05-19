@@ -1,8 +1,7 @@
+import {UserRankType, UpdateType} from '../constant.js';
 import {render} from '../util/render.js';
 import {getUserRank} from '../util/user-rank.js';
-import {UserRankType} from '../constant.js';
 import UserRankView from '../view/user-rank.js';
-import {UpdateType} from '../constant.js';
 
 
 export default class UserRank {

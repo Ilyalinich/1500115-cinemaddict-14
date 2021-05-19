@@ -1,15 +1,16 @@
-import AbstractView from './abstract.js';
 import {SortType} from '../constant.js';
+import AbstractView from './abstract.js';
 
 
-const creteSortItemTemplate = (type, currentSortType) =>
-  `<li>
+const creteSortItemTemplate = (type, currentSortType) => {
+  return `<li>
     <a href="#"
       class="sort__button ${type === currentSortType ? 'sort__button--active' : ''}"
       data-sort-type="${type}">
       ${type}
     </a>
   </li>`;
+};
 
 const createSortMenuTemplate = (currentSortType) => {
   const sortItemsTemplate = Object.values(SortType)
