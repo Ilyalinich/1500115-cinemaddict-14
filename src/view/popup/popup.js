@@ -1,24 +1,23 @@
-import {nanoid} from 'nanoid';
-import he from 'he';
-import {ID_LENGTH} from '../../constant.js';
 import {getAllArrayValuesList} from '../../util/common.js';
 import {formatDate, getDuration} from '../../util/day.js';
-import {createPopupGenresTemplate} from './popup-genres-list.js';
-import {createPopupEmojiListTemplate} from './popup-emoji-list.js';
-import {createPopupCommentsTemplate} from './popup-comments-list.js';
-import SmartView from '../smart.js';
+import AbstractView from '../abstract.js';
 
 
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 
 
-const createControlStatus = (isActive) => isActive ? 'checked' : '';
+const createPopupGenresTemplate = (genres) => {
+  const genresList = genres
+    .map((genre) => `<span class="film-details__genre">${genre}</span>`)
+    .join('');
 
-const createPopupTemplate = (state, filmComments) => {
-  const {comments, emotion, comment, filmInfo, userDetails} = state;
+  return  `<td class="film-details__term">${genres.length === 1 ? 'Genre' : 'Genres'}</td>
+           <td class="film-details__cell">${genresList}</td>`;
+};
+
+const createPopupTemplate = (filmInfo) => {
   const {title,  alternativeTitle, totalRating, poster, ageRating,
     director, writers, actors, release, runtime, genre, description} = filmInfo;
-  const {watchlist, alreadyWatched, favorite} = userDetails;
 
   const filmDuration = getDuration(runtime);
 
@@ -31,7 +30,7 @@ const createPopupTemplate = (state, filmComments) => {
         </div>
         <div class="film-details__info-wrap">
           <div class="film-details__poster">
-            <img class="film-details__poster-img" src="./images/posters/${poster}" alt="">
+            <img class="film-details__poster-img" src="${poster}" alt="">
 
             <p class="film-details__age">${ageRating}+</p>
           </div>
@@ -82,43 +81,11 @@ const createPopupTemplate = (state, filmComments) => {
           </div>
         </div>
 
-        <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${createControlStatus(watchlist)}>
-          <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
-
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${createControlStatus(alreadyWatched)}>
-          <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
-
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${createControlStatus(favorite)}>
-          <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
-        </section>
       </div>
 
       <div class="film-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
-          <ul class="film-details__comments-list">
-            ${createPopupCommentsTemplate(filmComments)}
-          </ul>
-
-          <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label">
-              ${!emotion ? '' : `<img src="images/emoji/${emotion}.png" width="55" height="55" alt="emoji-${emotion}">`}
-            </div>
-
-            <label class="film-details__comment-label">
-              <textarea
-                class="film-details__comment-input"
-                placeholder="Select reaction below and write comment here"
-                name="comment"
-              >${!comment ? '' : he.encode(comment)}</textarea>
-            </label>
-
-            <div class="film-details__emoji-list">
-              ${createPopupEmojiListTemplate(emotion)}
-            </div>
-          </div>
         </section>
       </div>
     </form>
@@ -126,132 +93,18 @@ const createPopupTemplate = (state, filmComments) => {
 };
 
 
-export default class Popup extends SmartView {
-  constructor(film, filmComments) {
+export default class Popup extends AbstractView {
+  constructor(filmInfo) {
     super();
 
-    this._state = this._parseFilmToState(film);
-    this._filmComments = filmComments;
+    this._filmInfo = filmInfo;
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
-    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
-    this._watchedClickHandler = this._watchedClickHandler.bind(this);
-    this._favoritesClickHandler = this._favoritesClickHandler.bind(this);
-    this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
-    this._newCommentTextInputHandler = this._newCommentTextInputHandler.bind(this);
-    this._deleteButtonClickHandler = this._deleteButtonClickHandler.bind(this);
-
-    this._setInnerHandlers();
   }
 
 
   getTemplate() {
-    return createPopupTemplate(this._state, this._filmComments);
-  }
-
-  updateComments(newComments) {
-    this._filmComments = newComments;
-  }
-
-  resetState(film) {
-    this.updateState(
-      this._parseFilmToState(film),
-      true,
-    );
-  }
-
-  isNewCommentValid() {
-    const {emotion, comment} = this._state;
-
-    return emotion && comment;
-  }
-
-  getNewComment() {
-    const {id, emotion, comment} = this._state;
-
-    return {
-      filmId: id,
-      id: nanoid(ID_LENGTH),
-      emotion,
-      comment,
-    };
-  }
-
-  shakeCommentField() {
-  // метод, накладывающий эффект 'покачивание головой"
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
-
-    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
-    this.setWatchlistClickHandler(this._callback.watchlistClick);
-    this.setWatchedClickHandler(this._callback.watchedClick);
-    this.setFavoritesClickHandler(this._callback.favoritesClick);
-    this.setDeleteButtonClickHandler(this._callback.deleteButtonClick);
-  }
-
-  _parseFilmToState(film) {
-    return Object.assign(
-      {},
-      film,
-      {
-        emotion: null,
-        comment: null,
-      },
-    );
-  }
-
-  _setInnerHandlers() {
-    this.getElement()
-      .querySelectorAll('input[name = comment-emoji]')
-      .forEach((input) => input.addEventListener('click', this._emotionChangeHandler));
-    this.getElement()
-      .querySelector('textarea[name = comment]')
-      .addEventListener('input', this._newCommentTextInputHandler);
-  }
-
-  _emotionChangeHandler(evt) {
-    this.updateState(
-      {
-        emotion: evt.target.value,
-      },
-    );
-  }
-
-  _newCommentTextInputHandler(evt) {
-    evt.preventDefault();
-    this.updateState(
-      {
-        comment: evt.target.value,
-      },
-      true,
-    );
-  }
-
-  _closeButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.closeButtonClick();
-  }
-
-  _watchlistClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchlistClick();
-  }
-
-  _watchedClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchedClick();
-  }
-
-  _favoritesClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoritesClick();
-  }
-
-  _deleteButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.deleteButtonClick(evt.target.dataset.commentId);
+    return createPopupTemplate(this._filmInfo);
   }
 
   setCloseButtonClickHandler(callback) {
@@ -261,31 +114,8 @@ export default class Popup extends SmartView {
       .addEventListener('click', this._closeButtonClickHandler);
   }
 
-  setWatchlistClickHandler(callback) {
-    this._callback.watchlistClick = callback;
-    this.getElement()
-      .querySelector('#watchlist')
-      .addEventListener('click', this._watchlistClickHandler);
-  }
-
-  setWatchedClickHandler(callback) {
-    this._callback.watchedClick = callback;
-    this.getElement()
-      .querySelector('#watched')
-      .addEventListener('click', this._watchedClickHandler);
-  }
-
-  setFavoritesClickHandler(callback) {
-    this._callback.favoritesClick = callback;
-    this.getElement()
-      .querySelector('#favorite')
-      .addEventListener('click', this._favoritesClickHandler);
-  }
-
-  setDeleteButtonClickHandler(callback) {
-    this._callback.deleteButtonClick = callback;
-    this.getElement()
-      .querySelectorAll('.film-details__comment-delete')
-      .forEach((button) => button.addEventListener('click', this._deleteButtonClickHandler));
+  _closeButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeButtonClick();
   }
 }

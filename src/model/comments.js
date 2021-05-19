@@ -2,34 +2,29 @@ import Observer from '../util/observer.js';
 
 
 export default class Comments extends Observer {
-  constructor(addCommentToFilm, removeCommentFromFilm) {
+  constructor() {
     super();
     this._comments = [];
-    this._addCommentToFilm = addCommentToFilm;
-    this._removeCommentFromFilm = removeCommentFromFilm;
   }
 
-  set(comments) {
+  set(updateType, comments) {
     this._comments = comments.slice();
+
+    this._notify(updateType);
   }
 
-  get(comments) {
-    return this._comments.filter(({id}) => comments.includes(id));
+  get() {
+    return this._comments;
   }
 
-  add(updateType, newComment) {
-    this._comments = [
-      newComment,
-      ...this._comments,
-    ];
+  add(updateType, update) {
+    this._comments = update.comments.slice();
 
-    this._addCommentToFilm(updateType, newComment);
-
-    // this._notify(updateType);
+    this._notify(updateType, update.movie);
   }
 
-  delete(updateType, deletedComment) {
-    const index = this._comments.findIndex((comment) => comment.id === deletedComment.id);
+  delete(updateType, update) {
+    const index = this._comments.findIndex((comment) => comment.id === update.commentId);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting comment');
@@ -40,8 +35,6 @@ export default class Comments extends Observer {
       ...this._comments.slice(index + 1),
     ];
 
-    this._removeCommentFromFilm(updateType, deletedComment);
-
-    // this._notify(updateType);
+    this._notify(updateType, update.updatedFilm);
   }
 }

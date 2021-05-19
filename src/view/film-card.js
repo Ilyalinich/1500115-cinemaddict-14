@@ -29,7 +29,7 @@ const createFilmCardTemplate = (film) => {
       <span class="film-card__duration">${filmDuration.format(filmDuration.hours() > 0 ? 'H[h] mm[m]' : 'mm[m]')}</span>
       <span class="film-card__genre">${getAllArrayValuesList(genre)}</span>
     </p>
-    <img src="./images/posters/${poster}" alt="" class="film-card__poster">
+    <img src="${poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${filmDescription}</p>
     <a class="film-card__comments">${comments.length} comments</a>
     <div class="film-card__controls">
@@ -54,26 +54,6 @@ export default class FilmCard extends AbstractView {
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
-  }
-
-  _popupRenderTriggerClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.popupRenderTriggerClick();
-  }
-
-  _watchlistClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchlistClick();
-  }
-
-  _watchedClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.watchedClick();
-  }
-
-  _favoritesClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoritesClick();
   }
 
   setPopupRenderTriggerClickHandler(callback) {
@@ -103,5 +83,25 @@ export default class FilmCard extends AbstractView {
     this.getElement()
       .querySelector('.film-card__controls-item--favorite')
       .addEventListener('click', this._favoritesClickHandler);
+  }
+
+  _popupRenderTriggerClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.popupRenderTriggerClick();
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
+  _favoritesClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoritesClick();
   }
 }

@@ -44,6 +44,8 @@ const UpdateType = {
   COMMENT_PATCH: 'COMMENT_PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  LOADING_ERROR: 'LOADING_ERROR',
 };
 
 const TimeRange = {

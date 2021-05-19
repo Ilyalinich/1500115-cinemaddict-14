@@ -1107,3 +1107,36 @@ button {
   padding-top: 50px;
   padding-bottom: 50px;
 }
+
+.loading-error-message {
+  color: var(--text-color-active);
+  margin-bottom: 50px;
+  font-size: 20px;
+}
+
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+
+.shake {
+  animation: shake 0.6s;
+}

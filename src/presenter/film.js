@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card.js';
 import {render, remove, replace} from '../util/render.js';
 import {UserAction, UpdateType, UpdatedFieldType} from '../constant.js';
+import {getDate} from '../util/day.js';
 
 
 export default class Film {
@@ -50,6 +51,11 @@ export default class Film {
       this._film.userDetails,
       {[updatedField]: !this._film.userDetails[updatedField]},
     );
+
+    if (updatedField === UpdatedFieldType.ALREADY_WATCHED) {
+
+      updatedPart.watchingDate = updatedPart.alreadyWatched ? getDate() : null;
+    }
 
     return Object.assign(
       {},
