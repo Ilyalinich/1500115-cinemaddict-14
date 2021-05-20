@@ -5,12 +5,12 @@ import FilmCardView from '../view/film-card.js';
 
 
 export default class Film {
-  constructor(filmsContainer, changeData, createPopup) {
-    this._filmsContainer = filmsContainer;
+  constructor(mainComponentContainer, changeData, createPopup) {
+    this._mainComponentContainer = mainComponentContainer;
     this._changeData = changeData;
     this._createPopup = createPopup;
 
-    this._filmComponent = null;
+    this._mainComponent = null;
 
     this._handleTriggerClick = this._handleTriggerClick.bind(this);
     this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
@@ -18,38 +18,38 @@ export default class Film {
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
   }
 
-  init(film) {
-    this._film = film;
+  init(data) {
+    this._data = data;
 
-    const prevFilmComponent = this._filmComponent;
-    this._filmComponent = new FilmCardView(film);
+    const prevMainComponent = this._mainComponent;
+    this._mainComponent = new FilmCardView(data);
 
-    this._filmComponent.setPopupRenderTriggerClickHandler(this._handleTriggerClick);
-    this._filmComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._filmComponent.setWatchedClickHandler(this._handleWatchedClick);
-    this._filmComponent.setFavoritesClickHandler(this._handleFavoritesClick);
+    this._mainComponent.setPopupRenderTriggerClickHandler(this._handleTriggerClick);
+    this._mainComponent.setWatchlistClickHandler(this._handleWatchlistClick);
+    this._mainComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._mainComponent.setFavoritesClickHandler(this._handleFavoritesClick);
 
 
-    if (prevFilmComponent === null) {
-      return render(this._filmsContainer, this._filmComponent);
+    if (prevMainComponent === null) {
+      return render(this._mainComponentContainer, this._mainComponent);
     }
 
-    if (this._filmsContainer.contains(prevFilmComponent.getElement())) {
-      replace(this._filmComponent, prevFilmComponent);
+    if (this._mainComponentContainer.contains(prevMainComponent.getElement())) {
+      replace(this._mainComponent, prevMainComponent);
     }
 
-    remove(prevFilmComponent);
+    remove(prevMainComponent);
   }
 
   destroy() {
-    remove(this._filmComponent);
+    remove(this._mainComponent);
   }
 
-  _getUpdatedFilm(updatedField) {
+  _getUpdate(updatedField) {
     const updatedPart = Object.assign(
       {},
-      this._film.userDetails,
-      {[updatedField]: !this._film.userDetails[updatedField]},
+      this._data.userDetails,
+      {[updatedField]: !this._data.userDetails[updatedField]},
     );
 
     if (updatedField === UpdatedFieldType.ALREADY_WATCHED) {
@@ -59,37 +59,37 @@ export default class Film {
 
     return Object.assign(
       {},
-      this._film,
+      this._data,
       {
         userDetails: updatedPart,
       },
     );
   }
 
-  _sendUpdatedFilm(updatedFilm) {
+  _sendUpdate(update) {
     this._changeData(
       UserAction.UPDATE_FILM,
       UpdateType.MINOR,
-      updatedFilm,
+      update,
     );
   }
 
   _handleWatchlistClick() {
-    const updatedFilm = this._getUpdatedFilm(UpdatedFieldType.WATCHLIST);
-    this._sendUpdatedFilm(updatedFilm);
+    const update = this._getUpdate(UpdatedFieldType.WATCHLIST);
+    this._sendUpdate(update);
   }
 
   _handleWatchedClick() {
-    const updatedFilm = this._getUpdatedFilm(UpdatedFieldType.ALREADY_WATCHED);
-    this._sendUpdatedFilm(updatedFilm);
+    const update = this._getUpdate(UpdatedFieldType.ALREADY_WATCHED);
+    this._sendUpdate(update);
   }
 
   _handleFavoritesClick() {
-    const updatedFilm = this._getUpdatedFilm(UpdatedFieldType.FAVORITE);
-    this._sendUpdatedFilm(updatedFilm);
+    const update = this._getUpdate(UpdatedFieldType.FAVORITE);
+    this._sendUpdate(update);
   }
 
   _handleTriggerClick() {
-    this._createPopup(this._film);
+    this._createPopup(this._data);
   }
 }

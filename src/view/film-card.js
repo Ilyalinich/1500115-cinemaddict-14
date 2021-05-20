@@ -5,8 +5,8 @@ import AbstractView from './abstract.js';
 const DESCRIPTION_SYMBOL_LIMIT = 140;
 const DATE_FORMAT = 'YYYY';
 
-const createControlClassName = (isActive) => isActive ? 'film-card__controls-item--active' : '';
 
+const createControlClassName = (isActive) => isActive ? 'film-card__controls-item--active' : '';
 
 const createFilmCardTemplate = (film) => {
   const {comments} = film;
@@ -41,9 +41,9 @@ const createFilmCardTemplate = (film) => {
 
 
 export default class FilmCard extends AbstractView {
-  constructor(film) {
+  constructor(data) {
     super();
-    this._film = film;
+    this._data = data;
 
     this._popupRenderTriggerClickHandler = this._popupRenderTriggerClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -52,7 +52,7 @@ export default class FilmCard extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmCardTemplate(this._film);
+    return createFilmCardTemplate(this._data);
   }
 
   setPopupRenderTriggerClickHandler(callback) {

@@ -6,7 +6,7 @@ const FORMAT_TEMPLATE = 'DD MMMM YYYY';
 const GENRES_MIN_COUNT = 1;
 
 
-const createPopupGenresTemplate = (genres) => {
+const createGenresTemplate = (genres) => {
   const genresList = genres
     .map((genre) => `<span class="film-details__genre">${genre}</span>`)
     .join('');
@@ -73,7 +73,7 @@ const createPopupTemplate = (filmInfo) => {
                 <td class="film-details__cell">${release.releaseCountry}</td>
               </tr>
               <tr class="film-details__row">
-                ${createPopupGenresTemplate(genres)}
+                ${createGenresTemplate(genres)}
               </tr>
             </table>
 

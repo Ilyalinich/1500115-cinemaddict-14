@@ -2,10 +2,10 @@ import AbstractView from '../abstract.js';
 
 
 export default class CommentsCounter extends AbstractView {
-  constructor(comments) {
+  constructor(count) {
     super();
 
-    this._comments = comments;
+    this._count = count;
   }
 
 
@@ -13,7 +13,7 @@ export default class CommentsCounter extends AbstractView {
     return `<h3 class="film-details__comments-title">
       Comments
         <span class="film-details__comments-count">
-          ${this._comments.length}
+          ${this._count}
         </span>
       </h3>`;
   }

@@ -143,7 +143,7 @@ export default class Statistic extends SmartView {
       counters,
     };
 
-    this._statisticFilterChangeHandler = this._statisticFilterChangeHandler.bind(this);
+    this._timeRangeFilterChangeHandler = this._timeRangeFilterChangeHandler.bind(this);
 
     this._createChart();
   }
@@ -153,15 +153,15 @@ export default class Statistic extends SmartView {
   }
 
   restoreViewFunctionality() {
-    this.setStatisticFilterChangeHandler(this._callback.statisticFilterChange);
+    this.setTimeRangeFilterChangeHandler(this._callback.timeRangeFilterChange);
     this._createChart();
   }
 
-  setStatisticFilterChangeHandler(callback) {
-    this._callback.statisticFilterChange = callback;
+  setTimeRangeFilterChangeHandler(callback) {
+    this._callback.timeRangeFilterChange = callback;
     this.getElement()
       .querySelector('.statistic__filters')
-      .addEventListener('change', this._statisticFilterChangeHandler);
+      .addEventListener('change', this._timeRangeFilterChangeHandler);
   }
 
   _createChart() {
@@ -170,11 +170,11 @@ export default class Statistic extends SmartView {
     renderChart(statisticCtx, this._state);
   }
 
-  _statisticFilterChangeHandler(evt) {
-    if (evt.target.tagName !== 'INPUT' || this._state.currentStatisticFilter === evt.target.value) {
+  _timeRangeFilterChangeHandler(evt) {
+    if (evt.target.tagName !== 'INPUT' || this._state.currentTimeRange === evt.target.value) {
       return;
     }
 
-    this._callback.statisticFilterChange(evt.target.value);
+    this._callback.timeRangeFilterChange(evt.target.value);
   }
 }

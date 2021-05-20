@@ -2,16 +2,16 @@ import AbstractView from './abstract.js';
 
 
 export default class FilmsCounter extends AbstractView {
-  constructor(filmsCount) {
+  constructor(count) {
     super();
-    this._filmsCount = filmsCount;
+    this._count = count;
   }
 
   getTemplate() {
-    return `<p>${this._filmsCount.toLocaleString()} movies inside</p>`;
+    return `<p>${this._count.toLocaleString()} movies inside</p>`;
   }
 
-  updateCounter(filmsCount) {
-    this.getElement().textContent = `${filmsCount} movies inside`;
+  update(count) {
+    this.getElement().textContent = `${count} movies inside`;
   }
 }

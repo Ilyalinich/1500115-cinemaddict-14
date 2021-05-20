@@ -32,19 +32,19 @@ const createCommentsTemplate = (comments) => {
 
 
 export default class CommentsList extends AbstractView {
-  constructor(comments) {
+  constructor(data) {
     super();
 
-    this._comments = comments;
+    this._data = data;
 
     this._deleteButtonClickHandler = this._deleteButtonClickHandler.bind(this);
   }
 
   getTemplate() {
-    return createCommentsTemplate(this._comments);
+    return createCommentsTemplate(this._data);
   }
 
-  getComment(commentId) {
+  get(commentId) {
     return this.getElement().querySelector(`[id = "${commentId}"`);
   }
 

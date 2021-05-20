@@ -6,26 +6,26 @@ import StatisticView from '../view/statistic.js';
 
 
 export default class Statistic {
-  constructor(statisticContainer, filmsModel) {
-    this._statisticContainer = statisticContainer;
+  constructor(mainComponentContainer, filmsModel) {
+    this._mainComponentContainer = mainComponentContainer;
     this._filmsModel = filmsModel;
 
-    this._statisticComponent = null;
+    this._mainComponent = null;
 
-    this._handleStatisticFilterChange = this._handleStatisticFilterChange.bind(this);
+    this._handleTimeRangeFilterChange = this._handleTimeRangeFilterChange.bind(this);
   }
 
   init() {
-    this._statisticComponent = new StatisticView(getUserRank(this._filmsModel.get()), this._getStateUpdate(TimeRange.ALL_TIME));
+    this._mainComponent = new StatisticView(getUserRank(this._filmsModel.get()), this._getStateUpdate(TimeRange.ALL_TIME));
 
-    this._statisticComponent.setStatisticFilterChangeHandler(this._handleStatisticFilterChange);
+    this._mainComponent.setTimeRangeFilterChangeHandler(this._handleTimeRangeFilterChange);
 
-    render(this._statisticContainer, this._statisticComponent);
+    render(this._mainComponentContainer, this._mainComponent);
   }
 
   destroy() {
-    remove(this._statisticComponent);
-    this._statisticComponent = null;
+    remove(this._mainComponent);
+    this._mainComponent = null;
   }
 
   _getWatchedFilmsByTimeRange(films, currentTimeRange) {
@@ -66,7 +66,7 @@ export default class Statistic {
     };
   }
 
-  _handleStatisticFilterChange(currentTimeRange) {
-    this._statisticComponent.updateState(this._getStateUpdate(currentTimeRange));
+  _handleTimeRangeFilterChange(currentTimeRange) {
+    this._mainComponent.updateState(this._getStateUpdate(currentTimeRange));
   }
 }
