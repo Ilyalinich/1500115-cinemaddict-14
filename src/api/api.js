@@ -71,7 +71,7 @@ export default class Api {
       body: JSON.stringify(data),
       headers: new Headers({'Content-Type': 'application/json'}),
     })
-      .then(Api.toJSON);
+      .then(this._toJSON);
   }
 
   _load({

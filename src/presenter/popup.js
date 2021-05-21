@@ -13,8 +13,8 @@ import CommentCreationFielView from '../view/popup/comment-creation-field.js';
 
 
 const OfflineErrorMessage = {
-  DELETE_COMMENT_MESSAGE: 'You can\'t delete comment offline',
-  ADD_COMMENT_MESSAGE: 'You can\'t add new comment offline',
+  DELETE_COMMENT_ERROR_MESSAGE: 'You can\'t delete comment offline',
+  ADD_COMMENT_ERROR_MESSAGE: 'You can\'t add new comment offline',
 };
 
 
@@ -84,7 +84,7 @@ export default class Popup {
 
   generateDeletCommentErrorAction(deletingCommentId) {
     if (!isOnline()) {
-      createOfflineErrorMessage(this._commentsListComponent.get(deletingCommentId), OfflineErrorMessage.DELETE_COMMENT_MESSAGE);
+      createOfflineErrorMessage(this._commentsListComponent.get(deletingCommentId), OfflineErrorMessage.DELETE_COMMENT_ERROR_MESSAGE);
     }
 
     this._commentsListComponent.enable(deletingCommentId);
@@ -93,7 +93,7 @@ export default class Popup {
 
   generateAddCommentErrorAction() {
     if (!isOnline()) {
-      createOfflineErrorMessage(this._commentsBoardContainer, OfflineErrorMessage.ADD_COMMENT_MESSAGE);
+      createOfflineErrorMessage(this._commentsBoardContainer, OfflineErrorMessage.ADD_COMMENT_ERROR_MESSAGE);
     }
 
     this._commentsCreationFieldComponent.enable();

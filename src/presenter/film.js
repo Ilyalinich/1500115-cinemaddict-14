@@ -18,11 +18,11 @@ export default class Film {
     this._handleFavoritesClick = this._handleFavoritesClick.bind(this);
   }
 
-  init(data) {
-    this._data = data;
+  init(film) {
+    this._film = film;
 
     const prevMainComponent = this._mainComponent;
-    this._mainComponent = new FilmCardView(data);
+    this._mainComponent = new FilmCardView(film);
 
     this._mainComponent.setPopupRenderTriggerClickHandler(this._handleTriggerClick);
     this._mainComponent.setWatchlistClickHandler(this._handleWatchlistClick);
@@ -48,8 +48,8 @@ export default class Film {
   _getUpdate(updatedField) {
     const updatedPart = Object.assign(
       {},
-      this._data.userDetails,
-      {[updatedField]: !this._data.userDetails[updatedField]},
+      this._film.userDetails,
+      {[updatedField]: !this._film.userDetails[updatedField]},
     );
 
     if (updatedField === UpdatedFieldType.ALREADY_WATCHED) {
@@ -59,7 +59,7 @@ export default class Film {
 
     return Object.assign(
       {},
-      this._data,
+      this._film,
       {
         userDetails: updatedPart,
       },
@@ -90,6 +90,6 @@ export default class Film {
   }
 
   _handleTriggerClick() {
-    this._createPopup(this._data);
+    this._createPopup(this._film);
   }
 }
