@@ -1,16 +1,15 @@
+import {UserRankType, UpdateType} from '../constant.js';
 import {render} from '../util/render.js';
 import {getUserRank} from '../util/user-rank.js';
-import {UserRankType} from '../constant.js';
 import UserRankView from '../view/user-rank.js';
-import {UpdateType} from '../constant.js';
 
 
 export default class UserRank {
-  constructor(userRankContainer, filmsModel) {
-    this._userRankContainer = userRankContainer;
+  constructor(mainComponentContainer, filmsModel) {
+    this._mainComponentContainer = mainComponentContainer;
     this._filmsModel = filmsModel;
 
-    this._userRankComponent = null;
+    this._mainComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
@@ -25,8 +24,8 @@ export default class UserRank {
       return;
     }
 
-    this._userRankComponent = new UserRankView(userRank);
-    render(this._userRankContainer, this._userRankComponent);
+    this._mainComponent = new UserRankView(userRank);
+    render(this._mainComponentContainer, this._mainComponent);
   }
 
   _handleModelEvent(updateType) {
@@ -36,23 +35,23 @@ export default class UserRank {
 
     const userRank = getUserRank(this._filmsModel.get());
 
-    if (this._userRankComponent === null && userRank === UserRankType.NO_RANK) {
+    if (this._mainComponent === null && userRank === UserRankType.NO_RANK) {
 
       return;
 
-    } else if (this._userRankComponent === null && userRank !== UserRankType.NO_RANK) {
+    } else if (this._mainComponent === null && userRank !== UserRankType.NO_RANK) {
 
-      this._userRankComponent = new UserRankView(userRank);
-      render(this._userRankContainer, this._userRankComponent);
+      this._mainComponent = new UserRankView(userRank);
+      render(this._mainComponentContainer, this._mainComponent);
 
-    } else if (this._userRankComponent !== null && userRank === UserRankType.NO_RANK) {
+    } else if (this._mainComponent !== null && userRank === UserRankType.NO_RANK) {
 
-      this._userRankComponent.hide();
+      this._mainComponent.hide();
 
     } else {
 
-      this._userRankComponent.updateRank(userRank);
-      this._userRankComponent.show();
+      this._mainComponent.update(userRank);
+      this._mainComponent.show();
     }
   }
 }

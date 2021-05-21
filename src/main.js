@@ -54,5 +54,5 @@ api.getFilms()
   .catch(() => filmsModel.set(UpdateType.LOADING_ERROR, []))
   .then(() => {
     new UserRankPresenter(siteHeaderElement, filmsModel).init();
-    filmsCounter.updateCounter(filmsModel.get().length);
+    filmsCounter.update(filmsModel.get().length);
   });

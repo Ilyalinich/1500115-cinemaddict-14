@@ -1,15 +1,16 @@
-import AbstractView from './abstract.js';
 import {SortType} from '../constant.js';
+import AbstractView from './abstract.js';
 
 
-const creteSortItemTemplate = (type, currentSortType) =>
-  `<li>
+const creteSortItemTemplate = (type, currentSortType) => {
+  return `<li>
     <a href="#"
       class="sort__button ${type === currentSortType ? 'sort__button--active' : ''}"
       data-sort-type="${type}">
       ${type}
     </a>
   </li>`;
+};
 
 const createSortMenuTemplate = (currentSortType) => {
   const sortItemsTemplate = Object.values(SortType)
@@ -23,24 +24,24 @@ const createSortMenuTemplate = (currentSortType) => {
 
 
 export default class SortMenu extends AbstractView {
-  constructor(currentSortType) {
+  constructor(currentItem) {
     super();
 
-    this._currentSortType = currentSortType;
-    this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
+    this._currentItem = currentItem;
+    this._itemChangeHandler = this._itemChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createSortMenuTemplate(this._currentSortType);
+    return createSortMenuTemplate(this._currentItem);
   }
 
-  setSortTypeChangeHandler(callback) {
+  setItemChangeHandler(callback) {
     this._callback.sortTypeChange = callback;
-    this.getElement().addEventListener('click', this._sortTypeChangeHandler);
+    this.getElement().addEventListener('click', this._itemChangeHandler);
   }
 
-  _sortTypeChangeHandler(evt) {
-    if (evt.target.tagName !== 'A' || this._currentSortType === evt.target.dataset.sortType) {
+  _itemChangeHandler(evt) {
+    if (evt.target.tagName !== 'A' || this._currentItem === evt.target.dataset.sortType) {
       return;
     }
 

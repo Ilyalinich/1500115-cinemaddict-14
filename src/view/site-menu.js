@@ -1,14 +1,15 @@
 import AbstractView from './abstract.js';
 
 
-const createFilterItemTemplate = ({type, count}, currentFilterType) =>
-  `<a href="#${type.toLowerCase()}"
+const createFilterItemTemplate = ({type, count}, currentFilterType) => {
+  return `<a href="#${type.toLowerCase()}"
     class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
     data-filter-type="${type}">
     ${type === 'All'
     ? `${type} movies`
     : `${type} <span class="main-navigation__item-count">${count}</span>`}
   </a>`;
+};
 
 const createSiteMenuTemplate = (filters, currentFilterType) => {
   const filterItemsTemplate = filters

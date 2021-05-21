@@ -1,17 +1,17 @@
 import {FilterType} from '../constant.js';
-import SiteMenuView from '../view/site-menu.js';
 import {render, replace, remove} from '../util/render.js';
+import SiteMenuView from '../view/site-menu.js';
 
 
 export default class SiteMenu {
-  constructor(siteMenuContainer, filterModel, filmsModel, showContent, showStatistic) {
-    this._siteMenuContainer = siteMenuContainer;
+  constructor(mainComponentContainer, filterModel, filmsModel, showContent, showStatistic) {
+    this._mainComponentContainer = mainComponentContainer;
     this._filterModel = filterModel;
     this._filmsModel = filmsModel;
     this._showContent = showContent;
     this._showStatistic = showStatistic;
 
-    this._siteMenuComponent = null;
+    this._mainComponent = null;
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
@@ -23,20 +23,20 @@ export default class SiteMenu {
 
   init() {
     const filters = this._getFilters(this._filmsModel.get());
-    const prevSiteMenuComponent = this._siteMenuComponent;
+    const prevMainComponent = this._mainComponent;
 
-    this._siteMenuComponent = new SiteMenuView(filters, this._filterModel.getActive());
-    this._siteMenuComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
-    this._siteMenuComponent.setStatsLinkClickHandler(this._handleStatsClick);
+    this._mainComponent = new SiteMenuView(filters, this._filterModel.getActive());
+    this._mainComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+    this._mainComponent.setStatsLinkClickHandler(this._handleStatsClick);
 
-    if (prevSiteMenuComponent === null) {
-      render(this._siteMenuContainer, this._siteMenuComponent);
+    if (prevMainComponent === null) {
+      render(this._mainComponentContainer, this._mainComponent);
 
       return;
     }
 
-    replace(this._siteMenuComponent, prevSiteMenuComponent);
-    remove(prevSiteMenuComponent);
+    replace(this._mainComponent, prevMainComponent);
+    remove(prevMainComponent);
   }
 
   _getFilters(films) {

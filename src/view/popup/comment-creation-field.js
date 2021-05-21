@@ -5,21 +5,23 @@ import he from 'he';
 const EMOTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 
 
-const createPopupEmojiListTemplate = (newCommentEmotion) =>
-  EMOTIONS.map((emotion) =>
-    `<input
-      class="film-details__emoji-item visually-hidden"
-      name="comment-emoji"
-      type="radio"
-      id="emoji-${emotion}"
-      value="${emotion}"
-      ${newCommentEmotion === emotion ? 'checked' : ''}>
-    <label
-      class="film-details__emoji-label"
-      for="emoji-${emotion}">
-      <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
-    </label>`).join('');
-
+const createEmojiListTemplate = (newCommentEmotion) => {
+  return EMOTIONS
+    .map((emotion) =>
+      `<input
+        class="film-details__emoji-item visually-hidden"
+        name="comment-emoji"
+        type="radio"
+        id="emoji-${emotion}"
+        value="${emotion}"
+        ${newCommentEmotion === emotion ? 'checked' : ''}>
+      <label
+        class="film-details__emoji-label"
+        for="emoji-${emotion}">
+        <img src="./images/emoji/${emotion}.png" width="30" height="30" alt="emoji">
+      </label>`)
+    .join('');
+};
 
 const createCommentCreationFieldTemplate = ({emotion, comment}) => {
   return `<div class="film-details__new-comment">
@@ -36,7 +38,7 @@ const createCommentCreationFieldTemplate = ({emotion, comment}) => {
     </label>
 
     <div class="film-details__emoji-list">
-      ${createPopupEmojiListTemplate(emotion)}
+      ${createEmojiListTemplate(emotion)}
     </div>
   </div>`;
 };
@@ -53,7 +55,7 @@ export default class CommentCreationField extends SmartView {
 
 
     this._emotionChangeHandler = this._emotionChangeHandler.bind(this);
-    this._newCommentTextInputHandler = this._newCommentTextInputHandler.bind(this);
+    this._textInputHandler = this._textInputHandler.bind(this);
 
 
     this._setInnerHandlers();
@@ -76,19 +78,19 @@ export default class CommentCreationField extends SmartView {
     );
   }
 
+  isValidState() {
+    const {emotion, comment} = this._state;
+
+    return emotion && comment;
+  }
+
   enable() {
     this.getElement()
       .querySelectorAll('input[name = comment-emoji], textarea[name = comment]')
       .forEach((interactiveElement) => interactiveElement.disabled = false);
   }
 
-  isNewCommentValid() {
-    const {emotion, comment} = this._state;
-
-    return emotion && comment;
-  }
-
-  getNewComment() {
+  get() {
     const {emotion, comment} = this._state;
 
     this.getElement()
@@ -109,7 +111,7 @@ export default class CommentCreationField extends SmartView {
     );
   }
 
-  _newCommentTextInputHandler(evt) {
+  _textInputHandler(evt) {
     evt.preventDefault();
     this.updateState(
       {
@@ -125,6 +127,6 @@ export default class CommentCreationField extends SmartView {
       .forEach((input) => input.addEventListener('click', this._emotionChangeHandler));
     this.getElement()
       .querySelector('textarea[name = comment]')
-      .addEventListener('input', this._newCommentTextInputHandler);
+      .addEventListener('input', this._textInputHandler);
   }
 }

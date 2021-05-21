@@ -1,23 +1,23 @@
-import {getAllArrayValuesList} from '../../util/common.js';
 import {formatDate, getDuration} from '../../util/day.js';
 import AbstractView from '../abstract.js';
 
 
 const FORMAT_TEMPLATE = 'DD MMMM YYYY';
+const GENRES_MIN_COUNT = 1;
 
 
-const createPopupGenresTemplate = (genres) => {
+const createGenresTemplate = (genres) => {
   const genresList = genres
     .map((genre) => `<span class="film-details__genre">${genre}</span>`)
     .join('');
 
-  return  `<td class="film-details__term">${genres.length === 1 ? 'Genre' : 'Genres'}</td>
+  return  `<td class="film-details__term">${genres.length === GENRES_MIN_COUNT ? 'Genre' : 'Genres'}</td>
            <td class="film-details__cell">${genresList}</td>`;
 };
 
 const createPopupTemplate = (filmInfo) => {
   const {title,  alternativeTitle, totalRating, poster, ageRating,
-    director, writers, actors, release, runtime, genre, description} = filmInfo;
+    director, writers, actors, release, runtime, genres, description} = filmInfo;
 
   const filmDuration = getDuration(runtime);
 
@@ -54,11 +54,11 @@ const createPopupTemplate = (filmInfo) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
-                <td class="film-details__cell">${getAllArrayValuesList(writers)}</td>
+                <td class="film-details__cell">${writers.join(', ')}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Actors</td>
-                <td class="film-details__cell">${getAllArrayValuesList(actors)}</td>
+                <td class="film-details__cell">${actors.join(', ')}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
@@ -73,7 +73,7 @@ const createPopupTemplate = (filmInfo) => {
                 <td class="film-details__cell">${release.releaseCountry}</td>
               </tr>
               <tr class="film-details__row">
-                ${createPopupGenresTemplate(genre)}
+                ${createGenresTemplate(genres)}
               </tr>
             </table>
 

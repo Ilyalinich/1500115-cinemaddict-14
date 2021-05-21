@@ -1,7 +1,7 @@
+import {SortType, UpdateType, UserAction, FilmContainerType} from '../constant.js';
 import {render, remove, RenderPosition} from '../util/render.js';
 import {filterFilms} from '../util/filter.js';
 import {sortFilmsByDate, sortFilmsByRating, sortFilmsByCommentsCount} from '../util/sort.js';
-import {SortType, UpdateType, UserAction, FilmContainerType} from '../constant.js';
 import LoadingView from '../view/loading.js';
 import LoadingErrorView from '../view/loading-error.js';
 import ContentContainerView from '../view/content-container.js';
@@ -20,9 +20,9 @@ const EXTRA_LIST_FILMS_COUNT = 2;
 
 
 export default class ContentBoard {
-  constructor(contentBoardContainer, popupContainer, filmsModel, commentsModel, filterModel, api) {
-    this._contentBoardContainer = contentBoardContainer;
-    this._popupContainer = popupContainer;
+  constructor(mainComponentContainer, popupContainer, filmsModel, commentsModel, filterModel, api) {
+    this._mainComponentContainer = mainComponentContainer;
+
     this._filmsModel = filmsModel;
     this._commentsModel = commentsModel;
     this._filterModel = filterModel;
@@ -37,8 +37,8 @@ export default class ContentBoard {
     this._showMoreButtonComponent = null;
     this._allFilmsListComponent = null;
 
+    this._mainComponent = new ContentContainerView();
     this._loadingComponent = new LoadingView();
-    this._contentContainerComponent = new ContentContainerView();
     this._noFilmsListComponent = new NoFilmsListView();
     this._topRatedFilmsComponent = new TopRatedFilmsListView();
     this._mostCommentedFilmsComponent = new MostCommentedFilmsListView();
@@ -60,39 +60,39 @@ export default class ContentBoard {
 
     this._filmsModel.addObserver(this._handleModelEvent);
 
-    this._popupPresenter = new PopupPresenter(this._popupContainer, this._filmsModel, this._commentsModel, this._handleViewAction);
+    this._popupPresenter = new PopupPresenter(popupContainer, this._filmsModel, this._commentsModel, this._handleViewAction);
   }
 
   init() {
-    render(this._contentBoardContainer, this._contentContainerComponent);
+    render(this._mainComponentContainer, this._mainComponent);
 
     this._renderContent();
   }
 
   show() {
-    this._contentContainerComponent.show();
+    this._mainComponent.show();
   }
 
   hide() {
-    if (this._sortMenuComponent && this._contentContainerComponent) {
+    if (this._sortMenuComponent && this._mainComponent) {
       this._sortMenuComponent.hide();
-      this._contentContainerComponent.hide();
+      this._mainComponent.hide();
     }
   }
 
   _renderLoading() {
-    render(this._contentContainerComponent, this._loadingComponent, RenderPosition.AFTERBEGIN);
+    render(this._mainComponent, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderLoadingErrorMessage() {
     remove(this._loadingComponent);
 
     this._loadingErrorMessage = new LoadingErrorView();
-    render(this._contentContainerComponent, this._loadingErrorMessage);
+    render(this._mainComponent, this._loadingErrorMessage);
   }
 
   _renderNoFilmsList() {
-    render(this._contentContainerComponent, this._noFilmsListComponent, RenderPosition.AFTERBEGIN);
+    render(this._mainComponent, this._noFilmsListComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilm(filmsContainer, film) {
@@ -103,12 +103,15 @@ export default class ContentBoard {
       case FilmContainerType.ALL:
         this._filmPresenterStorage.allfilmPresenterStorage[film.id] = filmPresenter;
         break;
+
       case FilmContainerType.TOP_RATED:
         this._filmPresenterStorage.topRatedfilmPresenterStorage[film.id] = filmPresenter;
         break;
+
       case FilmContainerType.MOST_COMMENTED:
         this._filmPresenterStorage.mostCommentedfilmPresenterStorage[film.id] = filmPresenter;
         break;
+
       default:
         throw new Error('invalid value for the filmsContainer.id');
     }
@@ -124,16 +127,16 @@ export default class ContentBoard {
     }
 
     this._sortMenuComponent = new SortMenuView(this._currentSortType);
-    this._sortMenuComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    this._sortMenuComponent.setItemChangeHandler(this._handleSortTypeChange);
 
-    render(this._contentContainerComponent, this._sortMenuComponent, RenderPosition.BEFORE);
+    render(this._mainComponent, this._sortMenuComponent, RenderPosition.BEFORE);
   }
 
   _renderAllFilmsList() {
     if (this._allFilmsListComponent === null) {
       this._allFilmsListComponent = new AllFilmsListView();
 
-      render(this._contentContainerComponent, this._allFilmsListComponent, RenderPosition.AFTERBEGIN);
+      render(this._mainComponent, this._allFilmsListComponent, RenderPosition.AFTERBEGIN);
       this._allFilmsContainer = this._allFilmsListComponent.getElement().querySelector(`#${FilmContainerType.ALL}`);
     }
 
@@ -183,7 +186,7 @@ export default class ContentBoard {
     const filmsToRender = topRatedFilms.slice(0, Math.min(topRatedFilmsCount, EXTRA_LIST_FILMS_COUNT));
 
     if (filmsToRender[0].filmInfo.totalRating !== 0) {
-      render(this._contentContainerComponent, this._topRatedFilmsComponent);
+      render(this._mainComponent, this._topRatedFilmsComponent);
       this._topRatedFilmsContainer = this._topRatedFilmsComponent.getElement().querySelector(`#${FilmContainerType.TOP_RATED}`);
 
       this._renderFilms(this._topRatedFilmsContainer, filmsToRender);
@@ -200,7 +203,7 @@ export default class ContentBoard {
     const filmsToRender = mostCommentedFilms.slice(0, Math.min(mostCommentedFilmsCount, EXTRA_LIST_FILMS_COUNT));
 
     if (filmsToRender[0].comments.length !== 0) {
-      render(this._contentContainerComponent, this._mostCommentedFilmsComponent);
+      render(this._mainComponent, this._mostCommentedFilmsComponent);
       this._mostCommentedFilmsContainer = this._mostCommentedFilmsComponent.getElement().querySelector(`#${FilmContainerType.MOST_COMMENTED}`);
 
       this._renderFilms(this._mostCommentedFilmsContainer, filmsToRender);
@@ -292,8 +295,10 @@ export default class ContentBoard {
     switch (this._currentSortType) {
       case SortType.BY_DATE:
         return filtredFilms.slice().sort(sortFilmsByDate);
+
       case SortType.BY_RATING:
         return filtredFilms.slice().sort(sortFilmsByRating);
+
       default:
         return filtredFilms;
     }
@@ -327,19 +332,21 @@ export default class ContentBoard {
           this._filmsModel.update(updateType, response);
         });
         break;
+
       case UserAction.ADD_COMMENT:
         this._api.addComment(update)
           .then((response) => {
+            this._commentsModel.add(response.comments);
             this._filmsModel.update(updateType, response.movie);
-            this._commentsModel.add(updateType, response);
           })
           .catch(() => this._popupPresenter.generateAddCommentErrorAction());
         break;
+
       case UserAction.DELETE_COMMENT:
         this._api.deleteComment(update.commentId)
           .then(() => {
+            this._commentsModel.delete(update.commentId);
             this._filmsModel.update(updateType, update.updatedFilm);
-            this._commentsModel.delete(updateType, update);
           })
           .catch(() => this._popupPresenter.generateDeletCommentErrorAction(update.commentId));
         break;
@@ -348,12 +355,6 @@ export default class ContentBoard {
 
   _handleModelEvent(updateType, data) {
     switch (updateType) {
-      case UpdateType.PATCH: /*этот тип обновления в данный момент не используется, удалить, если не понадобится*/
-        this._updateAllFilmsList(data);
-        this._updateTopRatedFilmsList(data);
-        this._updateMostCommentedFilmsList(data);
-        break;
-
       case UpdateType.COMMENT_PATCH:
         this._updateAllFilmsList(data);
         this._updateTopRatedFilmsList(data);
