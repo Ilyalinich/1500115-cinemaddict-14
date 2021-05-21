@@ -1,6 +1,5 @@
 import {UserAction, UpdateType, UpdatedFieldType} from '../constant.js';
-import {isOnline} from '../util/common.js';
-import {toast} from '../util/toast.js';
+import {isOnline, createOfflineErrorMessage} from '../util/network.js';
 import {render, remove, replace, RenderPosition} from '../util/render.js';
 import {getDate} from '../util/day.js';
 import {shake} from '../util/animation.js';
@@ -11,6 +10,12 @@ import CommentsCounterView from '../view/popup/comments-counter.js';
 import CommentsListView from '../view/popup/comments-list.js';
 import ControlsView from '../view/popup/popup-controls.js';
 import CommentCreationFielView from '../view/popup/comment-creation-field.js';
+
+
+const OfflineErrorMessage = {
+  DELETE_COMMENT_MESSAGE: 'You can\'t delete comment offline',
+  ADD_COMMENT_MESSAGE: 'You can\'t add new comment offline',
+};
 
 
 export default class Popup {
@@ -78,11 +83,19 @@ export default class Popup {
   }
 
   generateDeletCommentErrorAction(deletingCommentId) {
+    if (!isOnline()) {
+      createOfflineErrorMessage(this._commentsListComponent.get(deletingCommentId), OfflineErrorMessage.DELETE_COMMENT_MESSAGE);
+    }
+
     this._commentsListComponent.enable(deletingCommentId);
     shake(this._commentsListComponent.get(deletingCommentId));
   }
 
   generateAddCommentErrorAction() {
+    if (!isOnline()) {
+      createOfflineErrorMessage(this._commentsBoardContainer, OfflineErrorMessage.ADD_COMMENT_MESSAGE);
+    }
+
     this._commentsCreationFieldComponent.enable();
     shake(this._commentsCreationFieldComponent);
   }
@@ -214,12 +227,6 @@ export default class Popup {
   }
 
   _handleDeleteCommentClick(commentId) {
-    if (!isOnline()) {
-      toast('You can\'t delete comment offline');
-
-      return;
-    }
-
     const updatedFilm = Object.assign(
       {},
       this._film,
@@ -249,12 +256,6 @@ export default class Popup {
 
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
-
-      if (!isOnline()) {
-        toast('You can\'t add new comment offline');
-
-        return;
-      }
 
       if (this._commentsCreationFieldComponent.isValidState()) {
         this._sendComment();

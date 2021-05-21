@@ -1,5 +1,5 @@
 import FilmsModel from '../model/films.js';
-import {isOnline} from '../util/common.js';
+import {isOnline} from '../util/network.js';
 
 
 const getSyncedFilms = (items) => {
@@ -59,29 +59,28 @@ export default class Provider {
   }
 
   getComments(filmId) {
-    return this._api.getComments(filmId);
+    if (isOnline()) {
+      return this._api.getComments(filmId);
+    }
+
+    return Promise.reject();
   }
 
-  // addFilm(film) {
-  //   if (isOnline()) {
-  //     return this._api.addFilm(film)
-  //       .then((newTask) => {
-  //         this._store.setItem(newTask.id, TasksModel.adaptToServer(newTask));
-  //         return newTask;
-  //       });
-  //   }
+  addComment({filmId, newComment}) {
+    if (isOnline()) {
+      return this._api.addComment({filmId, newComment});
+    }
 
-  //   return Promise.reject(new Error('Add task failed'));
-  // }
+    return Promise.reject();
+  }
 
-  // deleteTask(task) {
-  //   if (isOnline()) {
-  //     return this._api.deleteTask(task)
-  //       .then(() => this._store.removeItem(task.id));
-  //   }
+  deleteComment(commentId) {
+    if (isOnline()) {
+      return this._api.deleteComment(commentId);
+    }
 
-  //   return Promise.reject(new Error('Delete task failed'));
-  // }
+    return Promise.reject();
+  }
 
   sync() {
     if (isOnline()) {
@@ -89,12 +88,8 @@ export default class Provider {
 
       return this._api.sync(storeFilms)
         .then((response) => {
-          // Забираем из ответа синхронизированные задачи
-          // const createdTasks = getSyncedTasks(response.created);
           const updatedFilms = getSyncedFilms(response.updated);
 
-          // Добавляем синхронизированные задачи в хранилище.
-          // Хранилище должно быть актуальным в любой момент.
           const items = createStoreStructure(updatedFilms);
 
           this._store.setItems(items);

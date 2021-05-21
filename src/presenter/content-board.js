@@ -328,9 +328,8 @@ export default class ContentBoard {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_FILM:
-        this._api.updateFilm(update).then((response) => {
-          this._filmsModel.update(updateType, response);
-        });
+        this._api.updateFilm(update)
+          .then((response) => this._filmsModel.update(updateType, response));
         break;
 
       case UserAction.ADD_COMMENT:
