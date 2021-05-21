@@ -1,4 +1,6 @@
 import {UserAction, UpdateType, UpdatedFieldType} from '../constant.js';
+import {isOnline} from '../util/common.js';
+import {toast} from '../util/toast.js';
 import {render, remove, replace, RenderPosition} from '../util/render.js';
 import {getDate} from '../util/day.js';
 import {shake} from '../util/animation.js';
@@ -212,6 +214,12 @@ export default class Popup {
   }
 
   _handleDeleteCommentClick(commentId) {
+    if (!isOnline()) {
+      toast('You can\'t delete comment offline');
+
+      return;
+    }
+
     const updatedFilm = Object.assign(
       {},
       this._film,
@@ -241,6 +249,12 @@ export default class Popup {
 
     if (evt.ctrlKey && evt.key === 'Enter') {
       evt.preventDefault();
+
+      if (!isOnline()) {
+        toast('You can\'t add new comment offline');
+
+        return;
+      }
 
       if (this._commentsCreationFieldComponent.isValidState()) {
         this._sendComment();
