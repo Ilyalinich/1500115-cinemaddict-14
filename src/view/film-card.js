@@ -41,9 +41,9 @@ const createFilmCardTemplate = (film) => {
 
 
 export default class FilmCard extends AbstractView {
-  constructor(data) {
+  constructor(film) {
     super();
-    this._data = data;
+    this._film = film;
 
     this._popupRenderTriggerClickHandler = this._popupRenderTriggerClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -52,7 +52,7 @@ export default class FilmCard extends AbstractView {
   }
 
   getTemplate() {
-    return createFilmCardTemplate(this._data);
+    return createFilmCardTemplate(this._film);
   }
 
   setPopupRenderTriggerClickHandler(callback) {
