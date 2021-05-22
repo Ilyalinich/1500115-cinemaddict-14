@@ -45,9 +45,9 @@ export default class ContentBoard {
 
 
     this._filmPresenterStorage = {
-      allfilmPresenterStorage: {},
-      topRatedfilmPresenterStorage: {},
-      mostCommentedfilmPresenterStorage: {},
+      allFilmPresenterStorage: {},
+      topRatedFilmPresenterStorage: {},
+      mostCommentedFilmPresenterStorage: {},
     };
 
 
@@ -101,15 +101,15 @@ export default class ContentBoard {
 
     switch (filmsContainer.id) {
       case FilmContainerType.ALL:
-        this._filmPresenterStorage.allfilmPresenterStorage[film.id] = filmPresenter;
+        this._filmPresenterStorage.allFilmPresenterStorage[film.id] = filmPresenter;
         break;
 
       case FilmContainerType.TOP_RATED:
-        this._filmPresenterStorage.topRatedfilmPresenterStorage[film.id] = filmPresenter;
+        this._filmPresenterStorage.topRatedFilmPresenterStorage[film.id] = filmPresenter;
         break;
 
       case FilmContainerType.MOST_COMMENTED:
-        this._filmPresenterStorage.mostCommentedfilmPresenterStorage[film.id] = filmPresenter;
+        this._filmPresenterStorage.mostCommentedFilmPresenterStorage[film.id] = filmPresenter;
         break;
 
       default:
@@ -226,9 +226,9 @@ export default class ContentBoard {
 
   _clearAllFilmsBoard({resetRenderedFilmsCount = false, resetSortType = false} = {}) {
     Object
-      .values(this._filmPresenterStorage.allfilmPresenterStorage)
+      .values(this._filmPresenterStorage.allFilmPresenterStorage)
       .forEach((presenter) => presenter.destroy());
-    this._filmPresenterStorage.allfilmPresenterStorage = {};
+    this._filmPresenterStorage.allFilmPresenterStorage = {};
 
     remove(this._sortMenuComponent);
     remove(this._noFilmsListComponent);
@@ -257,26 +257,26 @@ export default class ContentBoard {
 
   _clearMostCommentedFilmsList() {
     Object
-      .values(this._filmPresenterStorage.mostCommentedfilmPresenterStorage)
+      .values(this._filmPresenterStorage.mostCommentedFilmPresenterStorage)
       .forEach((presenter) => presenter.destroy());
-    this._filmPresenterStorage.mostCommentedfilmPresenterStorage = {};
+    this._filmPresenterStorage.mostCommentedFilmPresenterStorage = {};
   }
 
   _updateAllFilmsList(data) {
-    if (data.id in this._filmPresenterStorage.allfilmPresenterStorage) {
-      this._filmPresenterStorage.allfilmPresenterStorage[data.id].init(data);
+    if (data.id in this._filmPresenterStorage.allFilmPresenterStorage) {
+      this._filmPresenterStorage.allFilmPresenterStorage[data.id].init(data);
     }
   }
 
   _updateTopRatedFilmsList(data) {
-    if (data.id in this._filmPresenterStorage.topRatedfilmPresenterStorage) {
-      this._filmPresenterStorage.topRatedfilmPresenterStorage[data.id].init(data);
+    if (data.id in this._filmPresenterStorage.topRatedFilmPresenterStorage) {
+      this._filmPresenterStorage.topRatedFilmPresenterStorage[data.id].init(data);
     }
   }
 
   _updateMostCommentedFilmsList(data) {
-    if (data.id in this._filmPresenterStorage.mostCommentedfilmPresenterStorage) {
-      this._filmPresenterStorage.mostCommentedfilmPresenterStorage[data.id].init(data);
+    if (data.id in this._filmPresenterStorage.mostCommentedFilmPresenterStorage) {
+      this._filmPresenterStorage.mostCommentedFilmPresenterStorage[data.id].init(data);
     }
   }
 

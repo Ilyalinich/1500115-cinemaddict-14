@@ -53,11 +53,15 @@ export default class SiteMenu extends AbstractView {
   }
 
   _filterClickHandler(evt) {
-    if (evt.target.tagName !== 'A' || this._currentFilterType === evt.target.dataset.filterType) {
+    if (this._currentFilterType === evt.target.dataset.filterType || this._currentFilterType === evt.target.parentElement.dataset.filterType) {
       return;
     }
 
     evt.preventDefault();
+
+    if (evt.target.tagName === 'SPAN') {
+      return this._callback.filterTypeChange(evt.target.parentElement.dataset.filterType);
+    }
 
     this._callback.filterTypeChange(evt.target.dataset.filterType);
   }
